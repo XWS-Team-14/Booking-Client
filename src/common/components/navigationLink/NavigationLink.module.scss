@@ -1,0 +1,12 @@
+@import '../../styles/variables.scss';
+
+.active {
+  font-weight: 600;
+  text-decoration: underline 1.5px;
+  text-underline-offset: 4px;
+}
+
+.link {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
