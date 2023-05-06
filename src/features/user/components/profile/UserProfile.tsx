@@ -79,12 +79,20 @@ const UserProfile = () => {
       <Divider />
       <div className={styles.info}>
         {!editable && (
-          <Button
-            type="secondary"
-            text="Edit profile"
-            style={{ float: 'right' }}
-            action={() => setEditable(true)}
-          ></Button>
+          <>
+            <Button
+              type="danger"
+              text="Close account"
+              style={{ float: 'right', marginLeft: '1rem' }}
+              action={() => setEditable(true)}
+            ></Button>
+            <Button
+              type="secondary"
+              text="Edit profile"
+              style={{ float: 'right' }}
+              action={() => setEditable(true)}
+            ></Button>
+          </>
         )}
         {editable ? (
           <Form>
