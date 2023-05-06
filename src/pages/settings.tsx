@@ -1,5 +1,5 @@
 import BaseTemplate from '@/common/components/baseTemplate/BaseTemplate';
-import UserProfile from '@/features/profile/components/profile/UserProfile';
+import UserProfile from '@/features/user/components/user/UserProfile';
 
 const SettingsPage = () => {
   return (

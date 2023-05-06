@@ -1,4 +1,4 @@
-import UserIcon from '../userIcon/UserIcon';
+import UserIcon from '../icon/UserIcon';
 import styles from './UserChip.module.scss';
 
 const UserChip = () => {

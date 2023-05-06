@@ -2,18 +2,19 @@
   display: flex;
   width: 100%;
   max-width: 1240px;
+  flex-direction: column;
 }
 
 .header {
   display: flex;
-  justify-content: center;
   align-items: center;
   gap: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .title {
   h1 {
-    margin: 0 0 1rem 0;
+    margin: 0 0 0.5rem 0;
     font-size: 2rem;
     font-weight: 500;
   }
@@ -22,4 +23,11 @@
     font-weight: 400;
     font-size: 1rem;
   }
+}
+
+.info {
+}
+
+.input {
+  width: 400px;
 }
