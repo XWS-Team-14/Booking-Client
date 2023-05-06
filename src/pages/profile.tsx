@@ -3,11 +3,9 @@ import UserProfile from '@/features/profile/components/profile/UserProfile';
 
 const ProfilePage = () => {
   return (
-    <>
-      <BaseTemplate>
-        <UserProfile />
-      </BaseTemplate>
-    </>
+    <BaseTemplate>
+      <UserProfile />
+    </BaseTemplate>
   );
 };
 

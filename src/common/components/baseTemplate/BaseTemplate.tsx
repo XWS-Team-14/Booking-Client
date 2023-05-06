@@ -13,7 +13,7 @@ const BaseTemplate = ({ children }: BaseTemplateProps) => (
       <div className={styles.header}>
         <NavigationBar />
       </div>
-      <div>{children}</div>
+      <>{children}</>
     </div>
   </div>
 );

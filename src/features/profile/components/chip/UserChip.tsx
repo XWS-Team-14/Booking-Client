@@ -1,11 +1,10 @@
-import { UserOutlined } from '@ant-design/icons';
-import { Avatar } from 'antd';
+import UserIcon from '../userIcon/UserIcon';
 import styles from './UserChip.module.scss';
 
 const UserChip = () => {
   return (
     <div className={styles.wrapper}>
-      <Avatar icon={<UserOutlined />} size={30}></Avatar> Sanja Petrović
+      <UserIcon type="female" size={30} /> Sanja Petrović
     </div>
   );
 };

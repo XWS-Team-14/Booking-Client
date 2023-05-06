@@ -1,0 +1,25 @@
+.wrapper {
+  display: flex;
+  width: 100%;
+  max-width: 1240px;
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+
+.title {
+  h1 {
+    margin: 0 0 1rem 0;
+    font-size: 2rem;
+    font-weight: 500;
+  }
+  h2 {
+    margin: 0;
+    font-weight: 400;
+    font-size: 1rem;
+  }
+}
