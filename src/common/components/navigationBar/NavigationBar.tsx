@@ -9,13 +9,19 @@ import {
 } from '@/common/store/slices/authSlice';
 import api from '@/common/utils/axiosInstance';
 import { logout } from '@/features/auth/services/auth.service';
-import { DownOutlined, LogoutOutlined } from '@ant-design/icons';
+import {
+  ControlOutlined,
+  DownOutlined,
+  IdcardOutlined,
+  LogoutOutlined,
+} from '@ant-design/icons';
 import { Dropdown, MenuProps } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 
+import UserChip from '@/features/profile/components/chip/UserChip';
 import Logo from '../../../assets/images/logo.png';
 import Button from '../button/Button';
 import NavigationLink from '../navigationLink/NavigationLink';
@@ -42,6 +48,21 @@ const NavigationBar = () => {
   const items: MenuProps['items'] = [
     {
       key: '1',
+      label: 'View profile',
+      onClick: () => router.push('/profile'),
+      icon: <IdcardOutlined />,
+    },
+    {
+      key: '2',
+      label: 'Account settings',
+      onClick: () => router.push('/settings'),
+      icon: <ControlOutlined />,
+    },
+    {
+      type: 'divider',
+    },
+    {
+      key: '3',
       label: 'Log out',
       onClick: () => handleLogout(),
       icon: <LogoutOutlined />,
@@ -68,16 +89,18 @@ const NavigationBar = () => {
       </div>
       <div className={styles.buttons}>
         {authState ? (
-          <Dropdown menu={{ items }} placement="bottom">
-            <a onClick={(e) => e.preventDefault()}>
-              <div className={styles.dropdown}>
-                <div className={styles.user}>
-                  {user.firstName} {user.lastName}
+          <div className={styles.dropdown}>
+            <Dropdown menu={{ items }} placement="bottom">
+              <a onClick={(e) => e.preventDefault()}>
+                <div className={styles.dropdown}>
+                  <div className={styles.user}>
+                    <UserChip />
+                  </div>
+                  <DownOutlined style={{ fontSize: '12px' }} />
                 </div>
-                <DownOutlined style={{ fontSize: '12px' }} />
-              </div>
-            </a>
-          </Dropdown>
+              </a>
+            </Dropdown>
+          </div>
         ) : (
           <>
             <Link href="/signup">
