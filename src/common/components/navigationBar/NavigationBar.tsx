@@ -10,9 +10,9 @@ import {
 import api from '@/common/utils/axiosInstance';
 import { logout } from '@/features/auth/services/auth.service';
 import {
-  ControlOutlined,
   DownOutlined,
   IdcardOutlined,
+  LockOutlined,
   LogoutOutlined,
 } from '@ant-design/icons';
 import { Dropdown, MenuProps } from 'antd';
@@ -21,7 +21,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 
-import UserChip from '@/features/profile/components/chip/UserChip';
+import UserChip from '@/features/user/components/chip/UserChip';
 import Logo from '../../../assets/images/logo.png';
 import Button from '../button/Button';
 import NavigationLink from '../navigationLink/NavigationLink';
@@ -54,9 +54,9 @@ const NavigationBar = () => {
     },
     {
       key: '2',
-      label: 'Account settings',
-      onClick: () => router.push('/settings'),
-      icon: <ControlOutlined />,
+      label: 'Change password',
+      onClick: () => router.push('/password'),
+      icon: <LockOutlined />,
     },
     {
       type: 'divider',
