@@ -1,5 +1,6 @@
 import Button from '@/common/components/button/Button';
 import { Divider, Form, Input, Modal } from 'antd';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,6 +12,8 @@ const UserProfile = () => {
   const [madeChanges, setMadeChanges] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const router = useRouter();
 
   const handleTrySave = () => {
     setSaveModalOpen(true);
@@ -69,6 +72,18 @@ const UserProfile = () => {
       >
         <p>Are you sure you want to change your profile information?</p>
       </Modal>
+      <Modal
+        title="Delete account"
+        centered
+        open={deleteModalOpen}
+        onCancel={() => setDeleteModalOpen(false)}
+        onOk={() => router.push('/delete')}
+        cancelText="No, I want to keep my account"
+        okText="Yes, I'm sure"
+        okType="danger"
+      >
+        <p>Are you sure you want to permanently delete your account?</p>
+      </Modal>
       <div className={styles.header}>
         <UserIcon type="female" size={100} />
         <div className={styles.title}>
@@ -79,20 +94,12 @@ const UserProfile = () => {
       <Divider />
       <div className={styles.info}>
         {!editable && (
-          <>
-            <Button
-              type="danger"
-              text="Close account"
-              style={{ float: 'right', marginLeft: '1rem' }}
-              action={() => setEditable(true)}
-            ></Button>
-            <Button
-              type="secondary"
-              text="Edit profile"
-              style={{ float: 'right' }}
-              action={() => setEditable(true)}
-            ></Button>
-          </>
+          <Button
+            type="secondary"
+            text="Edit profile"
+            style={{ float: 'right' }}
+            action={() => setEditable(true)}
+          ></Button>
         )}
         {editable ? (
           <Form>
@@ -156,6 +163,13 @@ const UserProfile = () => {
           </>
         )}
       </div>
+      <Divider />
+      <Button
+        type="transparent"
+        text="Delete account"
+        style={{ color: 'red' }}
+        action={() => setDeleteModalOpen(true)}
+      />
     </div>
   );
 };

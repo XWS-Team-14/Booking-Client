@@ -57,8 +57,8 @@
   @extend %base;
   background-image: linear-gradient(
     to right,
-    rgb(235, 85, 103) 0%,
-    rgb(255, 122, 171) 100%
+    $danger-color 0%,
+    $danger-color-hover 100%
   );
   color: white;
   font-weight: 600;
@@ -73,4 +73,16 @@
     rgb(255, 126, 141) 0%,
     rgb(255, 152, 190) 100%
   );
+}
+
+.transparent {
+  color: black;
+  background-color: transparent;
+  font-weight: 500;
+  font-family: inherit;
+  font-size: 0.8em;
+  cursor: pointer;
+  border: none;
+  width: fit-content;
+  padding: 0;
 }

@@ -1,3 +1,5 @@
+@import '../../../../common/styles/variables.scss';
+
 .wrapper {
   display: flex;
   width: 100%;
@@ -41,4 +43,9 @@
 
 .label {
   font-size: 16px;
+}
+
+.deleteAccount {
+  color: $danger-color;
+  font-weight: 600;
 }
