@@ -1,12 +1,5 @@
 import Button from '@/common/components/button/Button';
-import {
-  HomeOutlined,
-  IdcardOutlined,
-  LockOutlined,
-  MailOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
-import { Form, Input } from 'antd';
+import { Divider, Form, Input, Select } from 'antd';
 import { useRouter } from 'next/dist/client/router';
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -25,6 +18,7 @@ const SignUp = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const { Option } = Select;
   const user = useSelector(selectUser);
 
   useEffect(() => {
@@ -41,6 +35,7 @@ const SignUp = () => {
       first_name: values.first_name,
       last_name: values.last_name,
       address: values.address,
+      gender: values.gender,
       email: values.email,
       password1: values.password1,
       password2: values.password2,
@@ -64,11 +59,12 @@ const SignUp = () => {
       toast.error(error.errors[0]);
     });
   };
-  return (loading ? <></> : 
+  return loading ? (
+    <></>
+  ) : (
     <section className={styles.pageWrapper}>
       <div className={styles.wrapper}>
         <ToastContainer />
-        <h1 className={styles.title}>Welcome!</h1>
         <Form
           form={form}
           className={styles.loginForm}
@@ -76,14 +72,15 @@ const SignUp = () => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
         >
+          <Divider>Personal information</Divider>
           <Form.Item
             hasFeedback
             name="first_name"
             rules={[{ required: true, message: 'First name is required.' }]}
           >
             <Input
+              allowClear
               className={styles.inputField}
-              prefix={<IdcardOutlined />}
               placeholder="First name"
             />
           </Form.Item>
@@ -93,10 +90,20 @@ const SignUp = () => {
             rules={[{ required: true, message: 'Last name is required.' }]}
           >
             <Input
+              allowClear
               className={styles.inputField}
-              prefix={<UserOutlined />}
               placeholder="Last name"
             />
+          </Form.Item>
+          <Form.Item
+            hasFeedback
+            name="gender"
+            rules={[{ required: true, message: 'Gender is required.' }]}
+          >
+            <Select placeholder="Gender">
+              <Option value="male">Male</Option>
+              <Option value="female">Female</Option>
+            </Select>
           </Form.Item>
           <Form.Item
             hasFeedback
@@ -104,11 +111,12 @@ const SignUp = () => {
             rules={[{ required: true, message: 'Home address is required.' }]}
           >
             <Input
+              allowClear
               className={styles.inputField}
-              prefix={<HomeOutlined />}
               placeholder="Home address"
             />
           </Form.Item>
+          <Divider>Account</Divider>
           <Form.Item
             hasFeedback
             name="email"
@@ -121,8 +129,8 @@ const SignUp = () => {
             ]}
           >
             <Input
+              allowClear
               className={styles.inputField}
-              prefix={<MailOutlined />}
               placeholder="Email"
             />
           </Form.Item>
@@ -141,8 +149,8 @@ const SignUp = () => {
           >
             <Input.Password
               className={styles.inputField}
-              prefix={<LockOutlined />}
               type="password"
+              allowClear
               placeholder="Password"
               visibilityToggle={{
                 visible: passwordVisible,
@@ -168,8 +176,8 @@ const SignUp = () => {
           >
             <Input.Password
               className={styles.inputField}
-              prefix={<LockOutlined />}
               type="password"
+              allowClear
               placeholder="Confirm password"
               visibilityToggle={{
                 visible: passwordVisible,

@@ -2,7 +2,7 @@ import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
 import { selectUser } from '@/common/store/slices/authSlice';
 import { capitalizeFirstLetter } from '@/common/utils/textFormatter';
-import { Divider, Form, Input, Modal } from 'antd';
+import { Divider, Form, Input, Modal, Select } from 'antd';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,6 +22,7 @@ const UserProfile = () => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const dispatch = useDispatch();
+  const { Option } = Select;
   const user = useSelector(selectUser);
 
   useEffect(() => {
@@ -42,11 +43,8 @@ const UserProfile = () => {
   };
 
   const handleCancel = () => {
-    if (madeChanges) {
-      setCancelModalOpen(true);
-    } else {
-      setUneditableAndUnchanged();
-    }
+    setCancelModalOpen(false);
+    setUneditableAndUnchanged();
   };
 
   const handleTryCancel = () => {
@@ -129,6 +127,7 @@ const UserProfile = () => {
             </p>
             <Form.Item
               name="email"
+              hasFeedback
               rules={[
                 {
                   type: 'email',
@@ -147,7 +146,7 @@ const UserProfile = () => {
             <p>
               <b className={styles.label}>Home address</b>
             </p>
-            <Form.Item name="address">
+            <Form.Item name="address" hasFeedback>
               <Input
                 type="text"
                 defaultValue={user.address}
@@ -155,6 +154,20 @@ const UserProfile = () => {
                 allowClear={true}
                 onChange={() => setMadeChanges(true)}
               ></Input>
+            </Form.Item>
+
+            <p>
+              <b className={styles.label}>Gender</b>
+            </p>
+            <Form.Item hasFeedback name="gender" className={styles.input}>
+              <Select
+                defaultValue={user.gender}
+                className={styles.input}
+                onChange={() => setMadeChanges(true)}
+              >
+                <Option value="male">Male</Option>
+                <Option value="female">Female</Option>
+              </Select>
             </Form.Item>
             <div className={styles.buttons}>
               <Button
@@ -181,6 +194,10 @@ const UserProfile = () => {
               <b>Home address</b>
             </p>
             <p>{user.address}</p>
+            <p>
+              <b>Gender</b>
+            </p>
+            <p>{capitalizeFirstLetter(user.gender)}</p>
           </>
         )}
       </div>
