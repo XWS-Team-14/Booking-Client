@@ -1,7 +1,11 @@
 import Button from '@/common/components/button/Button';
+import Loading from '@/common/components/loading/Loading';
+import { selectUser } from '@/common/store/slices/authSlice';
+import { capitalizeFirstLetter } from '@/common/utils/textFormatter';
 import { Divider, Form, Input, Modal } from 'antd';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import UserIcon from '../icon/UserIcon';
@@ -13,7 +17,20 @@ const UserProfile = () => {
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [newEmail, setNewEmail] = useState('');
+  const [newHomeAddress, setHomeAddress] = useState('');
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+
+  useEffect(() => {
+    if (!user.email) {
+      router.push('/');
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
 
   const handleTrySave = () => {
     setSaveModalOpen(true);
@@ -47,7 +64,9 @@ const UserProfile = () => {
     setSaveModalOpen(false);
   };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className={styles.wrapper}>
       <ToastContainer />
       <Modal
@@ -87,8 +106,10 @@ const UserProfile = () => {
       <div className={styles.header}>
         <UserIcon type="female" size={100} />
         <div className={styles.title}>
-          <h1>Sanja Petrović</h1>
-          <h2>Host</h2>
+          <h1>
+            {user.firstName} {user.lastName}
+          </h1>
+          <h2>{capitalizeFirstLetter(user.role)}</h2>
         </div>
       </div>
       <Divider />
@@ -117,7 +138,7 @@ const UserProfile = () => {
             >
               <Input
                 type="email"
-                defaultValue="petroviccsanja@gmail.com"
+                defaultValue={user.email}
                 className={styles.input}
                 allowClear={true}
                 onChange={() => setMadeChanges(true)}
@@ -129,7 +150,7 @@ const UserProfile = () => {
             <Form.Item name="address">
               <Input
                 type="text"
-                defaultValue="Miše Dimitrijevića 11, Novi Sad, Serbia"
+                defaultValue={user.address}
                 className={styles.input}
                 allowClear={true}
                 onChange={() => setMadeChanges(true)}
@@ -155,11 +176,11 @@ const UserProfile = () => {
             <p>
               <b>E-mail</b>
             </p>
-            <p>petroviccsanja@gmail.com</p>
+            <p>{user.email}</p>
             <p>
               <b>Home address</b>
             </p>
-            <p>Miše Dimitrijevića 11, Novi Sad, Serbia</p>
+            <p>{user.address}</p>
           </>
         )}
       </div>

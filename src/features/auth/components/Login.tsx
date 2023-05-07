@@ -26,6 +26,7 @@ import LoginDto from '../types/LoginDto';
 const Login = () => {
   const [form] = Form.useForm();
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
@@ -33,6 +34,8 @@ const Login = () => {
   useEffect(() => {
     if (user.email !== null) {
       router.push('/');
+    } else {
+      setLoading(false);
     }
   }, [user]);
 
@@ -70,7 +73,9 @@ const Login = () => {
     });
   };
 
-  return (
+  return loading ? (
+    <></>
+  ) : (
     <section className={styles.pageWrapper}>
       <ToastContainer />
       <div className={styles.wrapper}>

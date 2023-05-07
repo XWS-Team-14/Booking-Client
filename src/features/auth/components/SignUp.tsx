@@ -3,8 +3,8 @@ import {
   HomeOutlined,
   IdcardOutlined,
   LockOutlined,
+  MailOutlined,
   UserOutlined,
-  MailOutlined
 } from '@ant-design/icons';
 import { Form, Input } from 'antd';
 import { useRouter } from 'next/dist/client/router';
@@ -24,12 +24,14 @@ const SignUp = () => {
   const [form] = Form.useForm();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const router = useRouter();
-
+  const [loading, setLoading] = useState(true);
   const user = useSelector(selectUser);
 
   useEffect(() => {
     if (user.email !== null) {
       router.push('/');
+    } else {
+      setLoading(false);
     }
   }, [user]);
 
@@ -62,7 +64,7 @@ const SignUp = () => {
       toast.error(error.errors[0]);
     });
   };
-  return (
+  return (loading ? <></> : 
     <section className={styles.pageWrapper}>
       <div className={styles.wrapper}>
         <ToastContainer />

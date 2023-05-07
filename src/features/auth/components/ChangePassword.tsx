@@ -3,7 +3,7 @@ import { selectUser } from '@/common/store/slices/authSlice';
 import { LockOutlined } from '@ant-design/icons';
 import { Form, Input } from 'antd';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -14,9 +14,18 @@ const ChangePassword = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [newPasswordVisible, setNewPasswordVisible] = useState(false);
   const [newPasswordCheckVisible, setNewPasswordCheckVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
+
+  useEffect(() => {
+    if (user.email === null) {
+      router.push('/');
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
@@ -25,7 +34,9 @@ const ChangePassword = () => {
     });
   };
 
-  return (
+  return loading ? (
+    <></>
+  ) : (
     <section className={styles.pageWrapper}>
       <ToastContainer />
       <div className={styles.wrapper}>
