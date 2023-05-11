@@ -16,7 +16,9 @@ export const deleteAvailability = async(id: string)=>{
 export const GetAllSearch = async (dto: AvailabilitySearchDto)=>{
     
 }
-
+export const GetAllForUser = async (email: string)=>{
+    
+}
 export const GetById = async (id: string)=>{
     
 }

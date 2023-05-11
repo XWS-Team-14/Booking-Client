@@ -1,19 +1,46 @@
 import { ToastContainer, toast } from 'react-toastify';
-import type { Dayjs } from 'dayjs';
 import styles from '../styles/availability.module.scss';
-import { Form, Input, Select, DatePicker, Checkbox,DatePickerProps } from 'antd';
+import { Form, Input, Select, DatePicker, Checkbox, Card } from 'antd';
 import Button from '@/common/components/button/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AvailabilityDto from '../types/availabilityDto';
 import DateInterval from '../types/dateInterval';
+import { GetAllForUser } from '../services/availability.service';
 const { RangePicker } = DatePicker;
-const CreateAvailability = () =>{
+const EditAvailability = () =>{
     const [form] = Form.useForm();
-    //const start_date = fieldsValue['date-picker'].format('YYYY-MM-DD'),
     const [start_date, setStartDate] = useState<string>("");
+    const [userEmail, setUserEmail] = useState<string>("err");
     const [end_date, setEndDate] = useState<string>("");
     const [enableWeekendPrice, setEnableWeekend]= useState<Boolean>(false);
     const [enableHolidayPrice, setEnableHoliday]= useState<Boolean>(false);
+    const [editDisabled, setEditDisabled]= useState<Boolean>(true);
+    const [storedAvailability, settoredAvailability] = useState<AvailabilityDto>();
+    const [allAvailabilities, setAllAvailabilities] = useState<Array<AvailabilityDto>>();
+    useEffect(() => {
+        const fetchUserEmail =async () => {
+            try{
+                //const response = await getUserEmail(userEmail);
+                //setUserEmail(response.data);
+              }
+              catch (error){
+                console.error(error);
+              }
+        };
+        fetchUserEmail();
+        const fetchData = async () => {
+          try{
+            //const response = await GetAllForUser(userEmail);
+            //setAllAvailabilities(response.data);
+          }
+          catch (error){
+            console.error(error);
+          }
+        };
+        fetchData();
+      }, []);
+    
+    
     const onFinish = ()=>{
         var dto : AvailabilityDto = {
             availability_id: '',
@@ -31,6 +58,7 @@ const CreateAvailability = () =>{
             dto.special_pricing.push({title:'Holiday',pricing_markup:form.getFieldValue('holiday_mul')})
         }
         console.log(dto);
+        //save
     };
     const onFinishFailed = ()=>{
 
@@ -46,17 +74,43 @@ const CreateAvailability = () =>{
     const flipHolidayFlag = ( )=>{
         setEnableHoliday(!enableHolidayPrice);
     }
+    const prepareForEdit = (stored : AvailabilityDto) => {
+        if(stored.occupied_intervals.length === 0){
+            setEditDisabled(true);
+            form.setFieldValue('availability_id', stored.availability_id);
+            //etc
+        }
+        else{
+            setEditDisabled(false);
+            toast("Your accommodation has been booked for selected interval, it cannot be edited or deleted!");
+        }
+    }
     return (
         <section className={styles.pageWrapper}>
             <div className={styles.wrapper}>
+            <div className={styles.cardHolder}>
+          {allAvailabilities?.map(item => (
+            <Card
+              key={item.availability_id}
+              bordered={true}
+              className={styles.card}
+              onClick={() => prepareForEdit(item)}
+              >
+                <p>{item.availability_id}</p>
+            </Card>
+          ))}
+        </div>
+            </div>
+            <div className={styles.wrapper}>
                 <ToastContainer/>
-                <h1>Create availability</h1>
+                <h1>Edit availability</h1>
                 <Form
                 form={form}
                 className={styles.loginForm}
                 autoComplete="off"
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
+                disabled={editDisabled.valueOf()}
                 >
                 <Form.Item>
                     <RangePicker onChange={onRangeChange} />
@@ -140,11 +194,11 @@ const CreateAvailability = () =>{
                     />
                 </Form.Item>
                 <Form.Item className={styles.submit}>
-                    <Button type="primary" text="Create" style={{ width: '100%' }} />
+                    <Button type="primary" text="Update" style={{ width: '100%' }} />
                 </Form.Item>
                 </Form>
             </div>
         </section>
     );
 }
-export default CreateAvailability;
+export default EditAvailability;
