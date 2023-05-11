@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import styles from '../styles/reservation.module.scss'
 import { ToastContainer } from "react-toastify";
-import { Button, Menu, MenuProps } from "antd";
+import { Button, Menu, MenuProps, Modal } from "antd";
 import ReservationDto from "../types/ReservationDto"
 import { useSelector } from "react-redux";
 import { selectUser } from "@/common/store/slices/authSlice";
@@ -10,6 +10,11 @@ const HostReservations = () =>{
     const[accommodations, setAccommodations] = useState<any[]>([]);
     const[reservations, setReservations] = useState<ReservationDto[]>([]);
     const user = useSelector(selectUser);
+    const { confirm } = Modal;
+
+  
+
+  
     useEffect(()=>{
         //add a function call that gets all accommodations  by host
         getByHost(user.email).then((reservations) => {
@@ -22,10 +27,17 @@ const HostReservations = () =>{
         setReservations(reservations);
     });};
 
-    const accept = (reservation : ReservationDto) =>{
-        acceptReservation(reservation);
-    }
+    const showConfirm = (reservation: ReservationDto) => {
+        confirm({
+        content: <p>Are you sure you want to accept this reservation?</p>,
+        onOk() {
+        acceptReservation(reservation)
+        }
+        })
+        }
+      
     
+      
     
   
     return (
@@ -44,7 +56,7 @@ const HostReservations = () =>{
                         <b>reservation.begining_date</b>
                         <b>reservation.ending_date</b>
                         <b>reservation.total_price</b>
-                        <Button type="primary" onClick={() => {accept(reservation)}} style={{ width: '100%' }} >Accept Reservation</Button>
+                        <Button type="primary" onClick={() => {showConfirm(reservation)}} style={{ width: '100%' }} >Accept Reservation</Button>
                     </div>
                     )}
 
