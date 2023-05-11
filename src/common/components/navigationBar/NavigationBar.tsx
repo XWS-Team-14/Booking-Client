@@ -65,6 +65,7 @@ const NavigationBar = () => {
         <NavigationLink href="/" text="Home" />
         {user.isAdmin && <NavigationLink href="/flights" text="Flights" />}
         {authState && <NavigationLink href="/tickets" text="My tickets" />}
+        <NavigationLink href="/createAvailability" text="Create Availability" />
       </div>
       <div className={styles.buttons}>
         {authState ? (
