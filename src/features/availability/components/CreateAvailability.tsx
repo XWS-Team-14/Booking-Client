@@ -4,9 +4,12 @@ import styles from '../styles/availability.module.scss';
 import { Form, Input, Select, DatePicker, Checkbox,DatePickerProps } from 'antd';
 import Button from '@/common/components/button/Button';
 import { useState } from 'react';
+import { useRouter } from 'next/dist/client/router';
 import AvailabilityDto from '../types/availabilityDto';
 import DateInterval from '../types/dateInterval';
+import {createAvailability }from '../services/availability.service'
 const { RangePicker } = DatePicker;
+
 const CreateAvailability = () =>{
     const [form] = Form.useForm();
     //const start_date = fieldsValue['date-picker'].format('YYYY-MM-DD'),
@@ -14,12 +17,19 @@ const CreateAvailability = () =>{
     const [end_date, setEndDate] = useState<string>("");
     const [enableWeekendPrice, setEnableWeekend]= useState<Boolean>(false);
     const [enableHolidayPrice, setEnableHoliday]= useState<Boolean>(false);
+    const router = useRouter();
+    //temp testing purposes
+    const [acomodationIds, setacomodationIds] = useState<Array<string>>([
+        "c645b089-4bf4-439d-ad0f-22c5d8919203",
+        "26d11df5-1aeb-4e53-81ef-3144e2dcef5f"
+    ]);    
+
     const onFinish = ()=>{
         var dto : AvailabilityDto = {
-            availability_id: '',
-            accomodation_id: '',
+            availability_id: "d721aefc-23df-4dce-a7f9-30e2b671a2c5",
+            accomodation_id: form.getFieldValue('accomodation'),
             interval:  {date_start: start_date, date_end : end_date},
-            pricing_type: '',
+            pricing_type: form.getFieldValue('pricing_type'),
             base_price: form.getFieldValue('base_price'),
             occupied_intervals: [],
             special_pricing: []
@@ -31,21 +41,37 @@ const CreateAvailability = () =>{
             dto.special_pricing.push({title:'Holiday',pricing_markup:form.getFieldValue('holiday_mul')})
         }
         console.log(dto);
+        createAvailability(dto)
+        .then((res) => {
+            toast.success(res.data);
+            router.push('/editAvailability');
+        })
+        .catch((err) =>{
+            toast.error(err);
+        })
     };
-    const onFinishFailed = ()=>{
 
-    };
+    const onFinishFailed = (errorInfo: any) => {
+        console.log('Failed:', errorInfo);
+        errorInfo.errorFields.map((error: any) => {
+          toast.error(error.errors[0]);
+        });
+      };
+
     const onRangeChange = (dates :any, dateStrings :[string, string]) => {
         console.log(dates, dateStrings);
         setStartDate(dateStrings[0]);
         setEndDate(dateStrings[1]);
       };
+
     const flipWeekendFlag = ( )=>{
         setEnableWeekend(!enableWeekendPrice);
     }
+
     const flipHolidayFlag = ( )=>{
         setEnableHoliday(!enableHolidayPrice);
     }
+
     return (
         <section className={styles.pageWrapper}>
             <div className={styles.wrapper}>
@@ -67,9 +93,15 @@ const CreateAvailability = () =>{
                     rules={[{ required: true, message: 'Accomodation is required.' }]}
                     >
                     <Select
-                        placeholder="Acomodation"
+                    placeholder="Acomodation"
                     >
-                        <Select.Option value="demo">Demo</Select.Option>
+                        {acomodationIds?.map(item => ( //temp
+                            <Select.Option
+                            value={item}
+                            >
+                                {item}
+                            </Select.Option>
+                        ))}
                     </Select>
                 </Form.Item>
 
@@ -147,4 +179,5 @@ const CreateAvailability = () =>{
         </section>
     );
 }
+
 export default CreateAvailability;

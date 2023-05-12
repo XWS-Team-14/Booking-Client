@@ -7,18 +7,18 @@ export const createAvailability = async(dto: AvailabilityDto) =>{
 }
 
 export const updateAvailability = async(dto: AvailabilityDto)=>{
-    return await api.post('/api/avail/update', dto);
+    return await api.put('/api/avail/update', dto);
 }
 export const deleteAvailability = async(id: string)=>{
-    return await api.post('/api/avail/delete/'+ id);
+    return await api.delete('/api/avail/delete/'+ id);
 }
 
-export const GetAllSearch = async (dto: AvailabilitySearchDto)=>{
-    
+export const getAllSearch = async (dto: AvailabilitySearchDto)=>{
+   
 }
-export const GetAllForUser = async (email: string)=>{
-    
+export const getAllForUser = async (email: string)=>{
+    return await api.get('/api/avail/all/'); //temporary testing purposes
 }
-export const GetById = async (id: string)=>{
-    return await api.post('/api/avail/id/'+ id);
+export const getById = async (id: string)=>{
+    return await api.get('/api/avail/id/'+ id);
 }

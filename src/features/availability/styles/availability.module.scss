@@ -12,3 +12,17 @@
     width: 100vw;
     flex-direction: column;
   }
+  .cardHolder{
+    display: flex;
+    flex-direction: row;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    margin-top: 2em;
+}
+.card{
+    color:rgb(80, 92, 104);
+    background: linear-gradient(to right, #aff3f0 0%, #ffffff 80%);
+    flex-basis: calc(25% - 10px);
+    width: auto;
+}

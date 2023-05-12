@@ -5,9 +5,17 @@ import Button from '@/common/components/button/Button';
 import { useEffect, useState } from 'react';
 import AvailabilityDto from '../types/availabilityDto';
 import DateInterval from '../types/dateInterval';
-import { GetAllForUser } from '../services/availability.service';
-const { RangePicker } = DatePicker;
+import { getAllForUser, updateAvailability,deleteAvailability } from '../services/availability.service';
+import { useRouter } from 'next/dist/client/router';
+import SpecialPricing from '../types/specialPricing';
+
 const EditAvailability = () =>{
+    //temp testing purposes
+    const acomodationIds : string[]= [
+        "c645b089-4bf4-439d-ad0f-22c5d8919203",
+        "26d11df5-1aeb-4e53-81ef-3144e2dcef5f"
+    ]
+    const { RangePicker } = DatePicker;
     const [form] = Form.useForm();
     const [start_date, setStartDate] = useState<string>("");
     const [userEmail, setUserEmail] = useState<string>("err");
@@ -17,6 +25,8 @@ const EditAvailability = () =>{
     const [editDisabled, setEditDisabled]= useState<Boolean>(true);
     const [storedAvailability, settoredAvailability] = useState<AvailabilityDto>();
     const [allAvailabilities, setAllAvailabilities] = useState<Array<AvailabilityDto>>();
+    const router = useRouter();
+
     useEffect(() => {
         const fetchUserEmail =async () => {
             try{
@@ -30,8 +40,8 @@ const EditAvailability = () =>{
         fetchUserEmail();
         const fetchData = async () => {
           try{
-            //const response = await GetAllForUser(userEmail);
-            //setAllAvailabilities(response.data);
+            const response = await getAllForUser("testing");
+            setAllAvailabilities(response.data.items);
           }
           catch (error){
             console.error(error);
@@ -43,10 +53,10 @@ const EditAvailability = () =>{
     
     const onFinish = ()=>{
         var dto : AvailabilityDto = {
-            availability_id: '',
-            accomodation_id: '',
+            availability_id: form.getFieldValue('availability_id'),
+            accomodation_id: form.getFieldValue('accomodation'),
             interval:  {date_start: start_date, date_end : end_date},
-            pricing_type: '',
+            pricing_type: form.getFieldValue('pricing_type'),
             base_price: form.getFieldValue('base_price'),
             occupied_intervals: [],
             special_pricing: []
@@ -58,7 +68,13 @@ const EditAvailability = () =>{
             dto.special_pricing.push({title:'Holiday',pricing_markup:form.getFieldValue('holiday_mul')})
         }
         console.log(dto);
-        //save
+        updateAvailability(dto)
+        .then((res) => {
+            toast.success(res.data);
+        })
+        .catch((err) =>{
+            toast.error(err);
+        })
     };
     const onFinishFailed = ()=>{
 
@@ -75,16 +91,53 @@ const EditAvailability = () =>{
         setEnableHoliday(!enableHolidayPrice);
     }
     const prepareForEdit = (stored : AvailabilityDto) => {
-        if(stored.occupied_intervals.length === 0){
-            setEditDisabled(true);
+        if(!stored.occupied_intervals){
+            setEditDisabled(false);
+            setEnableWeekend(false);
+            setEnableHoliday(false);
             form.setFieldValue('availability_id', stored.availability_id);
-            //etc
+            form.setFieldValue('accomodation', stored.accomodation_id);
+            form.setFieldValue('pricing_type', stored.pricing_type);
+            form.setFieldValue('base_price', stored.base_price);
+            
+            if(stored.special_pricing){
+                setEnableWeekend(true);
+                setEnableHoliday(true);
+                if (stored.special_pricing[0].title == "Weekend"){
+                    form.setFieldValue('weekend_mul', stored.special_pricing[0].pricing_markup);
+                    if(stored.special_pricing[1]) form.setFieldValue('holiday_mul', stored.special_pricing[1].pricing_markup);
+                    else form.setFieldValue('holiday_mul', 1);
+                }
+                else{
+                    form.setFieldValue('holiday_mul', stored.special_pricing[0].pricing_markup);
+                    if(stored.special_pricing[1]) form.setFieldValue('weekend_mul', stored.special_pricing[1].pricing_markup);
+                    else form.setFieldValue('weekend_mul', 1);
+                    
+                }   
+            }   
         }
         else{
-            setEditDisabled(false);
-            toast("Your accommodation has been booked for selected interval, it cannot be edited or deleted!");
+            setEditDisabled(true);
+            toast.error("Your accommodation has been booked for selected interval, it cannot be edited or deleted!");
         }
     }
+    const removeItem = (stored : AvailabilityDto) =>{
+        console.log("clicked delete");
+        if(!stored.occupied_intervals){
+            deleteAvailability(stored.availability_id)
+            .then((res) => {
+                toast.success(res.data);
+                router.push('/editAvailability');
+            })
+            .catch((err) =>{
+                toast.error(err);
+            })
+        }
+        else{
+            toast.error("Your accommodation has been booked for selected interval, it cannot be edited or deleted!");
+        }
+    }
+
     return (
         <section className={styles.pageWrapper}>
             <div className={styles.wrapper}>
@@ -96,7 +149,12 @@ const EditAvailability = () =>{
               className={styles.card}
               onClick={() => prepareForEdit(item)}
               >
-                <p>{item.availability_id}</p>
+                <p>Base price: {item.base_price}</p>
+                <p>Date start: {item.interval.date_start}</p>
+                <p>Date end: {item.interval.date_end}</p>
+                <p>Pricing type: {item.pricing_type}</p>
+
+                <Button action={() => removeItem(item)} type="secondary" text="Delete" style={{ width: '100%' }} disabled={editDisabled.valueOf()}/>
             </Card>
           ))}
         </div>
@@ -123,7 +181,13 @@ const EditAvailability = () =>{
                     <Select
                         placeholder="Acomodation"
                     >
-                        <Select.Option value="demo">Demo</Select.Option>
+                        {acomodationIds?.map(item => ( //temp
+                            <Select.Option
+                            value={item}
+                            >
+                                item
+                            </Select.Option>
+                        ))}
                     </Select>
                 </Form.Item>
 
@@ -194,7 +258,7 @@ const EditAvailability = () =>{
                     />
                 </Form.Item>
                 <Form.Item className={styles.submit}>
-                    <Button type="primary" text="Update" style={{ width: '100%' }} />
+                    <Button type="primary" text="Update" style={{ width: '100%' }} disabled={editDisabled.valueOf()} />
                 </Form.Item>
                 </Form>
             </div>
