@@ -1,24 +1,21 @@
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import styles from '../styles/availability.module.scss';
 import { Form, Input, Select, DatePicker, Checkbox, Card } from 'antd';
 import Button from '@/common/components/button/Button';
 import { useEffect, useState } from 'react';
 import AvailabilityDto from '../types/availabilityDto';
 import DateInterval from '../types/dateInterval';
-import { getAllForUser, updateAvailability,deleteAvailability } from '../services/availability.service';
+import { getAllForUser, updateAvailability,deleteAvailability, getAccomodationsByUser } from '../services/availability.service';
 import { useRouter } from 'next/dist/client/router';
 import SpecialPricing from '../types/specialPricing';
+import AccommodationDto from '../types/accommodationDto';
 
 const EditAvailability = () =>{
-    //temp testing purposes
-    const acomodationIds : string[]= [
-        "c645b089-4bf4-439d-ad0f-22c5d8919203",
-        "26d11df5-1aeb-4e53-81ef-3144e2dcef5f"
-    ]
+    const [acomodations, setAccomodations] = useState<Array<AccommodationDto>>();
     const { RangePicker } = DatePicker;
     const [form] = Form.useForm();
     const [start_date, setStartDate] = useState<string>("");
-    const [userEmail, setUserEmail] = useState<string>("err");
     const [end_date, setEndDate] = useState<string>("");
     const [enableWeekendPrice, setEnableWeekend]= useState<Boolean>(false);
     const [enableHolidayPrice, setEnableHoliday]= useState<Boolean>(false);
@@ -28,19 +25,19 @@ const EditAvailability = () =>{
     const router = useRouter();
 
     useEffect(() => {
-        const fetchUserEmail =async () => {
+        const fetchAccomodations =async () => {
             try{
-                //const response = await getUserEmail(userEmail);
-                //setUserEmail(response.data);
+                const response = await getAccomodationsByUser();
+                setAccomodations(response.data.items);
               }
               catch (error){
                 console.error(error);
               }
         };
-        fetchUserEmail();
+        fetchAccomodations();
         const fetchData = async () => {
           try{
-            const response = await getAllForUser("testing");
+            const response = await getAllForUser();
             setAllAvailabilities(response.data.items);
           }
           catch (error){
@@ -118,7 +115,7 @@ const EditAvailability = () =>{
         }
         else{
             setEditDisabled(true);
-            toast.error("Your accommodation has been booked for selected interval, it cannot be edited or deleted!");
+            toast.warn("Your accommodation has been booked for selected interval, it cannot be edited or deleted!");
         }
     }
     const removeItem = (stored : AvailabilityDto) =>{
@@ -181,11 +178,11 @@ const EditAvailability = () =>{
                     <Select
                         placeholder="Acomodation"
                     >
-                        {acomodationIds?.map(item => ( //temp
+                        {acomodations?.map(item => ( //temp
                             <Select.Option
-                            value={item}
+                            value={item.id}
                             >
-                                item
+                                {item.name} - {item.location.country}, {item.location.city},{item.location.address}
                             </Select.Option>
                         ))}
                     </Select>

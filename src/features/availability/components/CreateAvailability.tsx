@@ -1,28 +1,38 @@
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import type { Dayjs } from 'dayjs';
 import styles from '../styles/availability.module.scss';
 import { Form, Input, Select, DatePicker, Checkbox,DatePickerProps } from 'antd';
 import Button from '@/common/components/button/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/dist/client/router';
 import AvailabilityDto from '../types/availabilityDto';
 import DateInterval from '../types/dateInterval';
-import {createAvailability }from '../services/availability.service'
+import {createAvailability, getAccomodationsByUser }from '../services/availability.service'
+import AccommodationDto from '../types/accommodationDto';
 const { RangePicker } = DatePicker;
 
 const CreateAvailability = () =>{
     const [form] = Form.useForm();
-    //const start_date = fieldsValue['date-picker'].format('YYYY-MM-DD'),
+    const [acomodations, setAccomodations] = useState<Array<AccommodationDto>>();
     const [start_date, setStartDate] = useState<string>("");
     const [end_date, setEndDate] = useState<string>("");
     const [enableWeekendPrice, setEnableWeekend]= useState<Boolean>(false);
     const [enableHolidayPrice, setEnableHoliday]= useState<Boolean>(false);
     const router = useRouter();
-    //temp testing purposes
-    const [acomodationIds, setacomodationIds] = useState<Array<string>>([
-        "c645b089-4bf4-439d-ad0f-22c5d8919203",
-        "26d11df5-1aeb-4e53-81ef-3144e2dcef5f"
-    ]);    
+
+    useEffect(() => {
+        const fetchAccomodations =async () => {
+            try{
+                const response = await getAccomodationsByUser();
+                setAccomodations(response.data.items);
+              }
+              catch (error){
+                console.error(error);
+              }
+        };
+        fetchAccomodations();
+    }, []);
 
     const onFinish = ()=>{
         var dto : AvailabilityDto = {
@@ -95,11 +105,11 @@ const CreateAvailability = () =>{
                     <Select
                     placeholder="Acomodation"
                     >
-                        {acomodationIds?.map(item => ( //temp
+                        {acomodations?.map(item => ( //temp
                             <Select.Option
-                            value={item}
+                            value={item.id}
                             >
-                                {item}
+                                {item.name} - {item.location.country}, {item.location.city},{item.location.address}
                             </Select.Option>
                         ))}
                     </Select>
