@@ -1,5 +1,6 @@
 import { UserDetails } from '@/common/types/User';
 import api from '@/common/utils/axiosInstance';
+import EmailChangeDto from '../types/EmailChangeDto';
 import LoginDto from '../types/LoginDto';
 import PasswordChangeDto from '../types/PasswordChangeDto';
 import RegisterDto from '../types/RegisterDto';
@@ -34,6 +35,10 @@ export const updateUser = async (dto: UserDetails) => {
 
 export const updatePassword = async (dto: PasswordChangeDto) => {
   return api.put('/api/auth/password', dto);
+};
+
+export const updateEmail = async (dto: EmailChangeDto) => {
+  return api.put('/api/auth/email', dto);
 };
 
 export const getCurrentUserData = async () => {
