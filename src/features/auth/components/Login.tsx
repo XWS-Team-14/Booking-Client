@@ -16,12 +16,13 @@ import { Form, Input } from 'antd';
 import Link from 'next/link';
 
 import parseJwt from '@/common/utils/jwtHelper';
+import { getCurrentUserData } from '@/features/user/services/user.service';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getCurrentUserData, login } from '../services/auth.service';
+import { login } from '../services/auth.service';
 import styles from '../styles/auth.module.scss';
 import LoginDto from '../types/LoginDto';
 
@@ -64,7 +65,9 @@ const Login = () => {
         console.log(user);
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status === 401) {
+          toast.error('Wrong username or password. Please try again.');
+        }
       });
   };
 

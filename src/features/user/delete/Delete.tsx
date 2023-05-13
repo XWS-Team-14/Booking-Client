@@ -10,7 +10,7 @@ import {
   setUserRole,
 } from '@/common/store/slices/authSlice';
 import api from '@/common/utils/axiosInstance';
-import { deleteAccount } from '@/features/auth/services/auth.service';
+import { deleteAccount } from '@/features/user/services/user.service';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -43,7 +43,6 @@ const Delete = () => {
         dispatch(setUserLastName(null));
         dispatch(setUserRole(null));
         dispatch(setUserGender(null));
-        
       })
       .catch((err) => console.log(err));
   };

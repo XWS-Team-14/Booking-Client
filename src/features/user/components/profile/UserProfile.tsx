@@ -9,16 +9,13 @@ import {
 } from '@/common/store/slices/authSlice';
 import { UserDetails } from '@/common/types/User';
 import { capitalizeFirstLetter } from '@/common/utils/textFormatter';
-import {
-  getCurrentUserData,
-  updateUser,
-} from '@/features/auth/services/auth.service';
 import { Divider, Form, Input, Modal, Select } from 'antd';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getCurrentUserData, updateUser } from '../../services/user.service';
 import UserIcon from '../icon/UserIcon';
 import styles from './UserProfile.module.scss';
 
@@ -28,8 +25,6 @@ const UserProfile = () => {
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [newEmail, setNewEmail] = useState('');
-  const [newHomeAddress, setHomeAddress] = useState('');
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -83,6 +78,7 @@ const UserProfile = () => {
   const handleCancel = () => {
     setCancelModalOpen(false);
     setUneditableAndUnchanged();
+    form.resetFields();
   };
 
   const handleTryCancel = () => {
