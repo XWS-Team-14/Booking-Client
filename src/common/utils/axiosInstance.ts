@@ -5,7 +5,10 @@ import {
   setAuthState,
   setUserEmail,
   setUserFirstName,
+  setUserGender,
+  setUserHomeAddress,
   setUserLastName,
+  setUserRole,
 } from '../store/slices/authSlice';
 import { store } from '../store/store';
 
@@ -27,7 +30,11 @@ api.interceptors.response.use(
     const { config, response } = error;
     const originalRequest = config;
     let retValue;
-    if (response?.status === 401 && !originalRequest.url?.includes('auth')) {
+    if (
+      response?.status === 401 &&
+      (originalRequest.url.includes('logout') ||
+        !originalRequest.url?.includes('auth'))
+    ) {
       if (!isRefreshing) {
         isRefreshing = true;
         await refresh()
@@ -48,6 +55,9 @@ api.interceptors.response.use(
             store.dispatch(setUserEmail(null));
             store.dispatch(setUserFirstName(null));
             store.dispatch(setUserLastName(null));
+            store.dispatch(setUserRole(null));
+            store.dispatch(setUserGender(null));
+            store.dispatch(setUserHomeAddress(null));
           });
 
         return retValue;

@@ -1,6 +1,6 @@
 import Loading from '@/common/components/loading/Loading';
 import { selectEmail } from '@/common/store/slices/authSlice';
-import AccommodationInfo from '@/features/accommodation/components/AccommodationCard/AccommodationInfo';
+import AccommodationInfo from '@/features/accommodation/components/AccommodationCard/AccommodationCard';
 import { Button as AntButton, Layout, List, Modal, Space } from 'antd';
 import router from 'next/router';
 import { useEffect, useState } from 'react';

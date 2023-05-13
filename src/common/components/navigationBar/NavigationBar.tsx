@@ -5,6 +5,7 @@ import {
   setUserEmail,
   setUserFirstName,
   setUserGender,
+  setUserHomeAddress,
   setUserLastName,
   setUserRole,
 } from '@/common/store/slices/authSlice';
@@ -45,6 +46,7 @@ const NavigationBar = () => {
       dispatch(setUserLastName(null));
       dispatch(setUserRole(null));
       dispatch(setUserGender(null));
+      dispatch(setUserHomeAddress(null));
     });
   };
 
