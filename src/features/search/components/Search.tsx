@@ -1,3 +1,4 @@
+import AccommodationInfo from '@/features/accommodation/components/AccommodationCard/AccommodationInfo';
 import { useState } from 'react';
 import styles from '../styles/search.module.scss';
 import { SearchParams } from '../types/SearchParams';
@@ -15,6 +16,8 @@ const Search = () => {
     <div className={styles.searchContainer}>
       <SearchBar onDataChanged={handleDataChange} />
       <SearchData searchParams={searchParams} />
+
+      <AccommodationInfo />
     </div>
   );
 };

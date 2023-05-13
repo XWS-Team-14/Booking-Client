@@ -1,4 +1,5 @@
 import Button from '@/common/components/button/Button';
+import AccommodationInfo from '@/features/accommodation/components/AccommodationCard/AccommodationInfo';
 import { SearchOutlined } from '@ant-design/icons';
 import { DatePicker, InputNumber, Select } from 'antd';
 import { RangePickerProps } from 'antd/lib/date-picker';
