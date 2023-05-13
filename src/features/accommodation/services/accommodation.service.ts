@@ -4,5 +4,5 @@ export const create = async (dto: FormData) => {
   const config = {     
     headers: { 'content-type': 'multipart/form-data' }
   }
-  return api.post('api/v1/accommodation', dto, config);
+  return api.post('/v1/accommodation', dto, config);
 };
