@@ -71,7 +71,7 @@ const NavigationBar = () => {
       type: 'divider',
     },
     {
-      key: '3',
+      key: '4',
       label: 'Log out',
       onClick: () => handleLogout(),
       icon: <LogoutOutlined />,

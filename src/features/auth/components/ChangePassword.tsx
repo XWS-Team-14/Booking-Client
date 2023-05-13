@@ -5,9 +5,11 @@ import { Form, Input } from 'antd';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { updatePassword } from '../services/auth.service';
 import styles from '../styles/auth.module.scss';
+import PasswordChangeDto from '../types/PasswordChangeDto';
 
 const ChangePassword = () => {
   const [form] = Form.useForm();
@@ -29,9 +31,12 @@ const ChangePassword = () => {
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
-    errorInfo.errorFields.map((error: any) => {
-      toast.error(error.errors[0]);
-    });
+  };
+
+  const onFinish = async (values: PasswordChangeDto) => {
+    await updatePassword(values)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   };
 
   return loading ? (
@@ -44,11 +49,11 @@ const ChangePassword = () => {
         <Form
           form={form}
           className={styles.loginForm}
-          onFinish={onFinishFailed}
+          onFinish={onFinish}
           onFinishFailed={onFinishFailed}
         >
           <Form.Item
-            name="old"
+            name="old_password"
             rules={[{ required: true, message: 'Old password is required.' }]}
           >
             <Input.Password
@@ -63,7 +68,7 @@ const ChangePassword = () => {
             />
           </Form.Item>
           <Form.Item
-            name="new"
+            name="new_password"
             rules={[
               { required: true, message: 'New password is required.' },
               {
@@ -87,12 +92,12 @@ const ChangePassword = () => {
           <Form.Item
             name="newCheck"
             hasFeedback
-            dependencies={['new']}
+            dependencies={['new_password']}
             rules={[
               { required: true, message: 'New password is required.' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (!value || getFieldValue('new') === value) {
+                  if (!value || getFieldValue('new_password') === value) {
                     return Promise.resolve();
                   }
                   return Promise.reject(new Error('Passwords do not match.'));

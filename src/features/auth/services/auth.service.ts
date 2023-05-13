@@ -1,6 +1,7 @@
 import { UserDetails } from '@/common/types/User';
 import api from '@/common/utils/axiosInstance';
 import LoginDto from '../types/LoginDto';
+import PasswordChangeDto from '../types/PasswordChangeDto';
 import RegisterDto from '../types/RegisterDto';
 
 export const register = async (dto: RegisterDto) => {
@@ -29,6 +30,10 @@ export const getCurrentUser = async () => {
 
 export const updateUser = async (dto: UserDetails) => {
   return api.put('/api/user/details', dto);
+};
+
+export const updatePassword = async (dto: PasswordChangeDto) => {
+  return api.put('/api/auth/password', dto);
 };
 
 export const getCurrentUserData = async () => {
