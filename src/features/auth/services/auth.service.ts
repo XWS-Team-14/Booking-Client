@@ -1,3 +1,4 @@
+import { UserDetails } from '@/common/types/User';
 import api from '@/common/utils/axiosInstance';
 import LoginDto from '../types/LoginDto';
 import RegisterDto from '../types/RegisterDto';
@@ -23,7 +24,11 @@ export const verifyToken = async () => {
 };
 
 export const getCurrentUser = async () => {
-  return api.get('api/auth/user');
+  return api.get('api/user/active');
+};
+
+export const updateUser = async (dto: UserDetails) => {
+  return api.put('/api/user/details', dto);
 };
 
 export const getCurrentUserData = async () => {
@@ -32,12 +37,10 @@ export const getCurrentUserData = async () => {
     return {
       firstName: user.data.first_name,
       lastName: user.data.last_name,
-      email: user.data.email,
+      homeAddress: user.data.home_address,
+      gender: user.data.gender,
     };
   } else {
     return null;
   }
 };
-export const getUserCreds = async() =>{
-  return api.get('/api/auth/user/');
-}

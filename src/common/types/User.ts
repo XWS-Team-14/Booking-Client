@@ -11,4 +11,11 @@ interface User {
   is_active: boolean;
 }
 
-export type { User };
+interface UserDetails {
+  first_name: string;
+  last_name: string;
+  gender: 'male' | 'female';
+  home_address: string;
+}
+
+export type { User, UserDetails };

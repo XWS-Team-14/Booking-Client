@@ -4,8 +4,9 @@ import {
   setAuthState,
   setUserEmail,
   setUserFirstName,
-  setUserIsAdmin,
+  setUserGender,
   setUserLastName,
+  setUserRole,
 } from '@/common/store/slices/authSlice';
 import api from '@/common/utils/axiosInstance';
 import { logout } from '@/features/auth/services/auth.service';
@@ -14,6 +15,7 @@ import {
   IdcardOutlined,
   LockOutlined,
   LogoutOutlined,
+  MailOutlined,
 } from '@ant-design/icons';
 import { Dropdown, MenuProps } from 'antd';
 import Image from 'next/image';
@@ -41,7 +43,8 @@ const NavigationBar = () => {
       dispatch(setUserEmail(null));
       dispatch(setUserFirstName(null));
       dispatch(setUserLastName(null));
-      dispatch(setUserIsAdmin(false));
+      dispatch(setUserRole(null));
+      dispatch(setUserGender(null));
     });
   };
 
@@ -54,6 +57,12 @@ const NavigationBar = () => {
     },
     {
       key: '2',
+      label: 'Change email',
+      onClick: () => router.push('/email'),
+      icon: <MailOutlined />,
+    },
+    {
+      key: '3',
       label: 'Change password',
       onClick: () => router.push('/password'),
       icon: <LockOutlined />,
@@ -84,8 +93,6 @@ const NavigationBar = () => {
       </div>
       <div className={styles.links}>
         <NavigationLink href="/" text="Home" />
-        {user.isAdmin && <NavigationLink href="/flights" text="Flights" />}
-        {authState && <NavigationLink href="/tickets" text="My tickets" />}
       </div>
       <div className={styles.buttons}>
         {authState ? (

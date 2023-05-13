@@ -1,7 +1,18 @@
 import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
-import { selectUser } from '@/common/store/slices/authSlice';
+import {
+  selectUser,
+  setUserFirstName,
+  setUserGender,
+  setUserHomeAddress,
+  setUserLastName,
+} from '@/common/store/slices/authSlice';
+import { UserDetails } from '@/common/types/User';
 import { capitalizeFirstLetter } from '@/common/utils/textFormatter';
+import {
+  getCurrentUserData,
+  updateUser,
+} from '@/features/auth/services/auth.service';
 import { Divider, Form, Input, Modal, Select } from 'antd';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -23,6 +34,7 @@ const UserProfile = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { Option } = Select;
+  const [form] = Form.useForm();
   const user = useSelector(selectUser);
 
   useEffect(() => {
@@ -37,9 +49,35 @@ const UserProfile = () => {
     setSaveModalOpen(true);
   };
 
-  const handleSave = () => {
-    setUneditableAndUnchanged();
-    toast.success('Successfully updated profile.');
+  const handleSave = async () => {
+    const dto = {
+      first_name: form.getFieldValue('firstName')
+        ? form.getFieldValue('firstName')
+        : user.firstName,
+      last_name: form.getFieldValue('lastName')
+        ? form.getFieldValue('lastName')
+        : user.lastName,
+      gender: form.getFieldValue('gender')
+        ? form.getFieldValue('gender')
+        : user.gender,
+      home_address: form.getFieldValue('address')
+        ? form.getFieldValue('address')
+        : user.address,
+    } as UserDetails;
+    await updateUser(dto)
+      .then(async (res) => {
+        setUneditableAndUnchanged();
+        form.resetFields();
+        toast.success('Successfully updated profile.');
+        const user = await getCurrentUserData();
+        if (user) {
+          dispatch(setUserFirstName(user.firstName));
+          dispatch(setUserLastName(user.lastName));
+          dispatch(setUserGender(user.gender));
+          dispatch(setUserHomeAddress(user.homeAddress));
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
   const handleCancel = () => {
@@ -102,7 +140,7 @@ const UserProfile = () => {
         <p>Are you sure you want to permanently delete your account?</p>
       </Modal>
       <div className={styles.header}>
-        <UserIcon type="female" size={100} />
+        <UserIcon type={user.gender} size={100} />
         <div className={styles.title}>
           <h1>
             {user.firstName} {user.lastName}
@@ -121,23 +159,26 @@ const UserProfile = () => {
           ></Button>
         )}
         {editable ? (
-          <Form>
+          <Form form={form}>
             <p>
-              <b className={styles.label}>E-mail</b>
+              <b className={styles.label}>First name</b>
             </p>
-            <Form.Item
-              name="email"
-              hasFeedback
-              rules={[
-                {
-                  type: 'email',
-                  message: 'Email is not valid.',
-                },
-              ]}
-            >
+            <Form.Item name="firstName" hasFeedback>
               <Input
-                type="email"
-                defaultValue={user.email}
+                type="text"
+                defaultValue={user.firstName}
+                className={styles.input}
+                allowClear={true}
+                onChange={() => setMadeChanges(true)}
+              ></Input>
+            </Form.Item>
+            <p>
+              <b className={styles.label}>Last name</b>
+            </p>
+            <Form.Item name="lastName" hasFeedback>
+              <Input
+                type="text"
+                defaultValue={user.lastName}
                 className={styles.input}
                 allowClear={true}
                 onChange={() => setMadeChanges(true)}
@@ -186,10 +227,6 @@ const UserProfile = () => {
           </Form>
         ) : (
           <>
-            <p>
-              <b>E-mail</b>
-            </p>
-            <p>{user.email}</p>
             <p>
               <b>Home address</b>
             </p>

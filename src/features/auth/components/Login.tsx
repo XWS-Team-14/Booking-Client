@@ -4,8 +4,10 @@ import {
   setAuthState,
   setUserEmail,
   setUserFirstName,
-  setUserIsAdmin,
+  setUserGender,
+  setUserHomeAddress,
   setUserLastName,
+  setUserRole,
 } from '@/common/store/slices/authSlice';
 import api from '@/common/utils/axiosInstance';
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
@@ -47,22 +49,22 @@ const Login = () => {
       .then(async (res) => {
         api.defaults.headers.common.Authorization =
           'Bearer ' + res.data.access_token;
-        console.log(parseJwt(res.data.access_token));
+        console.log(parseJwt(res.data));
         dispatch(setAuthState(true));
+        dispatch(setUserEmail(values.email));
+        dispatch(setUserRole(parseJwt(res.data).role));
         const user = await getCurrentUserData();
         if (user) {
-          dispatch(setAuthState(true));
           dispatch(setUserFirstName(user.firstName));
           dispatch(setUserLastName(user.lastName));
-          dispatch(setUserEmail(user.email));
-          dispatch(setUserIsAdmin(parseJwt(res.data.access_token).isAdmin));
+          dispatch(setUserGender(user.gender));
+          dispatch(setUserHomeAddress(user.homeAddress));
           router.push('/');
         }
+        console.log(user);
       })
       .catch((err) => {
-        err.response.data.non_field_errors.map((error: string) => {
-          toast.error(error);
-        });
+        console.log(err);
       });
   };
 

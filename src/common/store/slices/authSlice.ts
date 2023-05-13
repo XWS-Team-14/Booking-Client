@@ -8,7 +8,9 @@ export interface AuthState {
   userFirstName: string | null;
   userLastName: string | null;
   userEmail: string | null;
-  userIsAdmin: boolean;
+  userRole: 'host' | 'guest' | null;
+  userGender: 'male' | 'female' | null;
+  userHomeAddress: string | null;
 }
 
 const initialState: AuthState = {
@@ -16,7 +18,9 @@ const initialState: AuthState = {
   userFirstName: null,
   userLastName: null,
   userEmail: null,
-  userIsAdmin: false,
+  userRole: null,
+  userGender: null,
+  userHomeAddress: null,
 };
 
 export const authSlice = createSlice({
@@ -35,14 +39,23 @@ export const authSlice = createSlice({
     setUserEmail(state, action) {
       state.userEmail = action.payload;
     },
-    setUserIsAdmin(state, action) {
-      state.userIsAdmin = action.payload;
+    setUserRole(state, action) {
+      state.userRole = action.payload;
+    },
+    setUserGender(state, action) {
+      state.userGender = action.payload;
+    },
+    setUserHomeAddress(state, action) {
+      state.userHomeAddress = action.payload;
     },
     reset(state, action?) {
       state.authState = false;
       state.userFirstName = null;
       state.userLastName = null;
       state.userEmail = null;
+      state.userRole = null;
+      state.userGender = null;
+      state.userHomeAddress = null;
     },
   },
 
@@ -61,7 +74,9 @@ export const {
   setUserFirstName,
   setUserLastName,
   setUserEmail,
-  setUserIsAdmin,
+  setUserRole,
+  setUserGender,
+  setUserHomeAddress,
   reset,
 } = authSlice.actions;
 
@@ -72,7 +87,9 @@ export const selectUser = (state: AppState) => {
     firstName: state.auth.userFirstName,
     lastName: state.auth.userLastName,
     email: state.auth.userEmail,
-    isAdmin: state.auth.userIsAdmin,
+    gender: state.auth.userGender,
+    role: state.auth.userRole,
+    address: state.auth.userHomeAddress,
   } as User;
 };
 
@@ -82,6 +99,11 @@ export const selectLastName = (state: AppState) => state.auth.userLastName;
 
 export const selectEmail = (state: AppState) => state.auth.userEmail;
 
-export const selectIsAdmin = (state: AppState) => state.auth.userIsAdmin;
+export const selectRole = (state: AppState) => state.auth.userRole;
+
+export const selectGender = (state: AppState) => state.auth.userGender;
+
+export const selectHomeAddress = (state: AppState) =>
+  state.auth.userHomeAddress;
 
 export default authSlice.reducer;
