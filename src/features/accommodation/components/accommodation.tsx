@@ -142,6 +142,7 @@ const Accommodation = () => {
           >
             <InputNumber
               className={styles.inputField}
+              style={{width: '100%'}}
               prefix={<HomeOutlined />}
               placeholder="Min guests"
             />
@@ -154,6 +155,7 @@ const Accommodation = () => {
           >
             <InputNumber
               className={styles.inputField}
+              style={{width: '100%'}}
               prefix={<HomeOutlined />}
               placeholder="Max guests"
             />
