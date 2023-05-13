@@ -1,6 +1,8 @@
 import Button from '@/common/components/button/Button';
 import { SearchOutlined } from '@ant-design/icons';
 import { DatePicker, InputNumber, Select } from 'antd';
+import { RangePickerProps } from 'antd/lib/date-picker';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import styles from '../styles/search.module.scss';
 import { SearchParams } from '../types/SearchParams';
@@ -58,28 +60,12 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
     });
   }*/
 
+  const disabledDate: RangePickerProps['disabledDate'] = (current) => {
+    return current < dayjs().endOf('day').add(-1, 'day');
+  };
+
   return (
     <div className={styles.searchBarContainer}>
-      <Select
-        showSearch
-        allowClear
-        placeholder="Origin"
-        optionFilterProp="children"
-        bordered={false}
-        style={{
-          width: '100%',
-          backgroundColor: 'white',
-          padding: '0.7rem',
-          borderTopLeftRadius: '1rem',
-          borderBottomLeftRadius: '1rem',
-          height: '54.4px',
-          boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 10px -10px',
-        }}
-        options={placeOptions}
-        filterOption={(input, option) =>
-          (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-        }
-      />
       <Select
         showSearch
         allowClear
@@ -87,6 +73,8 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
         optionFilterProp="children"
         bordered={false}
         style={{
+          borderTopLeftRadius: '1rem',
+          borderBottomLeftRadius: '1rem',
           width: '100%',
           backgroundColor: 'white',
           padding: '0.7rem',
@@ -98,12 +86,12 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
           (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
         }
       />
-      <DatePicker
-        allowClear={true}
-        placeholder="Date of departure"
+      <DatePicker.RangePicker
         format="dddd, MMMM DD, YYYY"
+        allowClear
+        disabledDate={disabledDate}
         style={{
-          width: '100%',
+          width: '130%',
           backgroundColor: 'white',
           padding: '0.7rem',
           borderWidth: '0',
@@ -112,13 +100,14 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
           boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 10px -10px',
         }}
       />
+
       <InputNumber
         min={1}
-        max={100}
-        placeholder="Number of tickets"
+        max={15}
+        placeholder="Number of guests"
         bordered={false}
         style={{
-          width: '100%',
+          width: '70%',
           backgroundColor: 'white',
           padding: '0.7rem',
           borderRadius: '0',
