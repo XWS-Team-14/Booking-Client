@@ -20,6 +20,7 @@ import { create } from '../services/accommodation.service';
 import AccommodationFormDto from '../types/AccommodationFormDto';
 import api from '@/common/utils/axiosInstance';
 import { UploadFile } from 'antd/es/upload';
+import Loading from '@/common/components/loading/Loading';
 
 const formItemLayout = {
   labelCol: {
@@ -40,13 +41,19 @@ const formItemLayoutWithOutLabel = {
 };
 
 const Accommodation = () => {
-  const [form] = Form.useForm();
   const router = useRouter();
-  const [fileData, setFileData] = useState<string>();
   const user = useSelector(selectUser);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  }, []);
+    if (user.email === null || user.role != 'host') {
+      router.push('/');
+    } else {
+      setLoading(false);
+    }
+    
+  }, [user]);
+
 
   const onFinish = (values: AccommodationFormDto) => {
     console.log('Success:', values);
@@ -80,7 +87,10 @@ const Accommodation = () => {
     return e?.fileList;
   };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : 
+  (
     <section className={styles.pageWrapper}>
       <div className={styles.wrapper}>
         <ToastContainer />
