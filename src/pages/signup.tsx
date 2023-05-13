@@ -3,11 +3,9 @@ import SignUp from '@/features/auth/components/SignUp';
 
 const SignUpPage = () => {
   return (
-    <>
-      <BaseTemplate>
-        <SignUp />
-      </BaseTemplate>
-    </>
+    <BaseTemplate>
+      <SignUp />
+    </BaseTemplate>
   );
 };
 

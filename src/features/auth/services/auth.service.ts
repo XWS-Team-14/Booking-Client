@@ -1,5 +1,8 @@
+import { UserDetails } from '@/common/types/User';
 import api from '@/common/utils/axiosInstance';
+import EmailChangeDto from '../types/EmailChangeDto';
 import LoginDto from '../types/LoginDto';
+import PasswordChangeDto from '../types/PasswordChangeDto';
 import RegisterDto from '../types/RegisterDto';
 
 export const register = async (dto: RegisterDto) => {
@@ -23,7 +26,23 @@ export const verifyToken = async () => {
 };
 
 export const getCurrentUser = async () => {
-  return api.get('api/auth/user');
+  return api.get('api/user/active');
+};
+
+export const updateUser = async (dto: UserDetails) => {
+  return api.put('/api/user/details', dto);
+};
+
+export const updatePassword = async (dto: PasswordChangeDto) => {
+  return api.put('/api/auth/password', dto);
+};
+
+export const updateEmail = async (dto: EmailChangeDto) => {
+  return api.put('/api/auth/email', dto);
+};
+
+export const deleteAccount = async () => {
+  return api.delete('/api/user/');
 };
 
 export const getCurrentUserData = async () => {
@@ -32,12 +51,10 @@ export const getCurrentUserData = async () => {
     return {
       firstName: user.data.first_name,
       lastName: user.data.last_name,
-      email: user.data.email,
+      homeAddress: user.data.home_address,
+      gender: user.data.gender,
     };
   } else {
     return null;
   }
 };
-export const getUserCreds = async() =>{
-  return api.get('/api/auth/user/');
-}
