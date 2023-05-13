@@ -34,22 +34,18 @@ const SignUp = () => {
     register({
       first_name: values.first_name,
       last_name: values.last_name,
-      address: values.address,
+      home_address: values.home_address,
       gender: values.gender,
+      role: values.role,
       email: values.email,
-      password1: values.password1,
-      password2: values.password2,
+      password: values.password,
     })
       .then((res) => router.push('/'))
       .catch((err) => {
-        if (err.response.data.non_field_errors) {
-          err.response.data.non_field_errors.map((error: string) => {
-            toast.error(error);
-          });
+        if (err.response.data) {
+          toast.error(err.response.data);
         }
-        if (err.response.data.email) {
-          toast.error(err.response.data.email[0]);
-        }
+        console.log(err);
       });
   };
 
@@ -107,7 +103,7 @@ const SignUp = () => {
           </Form.Item>
           <Form.Item
             hasFeedback
-            name="address"
+            name="home_address"
             rules={[{ required: true, message: 'Home address is required.' }]}
           >
             <Input
@@ -137,7 +133,7 @@ const SignUp = () => {
 
           <Form.Item
             hasFeedback
-            name="password1"
+            name="password"
             rules={[
               { required: true, message: 'Password is required.' },
               {
@@ -161,12 +157,12 @@ const SignUp = () => {
           <Form.Item
             name="password2"
             hasFeedback
-            dependencies={['password1']}
+            dependencies={['password']}
             rules={[
               { required: true, message: 'Password is required.' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (!value || getFieldValue('password1') === value) {
+                  if (!value || getFieldValue('password') === value) {
                     return Promise.resolve();
                   }
                   return Promise.reject(new Error('Passwords do not match.'));
@@ -184,6 +180,18 @@ const SignUp = () => {
                 onVisibleChange: setPasswordVisible,
               }}
             />
+          </Form.Item>
+          <Form.Item>
+            <Form.Item
+              hasFeedback
+              name="role"
+              rules={[{ required: true, message: 'Role is required.' }]}
+            >
+              <Select placeholder="Joining as a...">
+                <Option value="host">Host</Option>
+                <Option value="guest">Guest</Option>
+              </Select>
+            </Form.Item>
           </Form.Item>
           <Form.Item className={styles.submit}>
             <Button type="primary" text="Sign up" style={{ width: '100%' }} />
