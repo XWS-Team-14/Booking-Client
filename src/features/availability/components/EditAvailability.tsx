@@ -1,7 +1,7 @@
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from '../styles/availability.module.scss';
-import { Form, Input, Select, DatePicker, Checkbox, Card } from 'antd';
+import { Form, Input, Select, DatePicker, Checkbox, Card, Modal } from 'antd';
 import Button from '@/common/components/button/Button';
 import { useEffect, useState } from 'react';
 import AvailabilityDto from '../types/availabilityDto';
@@ -13,6 +13,7 @@ import AccommodationDto from '../types/accommodationDto';
 
 const EditAvailability = () =>{
     const [acomodations, setAccomodations] = useState<Array<AccommodationDto>>();
+    const [refresh, setRefresh] = useState<Boolean>(false);
     const { RangePicker } = DatePicker;
     const [form] = Form.useForm();
     const [start_date, setStartDate] = useState<string>("");
@@ -20,8 +21,9 @@ const EditAvailability = () =>{
     const [enableWeekendPrice, setEnableWeekend]= useState<Boolean>(false);
     const [enableHolidayPrice, setEnableHoliday]= useState<Boolean>(false);
     const [editDisabled, setEditDisabled]= useState<Boolean>(true);
-    const [storedAvailability, settoredAvailability] = useState<AvailabilityDto>();
+    const [storedAvailability, setStoredAvailability] = useState<AvailabilityDto>();
     const [allAvailabilities, setAllAvailabilities] = useState<Array<AvailabilityDto>>();
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -45,7 +47,7 @@ const EditAvailability = () =>{
           }
         };
         fetchData();
-      }, []);
+      }, [refresh]);
     
     
     const onFinish = ()=>{
@@ -68,6 +70,7 @@ const EditAvailability = () =>{
         updateAvailability(dto)
         .then((res) => {
             toast.success(res.data);
+            setRefresh(!refresh);
         })
         .catch((err) =>{
             toast.error(err);
@@ -77,7 +80,6 @@ const EditAvailability = () =>{
 
     };
     const onRangeChange = (dates :any, dateStrings :[string, string]) => {
-        console.log(dates, dateStrings);
         setStartDate(dateStrings[0]);
         setEndDate(dateStrings[1]);
       };
@@ -111,11 +113,14 @@ const EditAvailability = () =>{
                     else form.setFieldValue('weekend_mul', 1);
                     
                 }   
-            }   
+            } 
+            onRangeChange({},[stored.interval.date_start,stored.interval.date_end])  
         }
         else{
             setEditDisabled(true);
             toast.warn("Your accommodation has been booked for selected interval, it cannot be edited or deleted!");
+            setStoredAvailability(stored);
+            setIsModalOpen(true);
         }
     }
     const removeItem = (stored : AvailabilityDto) =>{
@@ -124,7 +129,7 @@ const EditAvailability = () =>{
             deleteAvailability(stored.availability_id)
             .then((res) => {
                 toast.success(res.data);
-                router.push('/editAvailability');
+                setRefresh(!refresh);
             })
             .catch((err) =>{
                 toast.error(err);
@@ -133,6 +138,10 @@ const EditAvailability = () =>{
         else{
             toast.error("Your accommodation has been booked for selected interval, it cannot be edited or deleted!");
         }
+    }
+
+    const handleCancel = () =>{
+        setIsModalOpen(false);
     }
 
     return (
@@ -258,6 +267,16 @@ const EditAvailability = () =>{
                     <Button type="primary" text="Update" style={{ width: '100%' }} disabled={editDisabled.valueOf()} />
                 </Form.Item>
                 </Form>
+                <Modal title="Intervals" centered open={isModalOpen} onCancel={handleCancel}
+                footer={[
+                    <Button type="secondary" text='Close' action={() => handleCancel()} key="back" />
+                  ]}>
+                    <h1>Occupied intervals</h1>
+                    {storedAvailability?.occupied_intervals.map(item => ( //temp
+                        <p>From: {item.date_start} - To: {item.date_end}</p>
+                        
+                    ))}
+                </Modal>
             </div>
         </section>
     );
