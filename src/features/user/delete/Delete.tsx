@@ -1,6 +1,16 @@
 import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
-import { selectUser } from '@/common/store/slices/authSlice';
+import {
+  selectUser,
+  setAuthState,
+  setUserEmail,
+  setUserFirstName,
+  setUserGender,
+  setUserLastName,
+  setUserRole,
+} from '@/common/store/slices/authSlice';
+import api from '@/common/utils/axiosInstance';
+import { deleteAccount } from '@/features/auth/services/auth.service';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -21,6 +31,22 @@ const Delete = () => {
       setLoading(false);
     }
   }, [user]);
+
+  const confirm = async () => {
+    await deleteAccount()
+      .then((res) => {
+        router.push('/');
+        api.defaults.headers.common.Authorization = '';
+        dispatch(setAuthState(false));
+        dispatch(setUserEmail(null));
+        dispatch(setUserFirstName(null));
+        dispatch(setUserLastName(null));
+        dispatch(setUserRole(null));
+        dispatch(setUserGender(null));
+        
+      })
+      .catch((err) => console.log(err));
+  };
 
   return loading ? (
     <Loading />
@@ -43,7 +69,7 @@ const Delete = () => {
           text="No, go back"
           action={() => router.push('/')}
         />
-        <Button type="danger" text="Yes, I'm sure." />
+        <Button type="danger" text="Yes, I'm sure." action={confirm} />
       </div>
     </div>
   );

@@ -41,6 +41,10 @@ export const updateEmail = async (dto: EmailChangeDto) => {
   return api.put('/api/auth/email', dto);
 };
 
+export const deleteAccount = async () => {
+  return api.delete('/api/user/');
+};
+
 export const getCurrentUserData = async () => {
   const user = await getCurrentUser();
   if (user.status === 200) {
