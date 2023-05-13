@@ -1,12 +1,10 @@
 import BaseTemplate from '@/common/components/baseTemplate/BaseTemplate';
-import Login from '@/features/auth/components/Login';
+import Delete from '@/features/user/delete/Delete';
 
-const LoginPage = () => {
+export default function DeletePage() {
   return (
     <BaseTemplate>
-      <Login />
+      <Delete />
     </BaseTemplate>
   );
-};
-
-export default LoginPage;
+}

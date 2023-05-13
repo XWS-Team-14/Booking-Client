@@ -1,12 +1,5 @@
 import Button from '@/common/components/button/Button';
-import {
-  HomeOutlined,
-  IdcardOutlined,
-  LockOutlined,
-  UserOutlined,
-  MailOutlined
-} from '@ant-design/icons';
-import { Form, Input } from 'antd';
+import { Divider, Form, Input, Select } from 'antd';
 import { useRouter } from 'next/dist/client/router';
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -24,12 +17,15 @@ const SignUp = () => {
   const [form] = Form.useForm();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const router = useRouter();
-
+  const [loading, setLoading] = useState(true);
+  const { Option } = Select;
   const user = useSelector(selectUser);
 
   useEffect(() => {
     if (user.email !== null) {
       router.push('/');
+    } else {
+      setLoading(false);
     }
   }, [user]);
 
@@ -38,21 +34,18 @@ const SignUp = () => {
     register({
       first_name: values.first_name,
       last_name: values.last_name,
-      address: values.address,
+      home_address: values.home_address,
+      gender: values.gender,
+      role: values.role,
       email: values.email,
-      password1: values.password1,
-      password2: values.password2,
+      password: values.password,
     })
       .then((res) => router.push('/'))
       .catch((err) => {
-        if (err.response.data.non_field_errors) {
-          err.response.data.non_field_errors.map((error: string) => {
-            toast.error(error);
-          });
+        if (err.response.data) {
+          toast.error(err.response.data);
         }
-        if (err.response.data.email) {
-          toast.error(err.response.data.email[0]);
-        }
+        console.log(err);
       });
   };
 
@@ -62,11 +55,12 @@ const SignUp = () => {
       toast.error(error.errors[0]);
     });
   };
-  return (
+  return loading ? (
+    <></>
+  ) : (
     <section className={styles.pageWrapper}>
       <div className={styles.wrapper}>
         <ToastContainer />
-        <h1 className={styles.title}>Welcome!</h1>
         <Form
           form={form}
           className={styles.loginForm}
@@ -74,14 +68,15 @@ const SignUp = () => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
         >
+          <Divider>Personal information</Divider>
           <Form.Item
             hasFeedback
             name="first_name"
             rules={[{ required: true, message: 'First name is required.' }]}
           >
             <Input
+              allowClear
               className={styles.inputField}
-              prefix={<IdcardOutlined />}
               placeholder="First name"
             />
           </Form.Item>
@@ -91,22 +86,33 @@ const SignUp = () => {
             rules={[{ required: true, message: 'Last name is required.' }]}
           >
             <Input
+              allowClear
               className={styles.inputField}
-              prefix={<UserOutlined />}
               placeholder="Last name"
             />
           </Form.Item>
           <Form.Item
             hasFeedback
-            name="address"
+            name="gender"
+            rules={[{ required: true, message: 'Gender is required.' }]}
+          >
+            <Select placeholder="Gender">
+              <Option value="male">Male</Option>
+              <Option value="female">Female</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            hasFeedback
+            name="home_address"
             rules={[{ required: true, message: 'Home address is required.' }]}
           >
             <Input
+              allowClear
               className={styles.inputField}
-              prefix={<HomeOutlined />}
               placeholder="Home address"
             />
           </Form.Item>
+          <Divider>Account</Divider>
           <Form.Item
             hasFeedback
             name="email"
@@ -119,15 +125,15 @@ const SignUp = () => {
             ]}
           >
             <Input
+              allowClear
               className={styles.inputField}
-              prefix={<MailOutlined />}
               placeholder="Email"
             />
           </Form.Item>
 
           <Form.Item
             hasFeedback
-            name="password1"
+            name="password"
             rules={[
               { required: true, message: 'Password is required.' },
               {
@@ -139,8 +145,8 @@ const SignUp = () => {
           >
             <Input.Password
               className={styles.inputField}
-              prefix={<LockOutlined />}
               type="password"
+              allowClear
               placeholder="Password"
               visibilityToggle={{
                 visible: passwordVisible,
@@ -151,12 +157,12 @@ const SignUp = () => {
           <Form.Item
             name="password2"
             hasFeedback
-            dependencies={['password1']}
+            dependencies={['password']}
             rules={[
               { required: true, message: 'Password is required.' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (!value || getFieldValue('password1') === value) {
+                  if (!value || getFieldValue('password') === value) {
                     return Promise.resolve();
                   }
                   return Promise.reject(new Error('Passwords do not match.'));
@@ -166,14 +172,26 @@ const SignUp = () => {
           >
             <Input.Password
               className={styles.inputField}
-              prefix={<LockOutlined />}
               type="password"
+              allowClear
               placeholder="Confirm password"
               visibilityToggle={{
                 visible: passwordVisible,
                 onVisibleChange: setPasswordVisible,
               }}
             />
+          </Form.Item>
+          <Form.Item>
+            <Form.Item
+              hasFeedback
+              name="role"
+              rules={[{ required: true, message: 'Role is required.' }]}
+            >
+              <Select placeholder="Joining as a...">
+                <Option value="host">Host</Option>
+                <Option value="guest">Guest</Option>
+              </Select>
+            </Form.Item>
           </Form.Item>
           <Form.Item className={styles.submit}>
             <Button type="primary" text="Sign up" style={{ width: '100%' }} />
