@@ -71,12 +71,20 @@ const Accommodation = () => {
     formData.append("features", feat)
     formData.append("min_guests", values.min_guests);
     formData.append("max_guests", values.max_guests);
+    formData.append("auto_accept_flag", values.auto_accept_flag);
 
     for(let item of values.files) {
       formData.append("files", item.originFileObj!); 
     }
 
     create(formData)
+    .then((res) => {
+      toast.success("Success");
+      router.push('/');
+    })
+    .catch((err) => {
+      toast.error(err);
+    });
   };
 
   
@@ -170,7 +178,17 @@ const Accommodation = () => {
               placeholder="Max guests"
             />
           </Form.Item>
-
+          <Form.Item
+            hasFeedback
+            name="auto_accept_flag"
+            rules={[{ required: true, message: 'Auto accept flag is required.' }]}
+          >
+            <Input
+              className={styles.inputField}
+              prefix={<UserOutlined />}
+              placeholder="Auto accept flag (input true/false)"
+            />
+          </Form.Item>
           <Form.List
           name="features"
           rules={[
