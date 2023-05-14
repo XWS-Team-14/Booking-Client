@@ -1,6 +1,6 @@
 import Button from '@/common/components/button/Button';
 import { SearchOutlined } from '@ant-design/icons';
-import { DatePicker, InputNumber, Select } from 'antd';
+import { DatePicker, InputNumber, Select, Input } from 'antd';
 import { RangePickerProps } from 'antd/lib/date-picker';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
@@ -22,43 +22,69 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
   function sendDataToParent() {
     onDataChanged(searchParams);
   }
-
-  /*function changeStartPoint(value: string) {
+  function changeCountry(value: string) {
+    console.log(value)
     let temp: SearchParams = {
-      start_point: value,
-      end_point: searchParams?.end_point,
-      date: searchParams?.date,
-      number_of_tickets: searchParams?.number_of_tickets,
+      country: value,
+      city: searchParams?.city,
+      address: searchParams?.address,
+      start_date: searchParams?.start_date,
+      end_date: searchParams?.end_date,
+      guestCount: searchParams?.guestCount,
     };
     setSearchParams(temp);
   }
-  function changeEndPoint(value: string) {
+  function changeCity(value: string) {
+    console.log(value)
     let temp: SearchParams = {
-      start_point: searchParams?.start_point,
-      end_point: value,
-      date: searchParams?.date,
-      number_of_tickets: searchParams?.number_of_tickets,
+      country: searchParams?.country,
+      city: value,
+      address: searchParams?.address,
+      start_date: searchParams?.start_date,
+      end_date: searchParams?.end_date,
+      guestCount: searchParams?.guestCount,
     };
     setSearchParams(temp);
   }
-  const changeDate: DatePickerProps['onChange'] = (date, value) => {
-    console.log(date, value);
+  function changeAddress(value: string) {
+    console.log(value)
     let temp: SearchParams = {
-      start_point: searchParams?.start_point,
-      end_point: searchParams?.end_point,
-      date: value ? dayjs(value).format('YYYY-MM-DD') : undefined,
-      number_of_tickets: searchParams?.number_of_tickets,
+      country: searchParams?.country,
+      city: searchParams?.city,
+      address: value,
+      start_date: searchParams?.start_date,
+      end_date: searchParams?.end_date,
+      guestCount: searchParams?.guestCount,
     };
     setSearchParams(temp);
+  }
+  const changeDate: RangePickerProps['onChange'] = (date, value) => {
+    if (date != null) {
+      let temp: SearchParams = {
+        country: searchParams?.country,
+        city: searchParams?.city,
+        address: searchParams?.address,
+        start_date: date[0]?.format('YYYY-MM-DD').toString(),
+        end_date: date[1]?.format('YYYY-MM-DD').toString(),
+        guestCount: searchParams?.guestCount,
+      };
+      setSearchParams(temp);
+    }
   };
-  function changeNumberOfTickets(value: number | null) {
-    setSearchParams({
-      start_point: searchParams?.start_point,
-      end_point: searchParams?.end_point,
-      date: searchParams?.date,
-      number_of_tickets: value ? value : 1,
-    });
-  }*/
+  function changeGuests(value: Number | null) {
+    console.log(value)
+    if (value != null ) {
+      let temp: SearchParams = {
+        country: searchParams?.country,
+        city: searchParams?.city,
+        address: searchParams?.address,
+        start_date: searchParams?.start_date,
+        end_date: searchParams?.end_date,
+        guestCount: value.valueOf(),
+      };
+      setSearchParams(temp);
+    }
+  }
 
   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
     return current < dayjs().endOf('day').add(-1, 'day');
@@ -66,25 +92,46 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
 
   return (
     <div className={styles.searchBarContainer}>
-      <Select
-        showSearch
-        allowClear
-        placeholder="Destination"
-        optionFilterProp="children"
+      <Input
+        placeholder="Country"
         bordered={false}
         style={{
-          borderTopLeftRadius: '1rem',
-          borderBottomLeftRadius: '1rem',
-          width: '100%',
+          width: '70%',
           backgroundColor: 'white',
           padding: '0.7rem',
-          height: '54.4px',
+          borderRadius: '0',
+          borderBottomLeftRadius: '0.7rem',
+          borderTopLeftRadius: '0.7rem',
           boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 10px -10px',
+          height: '54.4px',
         }}
-        options={placeOptions}
-        filterOption={(input, option) =>
-          (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-        }
+        onChange={(e) => {changeCountry(e.target.value)}}
+      />
+      <Input
+        placeholder="City"
+        bordered={false}
+        style={{
+          width: '70%',
+          backgroundColor: 'white',
+          padding: '0.7rem',
+          borderRadius: '0',
+          boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 10px -10px',
+          height: '54.4px',
+        }}
+        onChange={(e) => {changeCity(e.target.value)}}
+      />
+      <Input
+        placeholder="Address"
+        bordered={false}
+        style={{
+          width: '70%',
+          backgroundColor: 'white',
+          padding: '0.7rem',
+          borderRadius: '0',
+          boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 10px -10px',
+          height: '54.4px',
+        }}
+        onChange={(e) => {changeAddress(e.target.value)}}
       />
       <DatePicker.RangePicker
         format="dddd, MMMM DD, YYYY"
@@ -99,11 +146,14 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
           height: '54.4px',
           boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 10px -10px',
         }}
+        onChange={(e) => {
+          console.log(e)
+          changeDate(e, ['YYYY-MM-DD', 'YYYY-MM-DD'])}}
       />
 
       <InputNumber
-        min={1}
-        max={15}
+        min={Number(1)}
+        max={Number(15)}
         placeholder="Number of guests"
         bordered={false}
         style={{
@@ -114,6 +164,7 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
           boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 10px -10px',
           height: '54.4px',
         }}
+        onChange={(e) => {changeGuests(e)}}
       />
       <Button
         action={sendDataToParent}
