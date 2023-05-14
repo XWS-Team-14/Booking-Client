@@ -10,6 +10,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import styles from '../styles/search.module.scss';
 import { SearchAccommodationDto } from '../types/SearchAccommodationsDto';
 import { SearchParams } from '../types/SearchParams';
+import { fetchData } from '../service/search.service';
+import { SearchResultDto } from '../types/SearchResultDto';
 interface SearchDataProps {
   searchParams: SearchParams | undefined;
 }
@@ -17,8 +19,8 @@ interface SearchDataProps {
 const SearchData = ({ searchParams }: SearchDataProps) => {
   const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
   const [accommodations, setAccommodations] = useState<
-    SearchAccommodationDto[]
-  >([]);
+    SearchResultDto
+  >();
   const [next, setNext] = useState('');
   const [previous, setPrevious] = useState('');
   const [purchaseFeedbackText, setPurchaseFeedbackText] = useState<string>('');
@@ -29,10 +31,11 @@ const SearchData = ({ searchParams }: SearchDataProps) => {
 
   useEffect(() => {
     setFetched(true);
-    /*fetchData(searchParams).then((data) => {
-      setAccommodations([]);
+    fetchData(searchParams).then((data) => {
+      setAccommodations(data);
       setFetched(true);
-    });*/
+    });
+    console.log()
   }, [searchParams]);
 
   function buyTickets(id: string, ticketNumber: number) {
@@ -86,9 +89,9 @@ const SearchData = ({ searchParams }: SearchDataProps) => {
       <ToastContainer />
       <Space className={styles.centerContainer}>
         <List
-          dataSource={accommodations}
+          dataSource={accommodations?.results}
           renderItem={(item) => {
-            return <AccommodationInfo />;
+            return <AccommodationInfo id={item.id} user_id={item.user_id} name={item.name} location={item.location} features={item.features} image_urls={item.features} min_guests={item.min_guests} max_guests={item.max_guests} />;
           }}
         />
       </Space>
