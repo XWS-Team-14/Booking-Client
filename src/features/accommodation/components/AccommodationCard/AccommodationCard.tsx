@@ -63,9 +63,15 @@ const AccommodationCard = (item: SearchAccommodation) => {
       <Divider orientation="left" orientationMargin="0">
         Price
       </Divider>
-      <b>Base Price:</b> {item.basePrice}<br />
-      <b>Total Price:</b> {item.totalPrice}
-      <Divider orientation="left" orientationMargin="0">
+      <b>Base Price:</b> {item.basePrice}€<br />
+      <b>Total Price:</b> {item.totalPrice}€
+      
+    </Card>
+  );
+};
+
+/* Pomerio sam posto nije implememntirano :)
+<Divider orientation="left" orientationMargin="0">
         Host
       </Divider>
       <Avatar src={<UserIcon type="male" size={0} />} /> Mr. Host
@@ -77,9 +83,7 @@ const AccommodationCard = (item: SearchAccommodation) => {
             style={{ width: '100%', marginTop: '2rem' }}
           />
         </>
-      )}
-    </Card>
-  );
-};
+      )} 
+*/
 
 export default AccommodationCard;
