@@ -1,5 +1,5 @@
-import { SearchAccommodationDto } from './SearchAccommodationsDto';
+import { SearchAccommodation } from './SearchAccommodation';
 
 export interface SearchResultDto {
-  results: SearchAccommodationDto[];
+  items: SearchAccommodation[];
 }

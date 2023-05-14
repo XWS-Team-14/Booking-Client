@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from '../styles/search.module.scss';
-import { SearchAccommodationDto } from '../types/SearchAccommodationsDto';
 import { SearchParams } from '../types/SearchParams';
 import { fetchData } from '../service/search.service';
 import { SearchResultDto } from '../types/SearchResultDto';
@@ -32,10 +31,11 @@ const SearchData = ({ searchParams }: SearchDataProps) => {
   useEffect(() => {
     setFetched(true);
     fetchData(searchParams).then((data) => {
+      console.log(data)
       setAccommodations(data);
+      console.log(accommodations)
       setFetched(true);
     });
-    console.log()
   }, [searchParams]);
 
   function buyTickets(id: string, ticketNumber: number) {
@@ -89,9 +89,9 @@ const SearchData = ({ searchParams }: SearchDataProps) => {
       <ToastContainer />
       <Space className={styles.centerContainer}>
         <List
-          dataSource={accommodations?.results}
+          dataSource={accommodations?.items}
           renderItem={(item) => {
-            return <AccommodationInfo id={item.id} user_id={item.user_id} name={item.name} location={item.location} features={item.features} image_urls={item.features} min_guests={item.min_guests} max_guests={item.max_guests} />;
+            return <AccommodationInfo accommodationId={item.accommodationId} hostId={item.hostId} name={item.name} location={item.location} features={item.features} imageUrls={item.imageUrls} minGuests={item.minGuests} maxGuests={item.maxGuests} autoAcceptenceFlag={item.autoAcceptenceFlag} totalPrice={item.totalPrice} basePrice={item.basePrice} />;
           }}
         />
       </Space>

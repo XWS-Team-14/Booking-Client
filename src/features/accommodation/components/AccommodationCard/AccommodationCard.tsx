@@ -11,14 +11,10 @@ import { AccommodationAmenity } from './AccommodationAmenity';
 import styles from './AccommodationCard.module.scss';
 import { AccommodationHeader } from './AccommodationHeader';
 import { AccommodationImages } from './AccommodationImages';
-import { SearchAccommodationDto } from '@/features/search/types/SearchAccommodationsDto';
+import { SearchAccommodation } from '@/features/search/types/SearchAccommodation';
 
-const AccommodationCard = (item: SearchAccommodationDto) => {
+const AccommodationCard = (item: SearchAccommodation) => {
   const role = useSelector(selectRole);
-  const imagesExample = [
-    'https://cf.bstatic.com/xdata/images/hotel/square600/255152681.webp?k=b1f184a5e6de8a12196b0f0a18b76a6a93db7c65cce2d0dd4507ab2a606ef539&o=&s=1',
-    'https://cf.bstatic.com/xdata/images/hotel/max1280x900/399559679.jpg?k=4d88298c3e2495748558ebd7039459f2c77e9a3709a81266c2784ab61eca4cb1&o=&hp=1',
-  ];
   function getLocation() {
     if (item.location == undefined ) {
       return ""
@@ -27,10 +23,11 @@ const AccommodationCard = (item: SearchAccommodationDto) => {
   }
 
   function getImages() {
-    if (item.image_urls == undefined ) {
+    console.log(item)
+    if (item.imageUrls == undefined ) {
       return []
     }
-    return item.image_urls
+    return item.imageUrls
   }
 
   function getFeatures() {
@@ -52,8 +49,8 @@ const AccommodationCard = (item: SearchAccommodationDto) => {
       <Divider orientation="left" orientationMargin="0">
         Guests
       </Divider>
-      <b>Minimum:</b> {item.min_guests}<br />
-      <b>Maximum:</b> {item.max_guests}
+      <b>Minimum:</b> {item.minGuests}<br />
+      <b>Maximum:</b> {item.maxGuests}
       <Divider orientation="left" orientationMargin="0">
         Amenities
       </Divider>
