@@ -1,0 +1,21 @@
+.warning {
+  margin-bottom: 2rem;
+  font-size: 24px;
+}
+.buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1240px;
+  text-align: center;
+  margin-top: 50px;
+}

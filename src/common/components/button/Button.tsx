@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import styles from './Button.module.scss';
 
 interface ButtonProps {
-  type: 'primary' | 'secondary' | 'tertiary' | 'danger';
+  type: 'primary' | 'secondary' | 'tertiary' | 'danger' | 'transparent';
   text?: string;
   action?: () => void;
   style?: React.CSSProperties;

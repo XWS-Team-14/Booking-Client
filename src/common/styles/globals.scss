@@ -6,6 +6,7 @@ html,
 body {
   width: 100vw;
   padding: 0;
+  height: 100vh;
   margin: 0 !important;
   overflow-x: hidden;
 }
@@ -85,4 +86,13 @@ a {
 
 .ant-modal-centered::before {
   content: unset;
+}
+
+.undraggable {
+  user-drag: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
