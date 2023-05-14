@@ -27,7 +27,11 @@ api.interceptors.response.use(
     const { config, response } = error;
     const originalRequest = config;
     let retValue;
-    if (response?.status === 401 && !originalRequest.url?.includes('auth')) {
+    if (
+      response?.status === 401 &&
+      (originalRequest.url.includes('logout') ||
+        !originalRequest.url?.includes('auth'))
+    ) {
       if (!isRefreshing) {
         isRefreshing = true;
         await refresh()

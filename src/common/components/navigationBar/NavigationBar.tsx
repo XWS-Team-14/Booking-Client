@@ -93,6 +93,15 @@ const NavigationBar = () => {
       </div>
       <div className={styles.links}>
         <NavigationLink href="/" text="Home" />
+        {user.role === 'host' && (
+          <NavigationLink
+            href="/createAvailability"
+            text="Create Availability"
+          />
+        )}
+        {user.role === 'host' && (
+          <NavigationLink href="/editAvailability" text="Edit Availability" />
+        )}
       </div>
       <div className={styles.buttons}>
         {authState ? (
