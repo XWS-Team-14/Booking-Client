@@ -1,7 +1,6 @@
 import { UserDetails } from '@/common/types/User';
 import v1 from '@/common/utils/axiosInstance';
 
-
 export const getCurrentUser = async () => {
   return v1.get('v1/user/active');
 };
@@ -12,6 +11,10 @@ export const updateUser = async (dto: UserDetails) => {
 
 export const deleteAccount = async () => {
   return v1.delete('/v1/user/');
+};
+
+export const getById = async (userId: string) => {
+  return v1.get(`/v1/user/${userId}`);
 };
 
 export const getCurrentUserData = async () => {
