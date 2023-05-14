@@ -1,8 +1,11 @@
 /* eslint-disable react/jsx-key */
 import Button from '@/common/components/button/Button';
+import Loading from '@/common/components/loading/Loading';
+import { selectRole } from '@/common/store/slices/authSlice';
 import { Card, Checkbox, DatePicker, Form, Input, Modal, Select } from 'antd';
 import { useRouter } from 'next/dist/client/router';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
@@ -16,6 +19,7 @@ import AccommodationDto from '../types/accommodationDto';
 import AvailabilityDto from '../types/availabilityDto';
 
 const EditAvailability = () => {
+  const [loading, setLoading] = useState(true);
   const [acomodations, setAccomodations] = useState<Array<AccommodationDto>>();
   const [refresh, setRefresh] = useState<Boolean>(false);
   const { RangePicker } = DatePicker;
@@ -31,26 +35,34 @@ const EditAvailability = () => {
     useState<Array<AvailabilityDto>>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
+  const userRole = useSelector(selectRole);
 
   useEffect(() => {
     const fetchAccomodations = async () => {
       try {
         const response = await getAccomodationsByUser();
         setAccomodations(response.data.items);
+        setLoading(false);
       } catch (error) {
         console.error(error);
       }
     };
-    fetchAccomodations();
     const fetchData = async () => {
       try {
         const response = await getAllForUser();
         setAllAvailabilities(response.data.items);
+        setLoading(false);
       } catch (error) {
         console.error(error);
       }
     };
-    fetchData();
+
+    if (userRole === 'host') {
+      fetchAccomodations();
+      fetchData();
+    } else {
+      router.push('/');
+    }
   }, [refresh]);
 
   const onFinish = () => {
@@ -163,7 +175,9 @@ const EditAvailability = () => {
     setIsModalOpen(false);
   };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <section className={styles.pageWrapper}>
       <div className={styles.wrapper}>
         <div className={styles.cardHolder}>

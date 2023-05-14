@@ -1,8 +1,11 @@
 /* eslint-disable react/jsx-key */
 import Button from '@/common/components/button/Button';
+import Loading from '@/common/components/loading/Loading';
+import { selectRole } from '@/common/store/slices/authSlice';
 import { Checkbox, DatePicker, Form, Input, Select } from 'antd';
 import { useRouter } from 'next/dist/client/router';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
@@ -15,6 +18,7 @@ import AvailabilityDto from '../types/availabilityDto';
 const { RangePicker } = DatePicker;
 
 const CreateAvailability = () => {
+  const [loading, setLoading] = useState(true);
   const [form] = Form.useForm();
   const [acomodations, setAccomodations] = useState<Array<AccommodationDto>>();
   const [start_date, setStartDate] = useState<string>('');
@@ -22,17 +26,23 @@ const CreateAvailability = () => {
   const [enableWeekendPrice, setEnableWeekend] = useState<Boolean>(false);
   const [enableHolidayPrice, setEnableHoliday] = useState<Boolean>(false);
   const router = useRouter();
+  const userRole = useSelector(selectRole);
 
   useEffect(() => {
     const fetchAccomodations = async () => {
       try {
         const response = await getAccomodationsByUser();
         setAccomodations(response.data.items);
+        setLoading(false);
       } catch (error) {
         console.error(error);
       }
     };
-    fetchAccomodations();
+    if (userRole === 'host') {
+      fetchAccomodations();
+    } else {
+      router.push('/');
+    }
   }, []);
 
   const onFinish = () => {
@@ -89,7 +99,9 @@ const CreateAvailability = () => {
     setEnableHoliday(!enableHolidayPrice);
   };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <section className={styles.pageWrapper}>
       <div className={styles.wrapper}>
         <ToastContainer />
