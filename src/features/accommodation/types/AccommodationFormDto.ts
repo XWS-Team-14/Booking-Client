@@ -9,5 +9,5 @@ export default interface AccommodationFormDto {
   files: UploadFile[]
   min_guests: string,
   max_guests: string,
-  automatic_accept: string
+  auto_accept_flag: string
 }

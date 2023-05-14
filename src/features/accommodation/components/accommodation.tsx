@@ -61,23 +61,31 @@ const Accommodation = () => {
     for (let item of values.features) {
       feat += item + ',';
     }
-    feat = feat.slice(0, feat.length - 1);
-
-    formData.append('name', values.name);
-    formData.append('country', values.country);
-    formData.append('city', values.city);
-    formData.append('address', values.address);
-    formData.append('features', feat);
-    formData.append('min_guests', values.min_guests);
-    formData.append('max_guests', values.max_guests);
-    formData.append('automatic_accept', values.automatic_accept)
+    feat = feat.slice(0,feat.length-1)
+      
+    formData.append("name", values.name);
+    formData.append("country", values.country);
+    formData.append("city", values.city);
+    formData.append("address", values.address);
+    formData.append("features", feat)
+    formData.append("min_guests", values.min_guests);
+    formData.append("max_guests", values.max_guests);
+    formData.append("auto_accept_flag", values.auto_accept_flag);
 
     for (let item of values.files) {
       formData.append('files', item.originFileObj!);
     }
 
-    create(formData);
+    create(formData)
+    .then((res) => {
+      toast.success("Success");
+      router.push('/');
+    })
+    .catch((err) => {
+      toast.error(err);
+    });
   };
+
 
   const normFile = (e: any) => {
     if (Array.isArray(e)) {
@@ -171,11 +179,15 @@ const Accommodation = () => {
             />
           </Form.Item>
           <Form.Item
-            name="automatic_accept"
-           
-            valuePropName="checked"
+            hasFeedback
+            name="auto_accept_flag"
+            rules={[{ required: true, message: 'Auto accept flag is required.' }]}
           >
-            <Checkbox className={styles.inputField} style={{ width: '100%' }} > Automatic Accept </Checkbox>
+            <Input
+              className={styles.inputField}
+              prefix={<UserOutlined />}
+              placeholder="Auto accept flag (input true/false)"
+            />
           </Form.Item>
           <Form.List
             name="features"
