@@ -1,0 +1,51 @@
+.wrapper {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  .pageWrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100vw;
+  }
+  .loginForm {
+    width: 30vw;
+  }
+  
+  .submit {
+    margin-top: 1.5rem;
+    div {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+    }
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .paragraph {
+    text-align: center;
+    font-size: 16px;
+    margin-top: -2rem;
+  }
+  .reservationCard {
+    width: 1240px;
+    height: 10%;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .reservationCard .reservationCardContent {
+    text-align: center;
+    font-size: 16px;
+  }
+  
+  

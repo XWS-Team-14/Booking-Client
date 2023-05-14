@@ -2,11 +2,12 @@ import Button from '@/common/components/button/Button';
 import {
   HomeOutlined,
   IdcardOutlined,
-  MinusCircleOutlined, PlusOutlined,
+  MinusCircleOutlined,
+  PlusOutlined,
   UserOutlined,
-  MailOutlined
+  MailOutlined,
 } from '@ant-design/icons';
-import { Form, Input, InputNumber, Upload } from 'antd';
+import { Checkbox, Form, Input, InputNumber, Upload } from 'antd';
 import { useRouter } from 'next/dist/client/router';
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -51,16 +52,14 @@ const Accommodation = () => {
     } else {
       setLoading(false);
     }
-    
   }, [user]);
-
 
   const onFinish = (values: AccommodationFormDto) => {
     console.log('Success:', values);
     let formData = new FormData();
-    var feat = ""
-    for(let item of values.features) {
-      feat += item + ","
+    var feat = '';
+    for (let item of values.features) {
+      feat += item + ',';
     }
     feat = feat.slice(0,feat.length-1)
       
@@ -73,8 +72,8 @@ const Accommodation = () => {
     formData.append("max_guests", values.max_guests);
     formData.append("auto_accept_flag", values.auto_accept_flag);
 
-    for(let item of values.files) {
-      formData.append("files", item.originFileObj!); 
+    for (let item of values.files) {
+      formData.append('files', item.originFileObj!);
     }
 
     create(formData)
@@ -87,7 +86,7 @@ const Accommodation = () => {
     });
   };
 
-  
+
   const normFile = (e: any) => {
     if (Array.isArray(e)) {
       return e;
@@ -97,8 +96,7 @@ const Accommodation = () => {
 
   return loading ? (
     <Loading />
-  ) : 
-  (
+  ) : (
     <section className={styles.pageWrapper}>
       <div className={styles.wrapper}>
         <ToastContainer />
@@ -112,7 +110,9 @@ const Accommodation = () => {
           <Form.Item
             hasFeedback
             name="name"
-            rules={[{ required: true, message: 'Accommodation name is required.' }]}
+            rules={[
+              { required: true, message: 'Accommodation name is required.' },
+            ]}
           >
             <Input
               className={styles.inputField}
@@ -160,7 +160,7 @@ const Accommodation = () => {
           >
             <InputNumber
               className={styles.inputField}
-              style={{width: '100%'}}
+              style={{ width: '100%' }}
               prefix={<HomeOutlined />}
               placeholder="Min guests"
             />
@@ -173,7 +173,7 @@ const Accommodation = () => {
           >
             <InputNumber
               className={styles.inputField}
-              style={{width: '100%'}}
+              style={{ width: '100%' }}
               prefix={<HomeOutlined />}
               placeholder="Max guests"
             />
@@ -190,73 +190,83 @@ const Accommodation = () => {
             />
           </Form.Item>
           <Form.List
-          name="features"
-          rules={[
-            {
-              validator: async (_, names) => {
-                if (!names || names.length < 2) {
-                  return Promise.reject(new Error('At least 2 features'));
-                }
+            name="features"
+            rules={[
+              {
+                validator: async (_, names) => {
+                  if (!names || names.length < 2) {
+                    return Promise.reject(new Error('At least 2 features'));
+                  }
+                },
               },
-            },
-          ]}
-        >
-          {(fields, { add, remove }, { errors }) => (
-            <>
-              {fields.map((field, index) => (
-                <Form.Item
-                  {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
-                  label={index === 0 ? 'Features' : ''}
-                  required={false}
-                  key={field.key}
-                >
-                  <Form.Item
-                    {...field}
-                    validateTrigger={['onChange', 'onBlur']}
-                    rules={[
-                      {
-                        required: true,
-                        whitespace: true,
-                        message: "Please input feautre or delete this field.",
-                      },
-                    ]}
-                    noStyle
-                  >
-                    <Input placeholder="Feature" className={styles.inputField}  style={{width: '95%'}}/>
-                  </Form.Item>
-                  {fields.length > 1 ? (
-                    <MinusCircleOutlined
-                      className="dynamic-delete-button"
-                      onClick={() => remove(field.name)}
-                    />
-                  ) : null}
-                </Form.Item>
-              ))}
-              <Form.Item className={styles.submit}>
-                <Button type={'primary'} 
-                action={() => {
-                  add();
-                }} 
-                text='Add features'></Button>
-              <Form.ErrorList errors={errors} />
-              </Form.Item>
-            </>
-          )}
-        </Form.List>
-
-        <Form.Item  name="files" valuePropName="fileList" getValueFromEvent={normFile} style={{marginTop:50}}>
-        <Upload 
-          accept='.png, .gif, .jpg'
-          listType="picture-card"
+            ]}
           >
-          <div>
-            <UserOutlined />
-          </div>
-        </Upload>
-        </Form.Item>
-        <Form.Item className={styles.submit}>
-          <Button type="primary" text="Finish" style={{ width: '100%' }} />
-        </Form.Item>
+            {(fields, { add, remove }, { errors }) => (
+              <>
+                {fields.map((field, index) => (
+                  <Form.Item
+                    {...(index === 0
+                      ? formItemLayout
+                      : formItemLayoutWithOutLabel)}
+                    label={index === 0 ? 'Features' : ''}
+                    required={false}
+                    key={field.key}
+                  >
+                    <Form.Item
+                      {...field}
+                      validateTrigger={['onChange', 'onBlur']}
+                      rules={[
+                        {
+                          required: true,
+                          whitespace: true,
+                          message: 'Please input feautre or delete this field.',
+                        },
+                      ]}
+                      noStyle
+                    >
+                      <Input
+                        placeholder="Feature"
+                        className={styles.inputField}
+                        style={{ width: '95%' }}
+                      />
+                    </Form.Item>
+                    {fields.length > 1 ? (
+                      <MinusCircleOutlined
+                        className="dynamic-delete-button"
+                        onClick={() => remove(field.name)}
+                      />
+                    ) : null}
+                  </Form.Item>
+                ))}
+                <Form.Item className={styles.submit}>
+                  <Button
+                    type={'primary'}
+                    action={() => {
+                      add();
+                    }}
+                    text="Add features"
+                  ></Button>
+                  <Form.ErrorList errors={errors} />
+                </Form.Item>
+              </>
+            )}
+          </Form.List>
+
+          <Form.Item
+            name="files"
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+            style={{ marginTop: 50 }}
+          >
+            <Upload accept=".png, .gif, .jpg" listType="picture-card">
+              <div>
+                <UserOutlined />
+              </div>
+            </Upload>
+          </Form.Item>
+          <Form.Item className={styles.submit}>
+            <Button type="primary" text="Finish" style={{ width: '100%' }} />
+          </Form.Item>
         </Form>
       </div>
     </section>
