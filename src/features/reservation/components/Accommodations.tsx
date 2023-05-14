@@ -17,8 +17,7 @@ import { useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from '../styles/accommodation.module.scss';
 
-import { create } from '../services/accommodation.service';
-import AccommodationFormDto from '../types/AccommodationFormDto';
+
 import api from '@/common/utils/axiosInstance';
 import { UploadFile } from 'antd/es/upload';
 import Loading from '@/common/components/loading/Loading';
@@ -44,13 +43,11 @@ const formItemLayoutWithOutLabel = {
   },
 };
 
-const createReservation = () => {
+const Accommodations = () => {
   const router = useRouter();
   const user = useSelector(selectUser);
   const [loading, setLoading] = useState(true);
-  const [accommodations, setAccommodations] = useState<AccommodationDto[]>([]);
-  const [ confirm, setVisible] = useState(false);
-  const [content, setContent] = useState('');
+  const [accommodations, setAccommodations] = useState<any[]>([]);
   useEffect(() => {
     if (user.email === null || user.role != 'guest') {
       router.push('/');
@@ -78,7 +75,7 @@ const createReservation = () => {
                 <b>{accommodation.minGuests}</b>
                 <Button
                   type="primary"
-                  action={() => {
+                  action={() => {router.push(`/?accommodationId=${accommodation.Id}/reserve`)
                    
                   }}
                   style={{ width: '100%' }}
@@ -95,4 +92,4 @@ const createReservation = () => {
   );
 };
 
-export default createReservation;
+export default Accommodations;
