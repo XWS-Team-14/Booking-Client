@@ -103,6 +103,12 @@ const NavigationBar = () => {
           <NavigationLink href="/editAvailability" text="Edit Availability" />
         )}
       </div>
+      { user.role == 'host' ? (
+        <div className={styles.links}>
+            <NavigationLink href="/accommodation" text="Create Accommodations" />
+        </div>) : 
+        <></>
+      }
       <div className={styles.buttons}>
         {authState ? (
           <div className={styles.dropdown}>
