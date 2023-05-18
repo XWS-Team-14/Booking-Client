@@ -60,13 +60,13 @@ const NavigationBar = () => {
     {
       key: '2',
       label: 'Change email',
-      onClick: () => router.push('/email'),
+      onClick: () => router.push('/email/change'),
       icon: <MailOutlined />,
     },
     {
       key: '3',
       label: 'Change password',
-      onClick: () => router.push('/password'),
+      onClick: () => router.push('/password/change'),
       icon: <LockOutlined />,
     },
     {
@@ -96,21 +96,11 @@ const NavigationBar = () => {
       <div className={styles.links}>
         <NavigationLink href="/" text="Home" />
         {user.role === 'host' && (
-          <NavigationLink
-            href="/createAvailability"
-            text="Create Availability"
-          />
-        )}
-        {user.role === 'host' && (
-          <NavigationLink href="/editAvailability" text="Edit Availability" />
+          <>
+            <NavigationLink href="/accommodations" text="My accommodations" />
+          </>
         )}
       </div>
-      { user.role == 'host' ? (
-        <div className={styles.links}>
-            <NavigationLink href="/accommodation" text="Create Accommodations" />
-        </div>) : 
-        <></>
-      }
       <div className={styles.buttons}>
         {authState ? (
           <div className={styles.dropdown}>
