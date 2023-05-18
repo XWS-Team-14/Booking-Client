@@ -17,7 +17,12 @@
   display: flex;
   align-items: center;
   height: 4rem;
-  margin-bottom: 2rem;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  width: 100vw;
+  box-shadow: rgb(0 137 255 / 12%) 0px 50px 70px -60px,
+    rgb(0 0 0 / 10%) 0px 30px 50px -30px;
 }
 .contentLayout {
   display: flex;

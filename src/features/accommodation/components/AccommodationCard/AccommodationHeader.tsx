@@ -1,6 +1,5 @@
-import { Rate } from 'antd';
+import { StarTwoTone } from '@ant-design/icons';
 import styles from './AccommodationCard.module.scss';
-
 interface AccommodationHeaderProps {
   title: string;
   rating: number;
@@ -13,8 +12,8 @@ export const AccommodationHeader = ({
     <div className={styles.header}>
       <h1>{title}</h1>
       <div className={styles.header__rating}>
-        {Math.round(rating * 100) / 100}{' '}
-        <Rate disabled defaultValue={Math.floor(rating)} allowHalf />
+        <StarTwoTone style={{ color: 'yellow' }} />
+        {Math.round(rating * 100) / 100}
       </div>
     </div>
   );

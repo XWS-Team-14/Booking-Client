@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import Image from 'next/image';
-import IconFemale from '../../../../assets/images/user-female.png';
-import IconMale from '../../../../assets/images/user-male.png';
+import IconFemale from '../../../../assets/images/user-female2.png';
+import IconMale from '../../../../assets/images/user-male2.png';
 import styles from './UserIcon.module.scss';
 
 interface UserIconProps {
