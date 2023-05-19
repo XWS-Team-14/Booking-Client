@@ -67,7 +67,6 @@ const CreateAvailability = () => {
         pricing_markup: form.getFieldValue('holiday_mul'),
       });
     }
-    console.log(dto);
     createAvailability(dto)
       .then((res) => {
         toast.success(res.data);
@@ -86,7 +85,6 @@ const CreateAvailability = () => {
   };
 
   const onRangeChange = (dates: any, dateStrings: [string, string]) => {
-    console.log(dates, dateStrings);
     setStartDate(dateStrings[0]);
     setEndDate(dateStrings[1]);
   };

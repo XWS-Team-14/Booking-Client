@@ -28,14 +28,12 @@ export const fetchData = async (
 };
 
 function checkValueString(value: string | undefined) {
-  console.log(value);
   if (value === undefined) {
     return '';
   }
   return value;
 }
 function checkValueNumber(value: number | undefined) {
-  console.log(value);
   if (value === undefined) {
     return 0;
   }

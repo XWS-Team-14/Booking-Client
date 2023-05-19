@@ -1,9 +1,8 @@
 import { Avatar, Card, Divider } from 'antd';
 
-import { selectRole } from '@/common/store/slices/authSlice';
 import { SearchAccommodation } from '@/features/search/types/SearchAccommodation';
 import UserIcon from '@/features/user/components/icon/UserIcon';
-import { useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 import { AccommodationAmenity } from './AccommodationAmenity';
 import styles from './AccommodationCard.module.scss';
 import { AccommodationHeader } from './AccommodationHeader';
@@ -16,7 +15,7 @@ interface AccommodationCardProps {
   extended?: boolean;
 }
 const AccommodationCard = ({ item, extended }: AccommodationCardProps) => {
-  const role = useSelector(selectRole);
+  const router = useRouter();
   function getLocation() {
     if (item.location === undefined) {
       return '';
@@ -31,7 +30,6 @@ const AccommodationCard = ({ item, extended }: AccommodationCardProps) => {
   }
 
   function getImages() {
-    console.log(item);
     if (item.imageUrls === undefined) {
       return [];
     }
@@ -49,6 +47,7 @@ const AccommodationCard = ({ item, extended }: AccommodationCardProps) => {
     <Card
       style={{ width: 400 }}
       cover={<AccommodationImages images={getImages()} />}
+      onClick={() => router.push(`/accommodations/${item.accommodationId}`)}
     >
       <Meta
         title={<AccommodationHeader title={item.name} rating={4.3869} />}
