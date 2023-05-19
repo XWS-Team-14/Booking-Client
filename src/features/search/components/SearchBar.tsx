@@ -1,9 +1,10 @@
 import Button from '@/common/components/button/Button';
+import Loading from '@/common/components/loading/Loading';
 import { SearchOutlined } from '@ant-design/icons';
 import { DatePicker, Input, InputNumber } from 'antd';
 import { RangePickerProps } from 'antd/lib/date-picker';
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from '../styles/search.module.scss';
 import { SearchParams } from '../types/SearchParams';
 interface SearchBarProps {
@@ -12,7 +13,11 @@ interface SearchBarProps {
 
 const SearchBar = ({ onDataChanged }: SearchBarProps) => {
   const [searchParams, setSearchParams] = useState<SearchParams>();
+  const [loading, setLoading] = useState<boolean>(true);
 
+  useEffect(() => {
+    setLoading(false);
+  }, []);
   function sendDataToParent() {
     onDataChanged(searchParams);
   }
@@ -76,7 +81,9 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
     return current < dayjs().endOf('day').add(-1, 'day');
   };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className={styles.searchBarContainer}>
       <Input
         allowClear

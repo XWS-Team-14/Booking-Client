@@ -13,7 +13,7 @@ interface SearchDataProps {
 }
 
 const SearchData = ({ searchParams }: SearchDataProps) => {
-  const [accommodations, setAccommodations] = useState<SearchResultDto>();
+  const [accommodations, setAccommodations] = useState<SearchResultDto>(null);
   const [fetched, setFetched] = useState(false);
 
   useEffect(() => {
@@ -34,7 +34,9 @@ const SearchData = ({ searchParams }: SearchDataProps) => {
               <AccommodationInfo item={item} extended={false} />
             </Col>
           ))}
-          {!!accommodations?.items === false && <p>Nothing found :(</p>}
+          {!!accommodations?.items === false && fetched && (
+            <p>Nothing found :(</p>
+          )}
         </Row>
       </Space>
     </div>
