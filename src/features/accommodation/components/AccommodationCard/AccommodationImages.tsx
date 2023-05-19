@@ -8,7 +8,7 @@ interface AccommodationImagesProps {
 
 export const AccommodationImages = ({ images }: AccommodationImagesProps) => {
   return (
-    <Carousel arrows={true}>
+    <Carousel draggable>
       {images.map((image) => (
         <div>
           <div className={styles.imageWrapper}>
