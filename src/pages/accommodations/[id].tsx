@@ -1,6 +1,6 @@
 import BaseTemplate from '@/common/components/baseTemplate/BaseTemplate';
 import Loading from '@/common/components/loading/Loading';
-import Accommodation from '@/features/accommodation/components/Accommodation';
+import SingleAccommodation from '@/features/accommodation/components/SingleAccommodation';
 import { useRouter } from 'next/router';
 
 const SingleAccommodationPage = () => {
@@ -11,7 +11,7 @@ const SingleAccommodationPage = () => {
 
   return id ? (
     <BaseTemplate>
-      <Accommodation id={accommodationId} />
+      <SingleAccommodation id={accommodationId} />
     </BaseTemplate>
   ) : (
     <Loading />

@@ -10,7 +10,7 @@ export const create = async (dto: FormData) => {
 };
 
 export const getById = async (id: string) => {
-  return api.get(`${prefix}/${id}`);
+  return api.get(`${prefix}/id/${id}`);
 };
 
 export const getAccomodationsByUser = async () => {
