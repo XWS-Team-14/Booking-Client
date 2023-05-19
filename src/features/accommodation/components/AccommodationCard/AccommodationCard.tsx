@@ -16,36 +16,19 @@ interface AccommodationCardProps {
 }
 const AccommodationCard = ({ item, extended }: AccommodationCardProps) => {
   const router = useRouter();
-  function getLocation() {
-    if (item.location === undefined) {
-      return '';
-    }
-    return (
-      item.location.address +
-      ', ' +
-      item.location.city +
-      ', ' +
-      item.location.country
-    );
-  }
 
-  function getImages() {
-    if (item.imageUrls === undefined) {
-      return [];
-    }
-    return item.imageUrls;
-  }
+  const getLocation = () =>
+    item.location
+      ? `${item.location.address}, ${item.location.city}, ${item.location.country}`
+      : '';
 
-  function getFeatures() {
-    if (item.features === undefined) {
-      return [];
-    }
-    return item.features;
-  }
+  const getImages = () => (item.imageUrls ? item.imageUrls : []);
+
+  const getFeatures = () => (item.features ? item.features : []);
 
   return (
     <Card
-      style={{ width: 400 }}
+      style={{ width: 400, cursor: 'pointer' }}
       cover={<AccommodationImages images={getImages()} />}
       onClick={() => router.push(`/accommodations/${item.accommodationId}`)}
     >
