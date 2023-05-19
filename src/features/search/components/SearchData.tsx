@@ -13,7 +13,7 @@ interface SearchDataProps {
 }
 
 const SearchData = ({ searchParams }: SearchDataProps) => {
-  const [accommodations, setAccommodations] = useState<SearchResultDto>(null);
+  const [accommodations, setAccommodations] = useState<SearchResultDto>();
   const [fetched, setFetched] = useState(false);
 
   useEffect(() => {
