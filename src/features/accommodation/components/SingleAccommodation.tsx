@@ -107,6 +107,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
                   fontSize: '14px',
                   padding: '0.3rem 1rem',
                   borderRadius: '2rem',
+                  marginBottom: '1rem',
                 }}
                 bordered={false}
                 key={feature}
