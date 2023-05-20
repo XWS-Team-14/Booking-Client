@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import {
-  GetUserById,
   cancelReservation,
   getActiveByGuest,
+  getUserById,
 } from '../services/reservation.service';
 import styles from '../styles/reservation.module.scss';
 import ReservationDto from '../types/ReservationDto';
@@ -30,7 +30,7 @@ const GuestReservations = () => {
         })
         .then(() => {
           for (let index in reservations) {
-            hosts.push(GetUserById(reservations[index].host_id));
+            hosts.push(getUserById(reservations[index].host_id));
           }
         });
     }

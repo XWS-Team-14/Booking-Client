@@ -1,18 +1,18 @@
-import { useEffect, useState } from 'react';
-import styles from '../styles/reservation.module.scss';
-import { ToastContainer } from 'react-toastify';
-import { Button, Menu, MenuProps, Modal } from 'antd';
-import ReservationDto from '../types/ReservationDto';
-import { useSelector } from 'react-redux';
+import Loading from '@/common/components/loading/Loading';
 import { selectUser } from '@/common/store/slices/authSlice';
+import { Button, Menu, MenuProps, Modal } from 'antd';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
 import {
-  GetUserById,
   acceptReservation,
   getByAccommodation,
   getByHost,
+  getUserById,
 } from '../services/reservation.service';
-import { useRouter } from 'next/router';
-import Loading from '@/common/components/loading/Loading';
+import styles from '../styles/reservation.module.scss';
+import ReservationDto from '../types/ReservationDto';
 
 const HostReservations = () => {
   const [accommodations, setAccommodations] = useState<any[]>([]);
@@ -23,22 +23,23 @@ const HostReservations = () => {
   const router = useRouter();
   const [guests, setGuests] = useState<any[]>([]);
 
-  useEffect(() =>{
-      setLoading(false);
-      Promise.all([
-        getByHost(),
-        Promise.all(
-          reservations.map((reservation) => GetUserById(reservation.guest.id))
-        ),
-      ])
-        .then(([reservations, guests]) => {
-          setReservations(reservations);
-          setGuests(guests);
-        }).then()
-        .catch((error) => {
-          console.error('Error fetching reservations and guests:', error);
-        });
-    }, [user]);
+  useEffect(() => {
+    setLoading(false);
+    Promise.all([
+      getByHost(),
+      Promise.all(
+        reservations.map((reservation) => getUserById(reservation.guest.id))
+      ),
+    ])
+      .then(([reservations, guests]) => {
+        setReservations(reservations);
+        setGuests(guests);
+      })
+      .then()
+      .catch((error) => {
+        console.error('Error fetching reservations and guests:', error);
+      });
+  }, [user]);
   //add a function call that gets all accommodations  by host
 
   const setReservationsByAccommodation: MenuProps['onClick'] = (e) => {

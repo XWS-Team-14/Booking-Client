@@ -14,7 +14,7 @@ export const deleteAccount = async () => {
   return v1.delete(`${prefix}/`);
 };
 
-export const getById = async (userId: string) => {
+export const getUserById = async (userId: string) => {
   return v1.get(`${prefix}/${userId}`);
 };
 

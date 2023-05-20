@@ -2,9 +2,11 @@ import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
 import { Accommodation } from '@/common/types/Accommodation';
 import { Availability } from '@/common/types/Availability';
+import { UserDetails } from '@/common/types/User';
 import { isAccommodationReservable } from '@/common/utils/dateHelper';
 import { getByAccommodationId } from '@/features/availability/services/availability.service';
 import UserChip from '@/features/user/components/chip/UserChip';
+import { getUserById } from '@/features/user/services/user.service';
 import { EnvironmentTwoTone, StarTwoTone } from '@ant-design/icons';
 import { DatePicker, Divider, InputNumber, Tag } from 'antd';
 import classNames from 'classnames';
@@ -25,6 +27,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
   const [checkInDate, setCheckInDate] = useState<Date>();
   const [checkOutDate, setCheckOutDate] = useState<Date>();
   const [guestCount, setGuestCount] = useState<number>(1);
+  const [host, setHost] = useState<UserDetails>();
 
   const calculateDays = () => {
     if (checkInDate && checkOutDate) {
@@ -48,12 +51,16 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
 
   useEffect(() => {
     getByAccommodationId(id).then((response) => {
-      console.log(response.data);
       setAvailability(response.data);
     });
     getById(id)
-      .then((response) => setAccommodation(response.data))
-      .then(() => setLoading(false))
+      .then((response) => {
+        setAccommodation(response.data);
+        getUserById(response.data.user_id).then((host) => {
+          setHost(host.data);
+          setLoading(false);
+        });
+      })
       .catch((error) => console.log(error));
   }, []);
   return loading ? (
@@ -89,7 +96,11 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
               Your host
             </Divider>
             <div className={styles.accommodation__host__chip}>
-              <UserChip name="Sanja Petrovic" size={50} gender="female" />
+              <UserChip
+                name={`${host?.first_name} ${host?.last_name}`}
+                size={50}
+                gender={host.gender}
+              />
             </div>
           </div>
           <div className={styles.accommodation__amenities}>

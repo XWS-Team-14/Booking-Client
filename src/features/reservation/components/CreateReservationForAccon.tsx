@@ -3,7 +3,7 @@ import { Button, DatePicker, Form } from 'antd';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { GetAccommodationById } from '../services/reservation.service';
+import { getAccommodationById } from '../services/reservation.service';
 
 const CreateReservationForAccom = () => {
   const router = useRouter();
@@ -19,7 +19,7 @@ const CreateReservationForAccom = () => {
       setLoading(false);
       if (accommodationId !== undefined) {
         if (!Array.isArray(accommodationId)) {
-          GetAccommodationById(accommodationId).then((res) => {
+          getAccommodationById(accommodationId).then((res) => {
             setAccommodation(res);
           });
         }

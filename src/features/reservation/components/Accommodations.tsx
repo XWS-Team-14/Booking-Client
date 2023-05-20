@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import styles from '../styles/accommodation.module.scss';
 
 import Loading from '@/common/components/loading/Loading';
-import { GetAccommodations } from '../services/reservation.service';
+import { getAccommodations } from '../services/reservation.service';
 
 const formItemLayout = {
   labelCol: {
@@ -39,7 +39,7 @@ const Accommodations = () => {
       router.push('/');
     } else {
       setLoading(false);
-      GetAccommodations().then((res) => {
+      getAccommodations().then((res) => {
         setAccommodations(res);
       });
     }
