@@ -1,9 +1,9 @@
 import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
+import { disabledDate } from '@/common/utils/disabledDateBeforeToday';
 import { SearchOutlined } from '@ant-design/icons';
 import { DatePicker, Input, InputNumber } from 'antd';
 import { RangePickerProps } from 'antd/lib/date-picker';
-import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import styles from '../styles/search.module.scss';
 import { SearchParams } from '../types/SearchParams';
@@ -79,10 +79,6 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
     });
   }
 
-  const disabledDate: RangePickerProps['disabledDate'] = (current) => {
-    return current < dayjs().endOf('day').add(-1, 'day');
-  };
-
   return loading ? (
     <Loading />
   ) : (
@@ -137,6 +133,7 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
       <DatePicker.RangePicker
         format="dddd, MMMM DD, YYYY"
         allowClear
+        placeholder={['Check-in date', 'Checkout date']}
         disabledDate={disabledDate}
         style={{
           width: '130%',

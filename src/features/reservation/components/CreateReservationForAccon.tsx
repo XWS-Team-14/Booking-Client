@@ -1,42 +1,43 @@
-import { selectUser } from "@/common/store/slices/authSlice";
-import { Form, DatePicker, Button } from "antd";
-import router, { useRouter } from "next/router";
-import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { GetAccommodationById } from "../services/reservation.service";
+import { selectUser } from '@/common/store/slices/authSlice';
+import { Button, DatePicker, Form } from 'antd';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { GetAccommodationById } from '../services/reservation.service';
 
 const CreateReservationForAccom = () => {
-    const router = useRouter();
-    const user = useSelector(selectUser);
-    const accommodationId = router.query.accommodationId;
-    const [loading, setLoading] = useState(true);
-    const [accommodation, setAccommodation] = useState<any>();
-    const [form] = Form.useForm();
-    useEffect(() => {
-        if (user.email === null || user.role != 'guest') {
-          router.push('/');
-        } else {
-          setLoading(false)
-          if( accommodationId!= undefined){
-            if(!Array.isArray(accommodationId)){
-            GetAccommodationById(accommodationId).then((res) =>{
-                setAccommodation(res);
-              })
-          }
+  const router = useRouter();
+  const user = useSelector(selectUser);
+  const accommodationId = router.query.accommodationId;
+  const [loading, setLoading] = useState(true);
+  const [accommodation, setAccommodation] = useState<any>();
+  const [form] = Form.useForm();
+  useEffect(() => {
+    if (user.email === null || user.role !== 'guest') {
+      router.push('/');
+    } else {
+      setLoading(false);
+      if (accommodationId !== undefined) {
+        if (!Array.isArray(accommodationId)) {
+          GetAccommodationById(accommodationId).then((res) => {
+            setAccommodation(res);
+          });
         }
-          
-        }
-      }, [user]);
-    function onFinish(values: any): void {
-        throw new Error('Function not implemented.');
+      }
     }
+  }, [user]);
+  function onFinish(values: any): void {
+    throw new Error('Function not implemented.');
+  }
 
-    return (
-        <Form form={form} onFinish={onFinish}>
+  return (
+    <Form form={form} onFinish={onFinish}>
       <Form.Item
         name="beginning_date"
         label="Beginning Date"
-        rules={[{ required: true, message: 'Please select the beginning date' }]}
+        rules={[
+          { required: true, message: 'Please select the beginning date' },
+        ]}
       >
         <DatePicker />
       </Form.Item>
@@ -53,6 +54,6 @@ const CreateReservationForAccom = () => {
         </Button>
       </Form.Item>
     </Form>
-      );
-}; 
+  );
+};
 export default CreateReservationForAccom;

@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 
 const SingleAccommodationPage = () => {
   const router = useRouter();
-  const { id } = router.query;
+  const { id, availability } = router.query;
 
   const accommodationId = typeof id === 'string' ? id : '';
 

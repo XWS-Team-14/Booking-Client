@@ -98,6 +98,8 @@ const NavigationBar = () => {
         {user.role === 'host' && (
           <>
             <NavigationLink href="/accommodations" text="My accommodations" />
+            <NavigationLink href="/createAvailability" text="availability" />
+            <NavigationLink href="/accommodations/create" text="create" />
           </>
         )}
       </div>
@@ -108,7 +110,11 @@ const NavigationBar = () => {
               <a onClick={(e) => e.preventDefault()}>
                 <div className={styles.dropdown}>
                   <div className={styles.user}>
-                    <UserChip />
+                    <UserChip
+                      gender={user.gender}
+                      size={30}
+                      name={`${user.firstName} ${user.lastName}`}
+                    />
                   </div>
                   <DownOutlined style={{ fontSize: '12px' }} />
                 </div>

@@ -16,7 +16,7 @@ interface AccommodationCardProps {
 }
 const AccommodationCard = ({ item, extended }: AccommodationCardProps) => {
   const router = useRouter();
-
+  
   const getLocation = () =>
     item.location
       ? `${item.location.address}, ${item.location.city}, ${item.location.country}`
