@@ -1,5 +1,6 @@
 import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
+import { selectRole } from '@/common/store/slices/authSlice';
 import { Accommodation } from '@/common/types/Accommodation';
 import { Availability } from '@/common/types/Availability';
 import { UserDetails } from '@/common/types/User';
@@ -12,6 +13,7 @@ import { DatePicker, Divider, InputNumber, Tag } from 'antd';
 import classNames from 'classnames';
 import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { getById } from '../services/accommodation.service';
 import styles from '../styles/accommodation.module.scss';
 import { AccommodationImages } from './AccommodationCard/AccommodationImages';
@@ -28,6 +30,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
   const [checkOutDate, setCheckOutDate] = useState<Date>();
   const [guestCount, setGuestCount] = useState<number>(1);
   const [host, setHost] = useState<UserDetails>();
+  const userRole = useSelector(selectRole);
 
   const calculateDays = () => {
     if (checkInDate && checkOutDate) {
@@ -165,11 +168,13 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
               height: '54.4px',
             }}
           />
-          <Button
-            type="primary"
-            text="Reserve"
-            style={{ minHeight: '2.5rem', fontSize: '14px' }}
-          />
+          {userRole === 'guest' && (
+            <Button
+              type="primary"
+              text="Reserve"
+              style={{ minHeight: '2.5rem', fontSize: '14px' }}
+            />
+          )}
         </div>
       </div>
     </div>
