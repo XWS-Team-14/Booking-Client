@@ -1,6 +1,6 @@
 import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
-import { disabledDate } from '@/common/utils/disabledDateBeforeToday';
+import { disabledDateRangePicker } from '@/common/utils/dateHelper';
 import { SearchOutlined } from '@ant-design/icons';
 import { DatePicker, Input, InputNumber } from 'antd';
 import { RangePickerProps } from 'antd/lib/date-picker';
@@ -134,7 +134,7 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
         format="dddd, MMMM DD, YYYY"
         allowClear
         placeholder={['Check-in date', 'Checkout date']}
-        disabledDate={disabledDate}
+        disabledDate={disabledDateRangePicker}
         style={{
           width: '130%',
           backgroundColor: 'white',

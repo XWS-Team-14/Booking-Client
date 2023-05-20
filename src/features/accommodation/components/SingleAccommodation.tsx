@@ -2,13 +2,13 @@ import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
 import { Accommodation } from '@/common/types/Accommodation';
 import { Availability } from '@/common/types/Availability';
-import { disabledDate } from '@/common/utils/disabledDateBeforeToday';
+import { isAccommodationReservable } from '@/common/utils/dateHelper';
 import { getByAccommodationId } from '@/features/availability/services/availability.service';
 import UserChip from '@/features/user/components/chip/UserChip';
 import { EnvironmentTwoTone, StarTwoTone } from '@ant-design/icons';
 import { DatePicker, Divider, InputNumber, Tag } from 'antd';
 import classNames from 'classnames';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { getById } from '../services/accommodation.service';
 import styles from '../styles/accommodation.module.scss';
@@ -38,6 +38,13 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
 
   const calculatePrice = () =>
     availability?.base_price ? availability?.base_price * guestCount : 0;
+
+  const dates = (current: Dayjs) =>
+    isAccommodationReservable(
+      current,
+      dayjs(availability?.interval.date_start),
+      dayjs(availability?.interval.date_end)
+    );
 
   useEffect(() => {
     getByAccommodationId(id).then((response) => {
@@ -126,7 +133,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
             format="dddd, MMMM DD, YYYY"
             allowClear
             placeholder={['Check-in date', 'Checkout date']}
-            disabledDate={disabledDate}
+            disabledDate={dates}
             style={{
               backgroundColor: 'white',
               padding: '1rem',
