@@ -1,10 +1,10 @@
 import BaseTemplate from '@/common/components/baseTemplate/BaseTemplate';
-import Accommodation from '@/features/accommodation/components/accommodation';
+import Accommodations from '@/features/accommodation/components/Accommodations';
 
 export default function CreateAccommodationPage() {
   return (
     <BaseTemplate>
-      <Accommodation />
+      <Accommodations />
     </BaseTemplate>
   );
 }

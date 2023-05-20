@@ -1,15 +1,6 @@
 import Button from '@/common/components/button/Button';
-import {
-  HomeOutlined,
-  IdcardOutlined,
-  MinusCircleOutlined,
-  PlusOutlined,
-  UserOutlined,
-  MailOutlined,
-} from '@ant-design/icons';
-import { Checkbox, DatePicker, Form, Input, InputNumber, Modal, Upload } from 'antd';
 import { useRouter } from 'next/dist/client/router';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 
 import { selectUser } from '@/common/store/slices/authSlice';
 import { useEffect, useState } from 'react';
@@ -17,13 +8,8 @@ import { useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from '../styles/accommodation.module.scss';
 
-
-import api from '@/common/utils/axiosInstance';
-import { UploadFile } from 'antd/es/upload';
 import Loading from '@/common/components/loading/Loading';
-import AccommodationDto from '@/features/availability/types/accommodationDto';
-import { GetAccommodations, GetGuest } from '../services/reservation.service';
-import ReservationDto from '../types/ReservationDto';
+import { GetAccommodations } from '../services/reservation.service';
 
 const formItemLayout = {
   labelCol: {
@@ -49,16 +35,16 @@ const Accommodations = () => {
   const [loading, setLoading] = useState(true);
   const [accommodations, setAccommodations] = useState<any[]>([]);
   useEffect(() => {
-    if (user.email === null || user.role != 'guest') {
+    if (user.email === null || user.role !== 'guest') {
       router.push('/');
     } else {
-      setLoading(false)
-      GetAccommodations().then((res) =>{
+      setLoading(false);
+      GetAccommodations().then((res) => {
         setAccommodations(res);
-      })
+      });
     }
   }, [user]);
-  
+
   return loading ? (
     <Loading />
   ) : (
@@ -75,11 +61,13 @@ const Accommodations = () => {
                 <b>{accommodation.minGuests}</b>
                 <Button
                   type="primary"
-                  action={() => {router.push(`/?accommodationId=${accommodation.Id}/reserve`)
-                   
+                  action={() => {
+                    router.push(
+                      `/?accommodationId=${accommodation.Id}/reserve`
+                    );
                   }}
                   style={{ width: '100%' }}
-                  text='Make Reservation'
+                  text="Make Reservation"
                 />
               </div>
             ))

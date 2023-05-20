@@ -1,4 +1,4 @@
-import { Location } from "@/common/types/Location";
+import { Location } from '@/common/types/Location';
 
 export interface SearchAccommodation {
   accommodationId: string;

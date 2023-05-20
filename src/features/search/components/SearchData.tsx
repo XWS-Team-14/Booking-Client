@@ -34,9 +34,9 @@ const SearchData = ({ searchParams }: SearchDataProps) => {
               <AccommodationInfo item={item} extended={false} />
             </Col>
           ))}
-          {!!accommodations?.items === false && fetched && (
-            <p>Nothing found :(</p>
-          )}
+          {accommodations !== undefined &&
+            fetched &&
+            accommodations?.items === undefined && <p>Nothing found :(</p>}
         </Row>
       </Space>
     </div>

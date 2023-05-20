@@ -1,9 +1,9 @@
 import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
+import { disabledDateRangePicker } from '@/common/utils/dateHelper';
 import { SearchOutlined } from '@ant-design/icons';
 import { DatePicker, Input, InputNumber } from 'antd';
 import { RangePickerProps } from 'antd/lib/date-picker';
-import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import styles from '../styles/search.module.scss';
 import { SearchParams } from '../types/SearchParams';
@@ -53,33 +53,31 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
     });
   }
   const changeDate: RangePickerProps['onChange'] = (date, value) => {
-    if (date !== null) {
-      setSearchParams({
-        country: searchParams?.country,
-        city: searchParams?.city,
-        address: searchParams?.address,
-        start_date: date[0]?.format('YYYY-MM-DD').toString(),
-        end_date: date[1]?.format('YYYY-MM-DD').toString(),
-        guestCount: searchParams?.guestCount,
-      });
+    let startDate = '';
+    let endDate = '';
+    if (date) {
+      startDate = date[0] ? date[0].format('YYYY-MM-DD').toString() : '';
+      endDate = date[1] ? date[1]?.format('YYYY-MM-DD').toString() : '';
     }
+    setSearchParams({
+      country: searchParams?.country,
+      city: searchParams?.city,
+      address: searchParams?.address,
+      start_date: startDate,
+      end_date: endDate,
+      guestCount: searchParams?.guestCount,
+    });
   };
-  function changeGuests(value: Number | null) {
-    if (value !== null) {
-      setSearchParams({
-        country: searchParams?.country,
-        city: searchParams?.city,
-        address: searchParams?.address,
-        start_date: searchParams?.start_date,
-        end_date: searchParams?.end_date,
-        guestCount: value.valueOf(),
-      });
-    }
+  function changeGuests(value: number | null) {
+    setSearchParams({
+      country: searchParams?.country,
+      city: searchParams?.city,
+      address: searchParams?.address,
+      start_date: searchParams?.start_date,
+      end_date: searchParams?.end_date,
+      guestCount: value ? value : 0,
+    });
   }
-
-  const disabledDate: RangePickerProps['disabledDate'] = (current) => {
-    return current < dayjs().endOf('day').add(-1, 'day');
-  };
 
   return loading ? (
     <Loading />
@@ -135,7 +133,8 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
       <DatePicker.RangePicker
         format="dddd, MMMM DD, YYYY"
         allowClear
-        disabledDate={disabledDate}
+        placeholder={['Check-in date', 'Checkout date']}
+        disabledDate={disabledDateRangePicker}
         style={{
           width: '130%',
           backgroundColor: 'white',
@@ -150,8 +149,8 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
       />
 
       <InputNumber
-        min={Number(1)}
-        max={Number(15)}
+        min={0}
+        max={15}
         placeholder="Number of guests"
         bordered={false}
         style={{

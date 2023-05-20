@@ -3,11 +3,9 @@ import {
   HomeOutlined,
   IdcardOutlined,
   MinusCircleOutlined,
-  PlusOutlined,
   UserOutlined,
-  MailOutlined,
 } from '@ant-design/icons';
-import { Checkbox, Form, Input, InputNumber, Upload } from 'antd';
+import { Form, Input, InputNumber, Upload } from 'antd';
 import { useRouter } from 'next/dist/client/router';
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -17,11 +15,9 @@ import { useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from '../styles/accommodation.module.scss';
 
+import Loading from '@/common/components/loading/Loading';
 import { create } from '../services/accommodation.service';
 import AccommodationFormDto from '../types/AccommodationFormDto';
-import api from '@/common/utils/axiosInstance';
-import { UploadFile } from 'antd/es/upload';
-import Loading from '@/common/components/loading/Loading';
 
 const formItemLayout = {
   labelCol: {
@@ -41,13 +37,13 @@ const formItemLayoutWithOutLabel = {
   },
 };
 
-const Accommodation = () => {
+const Accommodations = () => {
   const router = useRouter();
   const user = useSelector(selectUser);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user.email === null || user.role != 'host') {
+    if (user.email === null || user.role !== 'host') {
       router.push('/');
     } else {
       setLoading(false);
@@ -57,35 +53,34 @@ const Accommodation = () => {
   const onFinish = (values: AccommodationFormDto) => {
     console.log('Success:', values);
     let formData = new FormData();
-    var feat = '';
+    let feat = '';
     for (let item of values.features) {
       feat += item + ',';
     }
-    feat = feat.slice(0,feat.length-1)
-      
-    formData.append("name", values.name);
-    formData.append("country", values.country);
-    formData.append("city", values.city);
-    formData.append("address", values.address);
-    formData.append("features", feat)
-    formData.append("min_guests", values.min_guests);
-    formData.append("max_guests", values.max_guests);
-    formData.append("auto_accept_flag", values.auto_accept_flag);
+    feat = feat.slice(0, feat.length - 1);
+
+    formData.append('name', values.name);
+    formData.append('country', values.country);
+    formData.append('city', values.city);
+    formData.append('address', values.address);
+    formData.append('features', feat);
+    formData.append('min_guests', values.min_guests);
+    formData.append('max_guests', values.max_guests);
+    formData.append('auto_accept_flag', values.auto_accept_flag);
 
     for (let item of values.files) {
       formData.append('files', item.originFileObj!);
     }
 
     create(formData)
-    .then((res) => {
-      toast.success("Success");
-      router.push('/');
-    })
-    .catch((err) => {
-      toast.error(err);
-    });
+      .then((res) => {
+        toast.success('Success');
+        router.push('/');
+      })
+      .catch((err) => {
+        toast.error(err);
+      });
   };
-
 
   const normFile = (e: any) => {
     if (Array.isArray(e)) {
@@ -181,7 +176,9 @@ const Accommodation = () => {
           <Form.Item
             hasFeedback
             name="auto_accept_flag"
-            rules={[{ required: true, message: 'Auto accept flag is required.' }]}
+            rules={[
+              { required: true, message: 'Auto accept flag is required.' },
+            ]}
           >
             <Input
               className={styles.inputField}
@@ -273,4 +270,4 @@ const Accommodation = () => {
   );
 };
 
-export default Accommodation;
+export default Accommodations;

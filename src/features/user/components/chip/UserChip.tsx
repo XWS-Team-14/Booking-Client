@@ -1,13 +1,16 @@
-import { selectUser } from '@/common/store/slices/authSlice';
-import { useSelector } from 'react-redux';
 import UserIcon from '../icon/UserIcon';
 import styles from './UserChip.module.scss';
 
-const UserChip = () => {
-  const user = useSelector(selectUser);
+interface UserChipProps {
+  gender: 'male' | 'female';
+  size: number;
+  name: string;
+}
+
+const UserChip = ({ gender, size, name }: UserChipProps) => {
   return (
     <div className={styles.wrapper}>
-      <UserIcon type={user.gender} size={30} /> {user.firstName} {user.lastName}
+      <UserIcon type={gender} size={size} /> {name}
     </div>
   );
 };

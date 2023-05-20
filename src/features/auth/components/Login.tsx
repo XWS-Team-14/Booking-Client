@@ -50,7 +50,6 @@ const Login = () => {
       .then(async (res) => {
         api.defaults.headers.common.Authorization =
           'Bearer ' + res.data.access_token;
-        console.log(parseJwt(res.data));
         dispatch(setAuthState(true));
         dispatch(setUserEmail(values.email));
         dispatch(setUserRole(parseJwt(res.data).role));
@@ -62,7 +61,6 @@ const Login = () => {
           dispatch(setUserHomeAddress(user.homeAddress));
           router.push('/');
         }
-        console.log(user);
       })
       .catch((err) => {
         if (err.response.status === 401) {

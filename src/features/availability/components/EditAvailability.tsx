@@ -2,6 +2,7 @@
 import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
 import { selectRole } from '@/common/store/slices/authSlice';
+import { getAccomodationsByUser } from '@/features/accommodation/services/accommodation.service';
 import { Card, Checkbox, DatePicker, Form, Input, Modal, Select } from 'antd';
 import { useRouter } from 'next/dist/client/router';
 import { useEffect, useState } from 'react';
@@ -10,7 +11,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
   deleteAvailability,
-  getAccomodationsByUser,
   getAllForUser,
   updateAvailability,
 } from '../services/availability.service';

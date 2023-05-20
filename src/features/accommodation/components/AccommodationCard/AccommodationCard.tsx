@@ -1,9 +1,8 @@
 import { Avatar, Card, Divider } from 'antd';
 
-import { selectRole } from '@/common/store/slices/authSlice';
 import { SearchAccommodation } from '@/features/search/types/SearchAccommodation';
 import UserIcon from '@/features/user/components/icon/UserIcon';
-import { useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 import { AccommodationAmenity } from './AccommodationAmenity';
 import styles from './AccommodationCard.module.scss';
 import { AccommodationHeader } from './AccommodationHeader';
@@ -16,39 +15,22 @@ interface AccommodationCardProps {
   extended?: boolean;
 }
 const AccommodationCard = ({ item, extended }: AccommodationCardProps) => {
-  const role = useSelector(selectRole);
-  function getLocation() {
-    if (item.location === undefined) {
-      return '';
-    }
-    return (
-      item.location.address +
-      ', ' +
-      item.location.city +
-      ', ' +
-      item.location.country
-    );
-  }
+  const router = useRouter();
+  
+  const getLocation = () =>
+    item.location
+      ? `${item.location.address}, ${item.location.city}, ${item.location.country}`
+      : '';
 
-  function getImages() {
-    console.log(item);
-    if (item.imageUrls === undefined) {
-      return [];
-    }
-    return item.imageUrls;
-  }
+  const getImages = () => (item.imageUrls ? item.imageUrls : []);
 
-  function getFeatures() {
-    if (item.features === undefined) {
-      return [];
-    }
-    return item.features;
-  }
+  const getFeatures = () => (item.features ? item.features : []);
 
   return (
     <Card
-      style={{ width: 400 }}
+      style={{ width: 400, cursor: 'pointer' }}
       cover={<AccommodationImages images={getImages()} />}
+      onClick={() => router.push(`/accommodations/${item.accommodationId}`)}
     >
       <Meta
         title={<AccommodationHeader title={item.name} rating={4.3869} />}

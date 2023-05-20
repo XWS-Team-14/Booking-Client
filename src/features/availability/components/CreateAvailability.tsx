@@ -10,11 +10,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
   createAvailability,
-  getAccomodationsByUser,
 } from '../services/availability.service';
 import styles from '../styles/availability.module.scss';
 import AccommodationDto from '../types/accommodationDto';
 import AvailabilityDto from '../types/availabilityDto';
+import { getAccomodationsByUser } from '@/features/accommodation/services/accommodation.service';
 const { RangePicker } = DatePicker;
 
 const CreateAvailability = () => {
@@ -67,7 +67,6 @@ const CreateAvailability = () => {
         pricing_markup: form.getFieldValue('holiday_mul'),
       });
     }
-    console.log(dto);
     createAvailability(dto)
       .then((res) => {
         toast.success(res.data);
@@ -86,7 +85,6 @@ const CreateAvailability = () => {
   };
 
   const onRangeChange = (dates: any, dateStrings: [string, string]) => {
-    console.log(dates, dateStrings);
     setStartDate(dateStrings[0]);
     setEndDate(dateStrings[1]);
   };
