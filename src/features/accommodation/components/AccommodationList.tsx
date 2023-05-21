@@ -1,16 +1,18 @@
 import { SearchAccommodation } from '@/features/search/types/SearchAccommodation';
-import { Col, Row, Space } from 'antd';
+import { Col, Empty, Row, Space } from 'antd';
 import styles from '../styles/accommodation.module.scss';
 import AccommodationCard from './AccommodationCard/AccommodationCard';
 
 interface AccommodationListProps {
   accommodations?: SearchAccommodation[];
   days?: number;
+  extended?: boolean;
 }
 
 const AccommodationList = ({
   accommodations,
   days,
+  extended,
 }: AccommodationListProps) => {
   return (
     <div>
@@ -20,14 +22,14 @@ const AccommodationList = ({
             <Col key={item.id}>
               <AccommodationCard
                 item={item}
-                extended={false}
+                extended={extended}
                 days={days}
                 price={item.basePrice}
               />
             </Col>
           ))}
           {accommodations !== undefined && accommodations.length === 0 && (
-            <p>Nothing found :(</p>
+            <Empty description={'Nothing found :('} />
           )}
         </Row>
       </Space>

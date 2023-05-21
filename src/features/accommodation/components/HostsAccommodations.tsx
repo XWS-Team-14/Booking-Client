@@ -40,7 +40,7 @@ const HostsAccommodations = () => {
           style={{ marginBottom: '2rem' }}
           action={() => router.push('/accommodations/create')}
         />
-        <AccommodationList accommodations={accommodations} />
+        <AccommodationList accommodations={accommodations} extended={true} />
       </div>
     </>
   );

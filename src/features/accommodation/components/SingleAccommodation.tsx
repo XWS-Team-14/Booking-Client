@@ -7,13 +7,23 @@ import { UserDetails } from '@/common/types/User';
 import {
   calculateDays,
   isAccommodationReservable,
+  isDateBeforeToday,
 } from '@/common/utils/dateHelper';
 import { getRoundedRating } from '@/common/utils/getRoundedRating';
 import { getByAccommodationId } from '@/features/availability/services/availability.service';
+import { isSpecialPricingOn } from '@/features/availability/utils/isSpecialPricingOn';
 import UserChip from '@/features/user/components/chip/UserChip';
 import { getUserById } from '@/features/user/services/user.service';
 import { EnvironmentTwoTone, StarTwoTone } from '@ant-design/icons';
-import { DatePicker, Divider, InputNumber, Tag } from 'antd';
+import {
+  DatePicker,
+  Divider,
+  Form,
+  InputNumber,
+  Select,
+  Switch,
+  Tag,
+} from 'antd';
 import { RangePickerProps } from 'antd/lib/date-picker';
 import classNames from 'classnames';
 import dayjs, { Dayjs } from 'dayjs';
@@ -40,6 +50,8 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
   const calculatePrice = () =>
     availability?.base_price ? availability?.base_price * guestCount : 0;
   const [currentIsHost, setCurrentIsHost] = useState(false);
+  const [editable, setEditable] = useState(true);
+  const { Option } = Select;
 
   const dates = (current: Dayjs) =>
     isAccommodationReservable(
@@ -60,6 +72,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
   useEffect(() => {
     getByAccommodationId(id).then((response) => {
       setAvailability(response.data);
+      console.log(response.data);
     });
     getById(id)
       .then((response) => {
@@ -77,6 +90,12 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
       })
       .catch((error) => console.log(error));
   }, [currentUserId, id]);
+
+  useEffect(() => {
+    isSpecialPricingOn('Weekend', availability);
+  }, [availability]);
+
+  console.log(isSpecialPricingOn('Holiday', availability));
   return loading ? (
     <Loading />
   ) : (
@@ -183,13 +202,127 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
         </div>
       </div>
       {currentIsHost && (
-        <Divider
-          orientation="left"
-          orientationMargin={0}
-          style={{ fontSize: '20px', fontWeight: '600' }}
-        >
-          Manage availability
-        </Divider>
+        <>
+          <Divider
+            orientation="left"
+            orientationMargin={0}
+            style={{ fontSize: '20px', fontWeight: '600' }}
+          >
+            Availability and price settings
+          </Divider>
+          {editable ? (
+            <Form>
+              <Form.Item hasFeedback name="dates">
+                <DatePicker.RangePicker
+                  format="dddd, MMMM DD, YYYY"
+                  allowClear
+                  defaultValue={[
+                    dayjs(availability?.interval.date_start),
+                    dayjs(availability?.interval.date_end),
+                  ]}
+                  disabledDate={isDateBeforeToday}
+                />
+              </Form.Item>
+              <Form.Item hasFeedback name="basePrice">
+                <InputNumber
+                  defaultValue={availability?.base_price}
+                  prefix="€"
+                  placeholder="Base price"
+                  style={{
+                    width: '100%',
+                  }}
+                ></InputNumber>
+              </Form.Item>
+              <Form.Item
+                hasFeedback
+                name="pricingStrategy"
+                rules={[{ required: true, message: 'Gender is required.' }]}
+              >
+                <Select
+                  placeholder="Pricing strategy"
+                  defaultValue={
+                    availability?.pricing_type === 'Per_guest'
+                      ? 'Per guest'
+                      : 'Per unit'
+                  }
+                >
+                  <Option value="Per_accommodation_unit">Per unit</Option>
+                  <Option value="Per_guest">Per guest</Option>
+                </Select>
+              </Form.Item>
+
+              <div className={styles.multipliers}>
+                Weekend multiplier{' '}
+                <Switch
+                  defaultChecked={isSpecialPricingOn('Weekend', availability)}
+                ></Switch>
+              </div>
+              {isSpecialPricingOn('Weekend', availability) && (
+                <Form.Item>
+                  <InputNumber
+                    defaultValue={
+                      availability?.special_pricing?.at(0)?.pricing_markup
+                    }
+                    style={{
+                      width: '100%',
+                    }}
+                  ></InputNumber>
+                </Form.Item>
+              )}
+              <div className={styles.multipliers}>
+                Holiday multiplier{' '}
+                <Switch
+                  defaultChecked={isSpecialPricingOn('Holiday', availability)}
+                ></Switch>
+              </div>
+              {isSpecialPricingOn('Holiday', availability) && (
+                <Form.Item>
+                  <InputNumber
+                    defaultValue={
+                      availability?.special_pricing?.at(1)?.pricing_markup
+                    }
+                    style={{
+                      width: '100%',
+                    }}
+                  ></InputNumber>
+                </Form.Item>
+              )}
+            </Form>
+          ) : (
+            <div className={styles.infoWrapper}>
+              <p>
+                This accommodation is available from{' '}
+                <b>
+                  {dayjs(availability?.interval.date_start).format(
+                    'dddd, MMMM DD, YYYY'
+                  )}
+                </b>{' '}
+                to{' '}
+                <b>
+                  {dayjs(availability?.interval.date_end).format(
+                    'dddd, MMMM DD, YYYY'
+                  )}
+                </b>
+                .<br />
+                Current base price is <b>€{availability?.base_price}</b> for one
+                night{' '}
+                <b>
+                  {availability?.pricing_type === 'Per_guest' ? (
+                    <>per guest</>
+                  ) : (
+                    <>for the whole unit</>
+                  )}
+                </b>
+                .
+              </p>
+              <Button
+                type="secondary"
+                text="Edit"
+                action={() => setEditable(true)}
+              />
+            </div>
+          )}
+        </>
       )}
     </div>
   );
