@@ -10,6 +10,7 @@
   justify-content: space-between;
   align-items: center;
   width: 100vw;
+  margin-top: 2rem;
 }
 
 .centerContainer {
@@ -35,7 +36,31 @@
 }
 
 .title {
-  font-size: 2rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.deleteButton {
+  position: relative;
+  top: 4px;
+  margin: 0 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: #3d95f3;
+}
+
+.ant-form-item-control-input-content,
+.ant-form-item-control-input {
+  display: flex !important;
+  align-items: center !important;
+}
+.deleteButton:hover {
+  color: #92c7ff;
+}
+.deleteButton[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .paragraph {
