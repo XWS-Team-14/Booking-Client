@@ -5,7 +5,7 @@ import { selectId, selectRole } from '@/common/store/slices/authSlice';
 import { Accommodation } from '@/common/types/Accommodation';
 import { Availability } from '@/common/types/Availability';
 import { UserDetails } from '@/common/types/User';
-import { checkIfEmptyObject } from '@/common/utils/checkIfEmptyObject';
+import { checkIfEmptyObjectOrFalsy } from '@/common/utils/checkIfEmptyObjectOrFalsy';
 import {
   calculateDays,
   isAccommodationReservable,
@@ -197,15 +197,25 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
           >
             Availability and price settings
           </Divider>
-          {checkIfEmptyObject(availability) ? (
+          {!editable && checkIfEmptyObjectOrFalsy(availability) && (
             <>
               You have not set the price and availability of this accommodation
               yet.
-              <AvailabilityForm />
+              <Button
+                type="secondary"
+                text="Set now"
+                style={{ marginTop: '1rem' }}
+                action={() => setEditable(true)}
+              />
             </>
-          ) : editable ? (
-            <AvailabilityForm availability={availability} />
-          ) : (
+          )}
+          {editable && checkIfEmptyObjectOrFalsy(availability) && (
+            <AvailabilityForm
+              accommodationId={accommodation?.id}
+              cancelAction={() => setEditable(false)}
+            />
+          )}
+          {!editable && !checkIfEmptyObjectOrFalsy(availability) && (
             <div className={styles.infoWrapper}>
               <p>
                 This accommodation is available from{' '}
@@ -238,6 +248,13 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
                 action={() => setEditable(true)}
               />
             </div>
+          )}
+          {editable && !checkIfEmptyObjectOrFalsy(availability) && (
+            <AvailabilityForm
+              availability={availability}
+              accommodationId={accommodation?.id}
+              cancelAction={() => setEditable(false)}
+            />
           )}
         </>
       )}
