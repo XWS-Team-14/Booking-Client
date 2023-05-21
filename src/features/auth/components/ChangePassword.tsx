@@ -1,5 +1,5 @@
 import Button from '@/common/components/button/Button';
-import { selectUser } from '@/common/store/slices/authSlice';
+import { selectAuthState, selectUser } from '@/common/store/slices/authSlice';
 import { LockOutlined } from '@ant-design/icons';
 import { Form, Input } from 'antd';
 import { useRouter } from 'next/router';
@@ -21,13 +21,17 @@ const ChangePassword = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
 
+  const authState = useSelector(selectAuthState);
+
   useEffect(() => {
-    if (user.email === null) {
-      router.push('/');
-    } else {
+    if (authState === null) {
+      console.log('waiting...');
+    } else if (authState) {
       setLoading(false);
+    } else {
+      router.push('/');
     }
-  }, [user]);
+  }, [authState]);
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);

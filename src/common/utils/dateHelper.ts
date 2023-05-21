@@ -22,3 +22,8 @@ export const isAccommodationReservable = (
   }
   return current < accommodationStart || current > accommodationEnd;
 };
+
+export const calculateDays = (checkInDate?: Dayjs, checkOutDate?: Dayjs) =>
+  checkInDate && checkOutDate
+    ? Math.abs(checkInDate.diff(checkOutDate, 'days'))
+    : 1;

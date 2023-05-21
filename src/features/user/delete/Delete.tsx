@@ -1,6 +1,7 @@
 import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
 import {
+  selectAuthState,
   selectUser,
   setAuthState,
   setUserEmail,
@@ -24,13 +25,17 @@ const Delete = () => {
   const user = useSelector(selectUser);
   const [loading, setLoading] = useState(true);
 
+  const authState = useSelector(selectAuthState);
+
   useEffect(() => {
-    if (user.email === null) {
-      router.push('/');
-    } else {
+    if (authState === null) {
+      console.log('waiting...');
+    } else if (authState) {
       setLoading(false);
+    } else {
+      router.push('/');
     }
-  }, [user]);
+  }, [authState]);
 
   const confirm = async () => {
     await deleteAccount()

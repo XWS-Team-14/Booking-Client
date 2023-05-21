@@ -1,10 +1,12 @@
 import BaseTemplate from '@/common/components/baseTemplate/BaseTemplate';
-import { useRouter } from 'next/router';
+import HostsAccommodations from '@/features/accommodation/components/HostsAccommodations';
 
-const SingleAccommodationPage = () => {
-  const router = useRouter();
-  console.log(router)
-  return <BaseTemplate></BaseTemplate>;
+const HostsAccommodationsPage = () => {
+  return (
+    <BaseTemplate>
+      <HostsAccommodations />
+    </BaseTemplate>
+  );
 };
 
-export default SingleAccommodationPage;
+export default HostsAccommodationsPage;

@@ -4,9 +4,10 @@ import { HYDRATE } from 'next-redux-wrapper';
 import { AppState } from '../store';
 
 export interface AuthState {
-  authState: boolean;
+  authState: boolean | null;
   userFirstName: string | null;
   userLastName: string | null;
+  userId: string | null;
   userEmail: string | null;
   userRole: 'host' | 'guest' | null;
   userGender: 'male' | 'female' | null;
@@ -14,7 +15,8 @@ export interface AuthState {
 }
 
 const initialState: AuthState = {
-  authState: false,
+  authState: null,
+  userId: null,
   userFirstName: null,
   userLastName: null,
   userEmail: null,
@@ -29,6 +31,9 @@ export const authSlice = createSlice({
   reducers: {
     setAuthState(state, action) {
       state.authState = action.payload;
+    },
+    setUserId(state, action) {
+      state.userId = action.payload;
     },
     setUserFirstName(state, action) {
       state.userFirstName = action.payload;
@@ -49,7 +54,8 @@ export const authSlice = createSlice({
       state.userHomeAddress = action.payload;
     },
     reset(state, action?) {
-      state.authState = false;
+      state.authState = null;
+      state.userId = null;
       state.userFirstName = null;
       state.userLastName = null;
       state.userEmail = null;
@@ -71,6 +77,7 @@ export const authSlice = createSlice({
 
 export const {
   setAuthState,
+  setUserId,
   setUserFirstName,
   setUserLastName,
   setUserEmail,
@@ -82,8 +89,11 @@ export const {
 
 export const selectAuthState = (state: AppState) => state.auth.authState;
 
+export const selectId = (state: AppState) => state.auth.userId;
+
 export const selectUser = (state: AppState) => {
   return {
+    id: state.auth.userId,
     firstName: state.auth.userFirstName,
     lastName: state.auth.userLastName,
     email: state.auth.userEmail,

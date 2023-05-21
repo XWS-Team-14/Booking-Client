@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 
 import Link from 'next/link';
 
-import { selectUser } from '@/common/store/slices/authSlice';
+import { selectAuthState } from '@/common/store/slices/authSlice';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
@@ -19,15 +19,17 @@ const SignUp = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const { Option } = Select;
-  const user = useSelector(selectUser);
+  const authState = useSelector(selectAuthState);
 
   useEffect(() => {
-    if (user.email !== null) {
+    if (authState) {
       router.push('/');
+    } else if (authState === null) {
+      console.log('waiting...');
     } else {
       setLoading(false);
     }
-  }, [user]);
+  }, [authState]);
 
   const onFinish = (values: RegisterDto) => {
     console.log('Success:', values);

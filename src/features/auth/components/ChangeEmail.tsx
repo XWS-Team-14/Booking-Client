@@ -1,5 +1,5 @@
 import Button from '@/common/components/button/Button';
-import { selectUser } from '@/common/store/slices/authSlice';
+import { selectAuthState, selectUser } from '@/common/store/slices/authSlice';
 import { Form, Input } from 'antd';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -16,14 +16,17 @@ const ChangeEmail = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
+  const authState = useSelector(selectAuthState);
 
   useEffect(() => {
-    if (user.email === null) {
-      router.push('/');
-    } else {
+    if (authState === null) {
+      console.log('waiting...');
+    } else if (authState) {
       setLoading(false);
+    } else {
+      router.push('/');
     }
-  }, [user]);
+  }, [authState]);
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);

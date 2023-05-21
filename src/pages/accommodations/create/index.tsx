@@ -1,10 +1,10 @@
 import BaseTemplate from '@/common/components/baseTemplate/BaseTemplate';
-import Accommodations from '@/features/accommodation/components/Accommodations';
+import CreateAccommodationForm from '@/features/accommodation/components/CreateAccommodationForm';
 
 export default function CreateAccommodationPage() {
   return (
     <BaseTemplate>
-      <Accommodations />
+      <CreateAccommodationForm />
     </BaseTemplate>
   );
 }
