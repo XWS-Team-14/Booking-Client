@@ -47,7 +47,6 @@ const CreateAvailability = () => {
 
   const onFinish = () => {
     let dto: AvailabilityDto = {
-      availability_id: 'd721aefc-23df-4dce-a7f9-30e2b671a2c5',
       accomodation_id: form.getFieldValue('accomodation'),
       interval: { date_start: start_date, date_end: end_date },
       pricing_type: form.getFieldValue('pricing_type'),

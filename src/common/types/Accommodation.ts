@@ -1,3 +1,4 @@
+import SpecialPricing from '@/features/availability/types/specialPricing';
 import { Location } from './Location';
 
 export interface Accommodation {

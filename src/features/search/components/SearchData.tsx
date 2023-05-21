@@ -18,7 +18,6 @@ const SearchData = ({ searchParams }: SearchDataProps) => {
   const [fetched, setFetched] = useState(false);
 
   useEffect(() => {
-    setFetched(true);
     fetchData(searchParams).then((data) => {
       setAccommodations(data);
       setFetched(true);
@@ -29,7 +28,9 @@ const SearchData = ({ searchParams }: SearchDataProps) => {
     <div className={styles.searchBarContainer}>
       <ToastContainer />
       <AccommodationList
-        accommodations={accommodations?.items}
+        accommodations={
+          !!accommodations?.items === false ? [] : accommodations?.items
+        }
         days={calculateDays(
           dayjs(searchParams?.start_date),
           dayjs(searchParams?.end_date)

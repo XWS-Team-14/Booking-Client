@@ -1,19 +1,22 @@
+/* eslint-disable no-nested-ternary */
 import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
 import { selectId, selectRole } from '@/common/store/slices/authSlice';
 import { Accommodation } from '@/common/types/Accommodation';
 import { Availability } from '@/common/types/Availability';
 import { UserDetails } from '@/common/types/User';
+import { checkIfEmptyObjectOrFalsy } from '@/common/utils/checkIfEmptyObjectOrFalsy';
 import {
   calculateDays,
   isAccommodationReservable,
 } from '@/common/utils/dateHelper';
 import { getRoundedRating } from '@/common/utils/getRoundedRating';
+import AvailabilityForm from '@/features/availability/components/AvailabilityForm';
 import { getByAccommodationId } from '@/features/availability/services/availability.service';
 import UserChip from '@/features/user/components/chip/UserChip';
 import { getUserById } from '@/features/user/services/user.service';
 import { EnvironmentTwoTone, StarTwoTone } from '@ant-design/icons';
-import { DatePicker, Divider, InputNumber, Tag } from 'antd';
+import { DatePicker, Divider, InputNumber, Select, Tag } from 'antd';
 import { RangePickerProps } from 'antd/lib/date-picker';
 import classNames from 'classnames';
 import dayjs, { Dayjs } from 'dayjs';
@@ -40,6 +43,8 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
   const calculatePrice = () =>
     availability?.base_price ? availability?.base_price * guestCount : 0;
   const [currentIsHost, setCurrentIsHost] = useState(false);
+  const [editable, setEditable] = useState(false);
+  const { Option } = Select;
 
   const dates = (current: Dayjs) =>
     isAccommodationReservable(
@@ -77,6 +82,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
       })
       .catch((error) => console.log(error));
   }, [currentUserId, id]);
+
   return loading ? (
     <Loading />
   ) : (
@@ -183,13 +189,74 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
         </div>
       </div>
       {currentIsHost && (
-        <Divider
-          orientation="left"
-          orientationMargin={0}
-          style={{ fontSize: '20px', fontWeight: '600' }}
-        >
-          Manage availability
-        </Divider>
+        <>
+          <Divider
+            orientation="left"
+            orientationMargin={0}
+            style={{ fontSize: '20px', fontWeight: '600' }}
+          >
+            Availability and price settings
+          </Divider>
+          {!editable && checkIfEmptyObjectOrFalsy(availability) && (
+            <>
+              You have not set the price and availability of this accommodation
+              yet.
+              <Button
+                type="secondary"
+                text="Set now"
+                style={{ marginTop: '1rem' }}
+                action={() => setEditable(true)}
+              />
+            </>
+          )}
+          {editable && checkIfEmptyObjectOrFalsy(availability) && (
+            <AvailabilityForm
+              accommodationId={accommodation?.id}
+              cancelAction={() => setEditable(false)}
+            />
+          )}
+          {!editable && !checkIfEmptyObjectOrFalsy(availability) && (
+            <div className={styles.infoWrapper}>
+              <p>
+                This accommodation is available from{' '}
+                <b>
+                  {dayjs(availability?.interval.date_start).format(
+                    'dddd, MMMM DD, YYYY'
+                  )}
+                </b>{' '}
+                to{' '}
+                <b>
+                  {dayjs(availability?.interval.date_end).format(
+                    'dddd, MMMM DD, YYYY'
+                  )}
+                </b>
+                .<br />
+                Current base price is <b>€{availability?.base_price}</b> for one
+                night{' '}
+                <b>
+                  {availability?.pricing_type === 'Per_guest' ? (
+                    <>per guest</>
+                  ) : (
+                    <>for the whole unit</>
+                  )}
+                </b>
+                .
+              </p>
+              <Button
+                type="secondary"
+                text="Edit"
+                action={() => setEditable(true)}
+              />
+            </div>
+          )}
+          {editable && !checkIfEmptyObjectOrFalsy(availability) && (
+            <AvailabilityForm
+              availability={availability}
+              accommodationId={accommodation?.id}
+              cancelAction={() => setEditable(false)}
+            />
+          )}
+        </>
       )}
     </div>
   );

@@ -1,28 +1,45 @@
 .wrapper {
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-  }
-  .pageWrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100vw;
-    flex-direction: column;
-  }
-  .cardHolder{
-    display: flex;
-    flex-direction: row;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:10px;
-    margin-top: 2em;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
-.card{
-    color:rgb(80, 92, 104);
-    background: linear-gradient(to right, #aff3f0 0%, #ffffff 80%);
-    flex-basis: calc(25% - 10px);
-    width: auto;
+.pageWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100vw;
+  flex-direction: column;
+}
+.cardHolder {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 2em;
+}
+.card {
+  color: rgb(80, 92, 104);
+  background: linear-gradient(to right, #aff3f0 0%, #ffffff 80%);
+  flex-basis: calc(25% - 10px);
+  width: auto;
+}
+
+.multipliers {
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.5rem;
+  display: flex;
+  gap: 0.4rem;
+  div {
+    margin-bottom: 0 !important;
+  }
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
 }

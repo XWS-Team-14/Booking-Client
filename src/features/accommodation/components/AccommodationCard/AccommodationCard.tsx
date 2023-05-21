@@ -1,5 +1,6 @@
-import { Card } from 'antd';
+import { Card, Divider } from 'antd';
 
+import Button from '@/common/components/button/Button';
 import { SearchAccommodation } from '@/features/search/types/SearchAccommodation';
 import { useRouter } from 'next/router';
 import AccommodationPrice from '../AccommodationPrice';
@@ -34,20 +35,38 @@ const AccommodationCard = ({
   return (
     <Card
       style={{ width: 400, cursor: 'pointer' }}
-      cover={<AccommodationImages images={getImages()} />}
-      onClick={() => router.push(`/accommodations/${item.id}`)}
+      cover={
+        <div onClick={() => router.push(`/accommodations/${item.id}`)}>
+          <AccommodationImages images={getImages()} />
+        </div>
+      }
     >
       <Meta
         title={<AccommodationHeader title={item.name} rating={4.3869} />}
         description={getLocation()}
+        onClick={() => router.push(`/accommodations/${item.id}`)}
       />
       {item.totalPrice && (
-        <div style={{ marginTop: '1rem' }}>
+        <div
+          style={{ marginTop: '1rem' }}
+          onClick={() => router.push(`/accommodations/${item.id}`)}
+        >
           <AccommodationPrice
             price={item.totalPrice}
             days={days === 0 || isNaN(days) ? 1 : days}
           />
         </div>
+      )}
+      {extended && (
+        <>
+          <Divider />
+          <Button
+            type="transparent"
+            style={{ fontSize: '14px' }}
+            text="See pending reservations"
+            action={() => router.push('/')}
+          ></Button>
+        </>
       )}
     </Card>
   );
