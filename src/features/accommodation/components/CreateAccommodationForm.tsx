@@ -55,7 +55,6 @@ const CreateAccommodationForm = () => {
   }, [role, authState]);
 
   const onFinish = (values: AccommodationFormDto) => {
-    console.log('Success:', values);
     let formData = new FormData();
     let feat = '';
     for (let item of values.features) {
@@ -79,6 +78,7 @@ const CreateAccommodationForm = () => {
     create(formData)
       .then((res) => {
         toast.success('Success');
+        console.log(res);
         router.push('/');
       })
       .catch((err) => {

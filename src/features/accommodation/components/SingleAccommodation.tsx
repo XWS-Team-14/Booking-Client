@@ -1,29 +1,22 @@
+/* eslint-disable no-nested-ternary */
 import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
 import { selectId, selectRole } from '@/common/store/slices/authSlice';
 import { Accommodation } from '@/common/types/Accommodation';
 import { Availability } from '@/common/types/Availability';
 import { UserDetails } from '@/common/types/User';
+import { checkIfEmptyObject } from '@/common/utils/checkIfEmptyObject';
 import {
   calculateDays,
   isAccommodationReservable,
-  isDateBeforeToday,
 } from '@/common/utils/dateHelper';
 import { getRoundedRating } from '@/common/utils/getRoundedRating';
+import AvailabilityForm from '@/features/availability/components/AvailabilityForm';
 import { getByAccommodationId } from '@/features/availability/services/availability.service';
-import { isSpecialPricingOn } from '@/features/availability/utils/isSpecialPricingOn';
 import UserChip from '@/features/user/components/chip/UserChip';
 import { getUserById } from '@/features/user/services/user.service';
 import { EnvironmentTwoTone, StarTwoTone } from '@ant-design/icons';
-import {
-  DatePicker,
-  Divider,
-  Form,
-  InputNumber,
-  Select,
-  Switch,
-  Tag,
-} from 'antd';
+import { DatePicker, Divider, InputNumber, Select, Tag } from 'antd';
 import { RangePickerProps } from 'antd/lib/date-picker';
 import classNames from 'classnames';
 import dayjs, { Dayjs } from 'dayjs';
@@ -50,7 +43,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
   const calculatePrice = () =>
     availability?.base_price ? availability?.base_price * guestCount : 0;
   const [currentIsHost, setCurrentIsHost] = useState(false);
-  const [editable, setEditable] = useState(true);
+  const [editable, setEditable] = useState(false);
   const { Option } = Select;
 
   const dates = (current: Dayjs) =>
@@ -72,7 +65,6 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
   useEffect(() => {
     getByAccommodationId(id).then((response) => {
       setAvailability(response.data);
-      console.log(response.data);
     });
     getById(id)
       .then((response) => {
@@ -91,11 +83,6 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
       .catch((error) => console.log(error));
   }, [currentUserId, id]);
 
-  useEffect(() => {
-    isSpecialPricingOn('Weekend', availability);
-  }, [availability]);
-
-  console.log(isSpecialPricingOn('Holiday', availability));
   return loading ? (
     <Loading />
   ) : (
@@ -210,84 +197,14 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
           >
             Availability and price settings
           </Divider>
-          {editable ? (
-            <Form>
-              <Form.Item hasFeedback name="dates">
-                <DatePicker.RangePicker
-                  format="dddd, MMMM DD, YYYY"
-                  allowClear
-                  defaultValue={[
-                    dayjs(availability?.interval.date_start),
-                    dayjs(availability?.interval.date_end),
-                  ]}
-                  disabledDate={isDateBeforeToday}
-                />
-              </Form.Item>
-              <Form.Item hasFeedback name="basePrice">
-                <InputNumber
-                  defaultValue={availability?.base_price}
-                  prefix="€"
-                  placeholder="Base price"
-                  style={{
-                    width: '100%',
-                  }}
-                ></InputNumber>
-              </Form.Item>
-              <Form.Item
-                hasFeedback
-                name="pricingStrategy"
-                rules={[{ required: true, message: 'Gender is required.' }]}
-              >
-                <Select
-                  placeholder="Pricing strategy"
-                  defaultValue={
-                    availability?.pricing_type === 'Per_guest'
-                      ? 'Per guest'
-                      : 'Per unit'
-                  }
-                >
-                  <Option value="Per_accommodation_unit">Per unit</Option>
-                  <Option value="Per_guest">Per guest</Option>
-                </Select>
-              </Form.Item>
-
-              <div className={styles.multipliers}>
-                Weekend multiplier{' '}
-                <Switch
-                  defaultChecked={isSpecialPricingOn('Weekend', availability)}
-                ></Switch>
-              </div>
-              {isSpecialPricingOn('Weekend', availability) && (
-                <Form.Item>
-                  <InputNumber
-                    defaultValue={
-                      availability?.special_pricing?.at(0)?.pricing_markup
-                    }
-                    style={{
-                      width: '100%',
-                    }}
-                  ></InputNumber>
-                </Form.Item>
-              )}
-              <div className={styles.multipliers}>
-                Holiday multiplier{' '}
-                <Switch
-                  defaultChecked={isSpecialPricingOn('Holiday', availability)}
-                ></Switch>
-              </div>
-              {isSpecialPricingOn('Holiday', availability) && (
-                <Form.Item>
-                  <InputNumber
-                    defaultValue={
-                      availability?.special_pricing?.at(1)?.pricing_markup
-                    }
-                    style={{
-                      width: '100%',
-                    }}
-                  ></InputNumber>
-                </Form.Item>
-              )}
-            </Form>
+          {checkIfEmptyObject(availability) ? (
+            <>
+              You have not set the price and availability of this accommodation
+              yet.
+              <AvailabilityForm />
+            </>
+          ) : editable ? (
+            <AvailabilityForm availability={availability} />
           ) : (
             <div className={styles.infoWrapper}>
               <p>
