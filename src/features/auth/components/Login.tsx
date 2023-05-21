@@ -1,11 +1,12 @@
 import Button from '@/common/components/button/Button';
 import {
-  selectUser,
+  selectAuthState,
   setAuthState,
   setUserEmail,
   setUserFirstName,
   setUserGender,
   setUserHomeAddress,
+  setUserId,
   setUserLastName,
   setUserRole,
 } from '@/common/store/slices/authSlice';
@@ -32,15 +33,17 @@ const Login = () => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);
+  const authState = useSelector(selectAuthState);
 
   useEffect(() => {
-    if (user.email !== null) {
+    if (authState) {
       router.push('/');
+    } else if (authState === null) {
+      console.log('waiting...');
     } else {
       setLoading(false);
     }
-  }, [user]);
+  }, [authState]);
 
   const onFinish = (values: LoginDto) => {
     login({
@@ -55,6 +58,7 @@ const Login = () => {
         dispatch(setUserRole(parseJwt(res.data).role));
         const user = await getCurrentUserData();
         if (user) {
+          dispatch(setUserId(user.id));
           dispatch(setUserFirstName(user.firstName));
           dispatch(setUserLastName(user.lastName));
           dispatch(setUserGender(user.gender));

@@ -1,15 +1,20 @@
 import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
-import { selectRole } from '@/common/store/slices/authSlice';
+import { selectId, selectRole } from '@/common/store/slices/authSlice';
 import { Accommodation } from '@/common/types/Accommodation';
 import { Availability } from '@/common/types/Availability';
 import { UserDetails } from '@/common/types/User';
-import { isAccommodationReservable } from '@/common/utils/dateHelper';
+import {
+  calculateDays,
+  isAccommodationReservable,
+} from '@/common/utils/dateHelper';
+import { getRoundedRating } from '@/common/utils/getRoundedRating';
 import { getByAccommodationId } from '@/features/availability/services/availability.service';
 import UserChip from '@/features/user/components/chip/UserChip';
 import { getUserById } from '@/features/user/services/user.service';
 import { EnvironmentTwoTone, StarTwoTone } from '@ant-design/icons';
 import { DatePicker, Divider, InputNumber, Tag } from 'antd';
+import { RangePickerProps } from 'antd/lib/date-picker';
 import classNames from 'classnames';
 import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
@@ -17,7 +22,7 @@ import { useSelector } from 'react-redux';
 import { getById } from '../services/accommodation.service';
 import styles from '../styles/accommodation.module.scss';
 import { AccommodationImages } from './AccommodationCard/AccommodationImages';
-
+import AccommodationPrice from './AccommodationPrice';
 interface SingleAccommodationProps {
   id: string;
 }
@@ -29,21 +34,12 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
   const [checkInDate, setCheckInDate] = useState<Date>();
   const [checkOutDate, setCheckOutDate] = useState<Date>();
   const [guestCount, setGuestCount] = useState<number>(1);
+  const currentUserId = useSelector(selectId);
   const [host, setHost] = useState<UserDetails>();
   const userRole = useSelector(selectRole);
-
-  const calculateDays = () => {
-    if (checkInDate && checkOutDate) {
-      const date1 = dayjs(checkInDate);
-      const date2 = dayjs(checkOutDate);
-      return Math.abs(date1.diff(date2, 'days'));
-    } else {
-      return 1;
-    }
-  };
-
   const calculatePrice = () =>
     availability?.base_price ? availability?.base_price * guestCount : 0;
+  const [currentIsHost, setCurrentIsHost] = useState(false);
 
   const dates = (current: Dayjs) =>
     isAccommodationReservable(
@@ -52,6 +48,15 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
       dayjs(availability?.interval.date_end)
     );
 
+  const changeDate: RangePickerProps['onChange'] = (date, value) => {
+    setCheckInDate(date[0]?.toDate());
+    setCheckOutDate(date[1]?.toDate());
+  };
+
+  const changeGuestCount = (value: number | null) => {
+    setGuestCount(value);
+  };
+
   useEffect(() => {
     getByAccommodationId(id).then((response) => {
       setAvailability(response.data);
@@ -59,13 +64,19 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
     getById(id)
       .then((response) => {
         setAccommodation(response.data);
-        getUserById(response.data.user_id).then((host) => {
+        const hostId = response.data.user_id
+          ? response.data.user_id
+          : response.data.userId;
+        if (hostId === currentUserId) {
+          setCurrentIsHost(true);
+        }
+        getUserById(hostId).then((host) => {
           setHost(host.data);
           setLoading(false);
         });
       })
       .catch((error) => console.log(error));
-  }, []);
+  }, [currentUserId, id]);
   return loading ? (
     <Loading />
   ) : (
@@ -78,7 +89,8 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
         </div>
         •
         <div className={styles.accommodation__rating}>
-          <StarTwoTone twoToneColor="#FFB900" /> 4.39 (8 reviews)
+          <StarTwoTone twoToneColor="#FFB900" /> {getRoundedRating(4.389)} (8
+          reviews)
         </div>
       </div>
       <div className={styles.accommodation__carousel}>
@@ -96,7 +108,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
               orientationMargin={0}
               style={{ fontSize: '20px', fontWeight: '600' }}
             >
-              Your host
+              Host
             </Divider>
             <div className={styles.accommodation__host__chip}>
               <UserChip
@@ -132,18 +144,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
           </div>
         </div>
         <div className={classNames(styles.reserveSection, 'frostedGlass')}>
-          <div className={styles.reserveSection__price}>
-            €{calculatePrice()}
-          </div>
-          <span className={styles.reserveSection__description}>
-            {availability?.pricing_type === 'Per_guest' ? (
-              <>per person</>
-            ) : (
-              <>per unit</>
-            )}{' '}
-            for {calculateDays()}{' '}
-            {calculateDays() > 1 ? <>nights</> : <>night</>}
-          </span>
+          <AccommodationPrice days={calculateDays()} price={calculatePrice()} />
           <DatePicker.RangePicker
             format="dddd, MMMM DD, YYYY"
             allowClear
@@ -155,6 +156,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
               borderRadius: '1rem',
               height: '54.4px',
             }}
+            onChange={(event) => changeDate(event)}
           />
           <InputNumber
             min={accommodation?.min_guests}
@@ -167,6 +169,9 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
               borderRadius: '1rem',
               height: '54.4px',
             }}
+            onChange={(event) => {
+              changeGuestCount(event);
+            }}
           />
           {userRole === 'guest' && (
             <Button
@@ -177,6 +182,15 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
           )}
         </div>
       </div>
+      {currentIsHost && (
+        <Divider
+          orientation="left"
+          orientationMargin={0}
+          style={{ fontSize: '20px', fontWeight: '600' }}
+        >
+          Manage availability
+        </Divider>
+      )}
     </div>
   );
 };

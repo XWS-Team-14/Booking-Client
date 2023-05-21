@@ -9,7 +9,7 @@ import { Form, Input, InputNumber, Upload } from 'antd';
 import { useRouter } from 'next/dist/client/router';
 import { ToastContainer, toast } from 'react-toastify';
 
-import { selectUser } from '@/common/store/slices/authSlice';
+import { selectAuthState, selectRole } from '@/common/store/slices/authSlice';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
@@ -37,18 +37,22 @@ const formItemLayoutWithOutLabel = {
   },
 };
 
-const Accommodations = () => {
+const CreateAccommodationForm = () => {
   const router = useRouter();
-  const user = useSelector(selectUser);
   const [loading, setLoading] = useState(true);
 
+  const authState = useSelector(selectAuthState);
+  const role = useSelector(selectRole);
+
   useEffect(() => {
-    if (user.email === null || user.role !== 'host') {
-      router.push('/');
-    } else {
+    if (authState === null) {
+      console.log('waiting...');
+    } else if (authState && role === 'host') {
       setLoading(false);
+    } else {
+      router.push('/');
     }
-  }, [user]);
+  }, [role, authState]);
 
   const onFinish = (values: AccommodationFormDto) => {
     console.log('Success:', values);
@@ -270,4 +274,4 @@ const Accommodations = () => {
   );
 };
 
-export default Accommodations;
+export default CreateAccommodationForm;

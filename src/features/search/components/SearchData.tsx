@@ -1,6 +1,7 @@
 import Loading from '@/common/components/loading/Loading';
-import AccommodationInfo from '@/features/accommodation/components/AccommodationCard/AccommodationCard';
-import { Col, Row, Space } from 'antd';
+import { calculateDays } from '@/common/utils/dateHelper';
+import AccommodationList from '@/features/accommodation/components/AccommodationList';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,18 +28,13 @@ const SearchData = ({ searchParams }: SearchDataProps) => {
   return fetched ? (
     <div className={styles.searchBarContainer}>
       <ToastContainer />
-      <Space className={styles.centerContainer}>
-        <Row gutter={[16, 24]} justify="start">
-          {accommodations?.items?.map((item) => (
-            <Col key={item.accommodationId}>
-              <AccommodationInfo item={item} extended={false} />
-            </Col>
-          ))}
-          {accommodations !== undefined &&
-            fetched &&
-            accommodations?.items === undefined && <p>Nothing found :(</p>}
-        </Row>
-      </Space>
+      <AccommodationList
+        accommodations={accommodations?.items}
+        days={calculateDays(
+          dayjs(searchParams?.start_date),
+          dayjs(searchParams?.end_date)
+        )}
+      />
     </div>
   ) : (
     <Loading />

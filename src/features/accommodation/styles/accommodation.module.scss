@@ -11,6 +11,15 @@
   align-items: center;
   width: 100vw;
 }
+
+.centerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 1240px;
+}
+
 .loginForm {
   width: 30vw;
 }
@@ -53,6 +62,9 @@
   max-width: 1240px;
 }
 
+.marginTop {
+  margin-top: 2rem;
+}
 .singleContent {
   margin-top: 2rem;
   display: flex;
@@ -143,7 +155,7 @@
   &__description {
     font-weight: 500;
     font-size: 14px;
-    margin-top: -0.6rem;
+    margin-top: -0.3rem;
   }
   &__price {
     font-weight: 600;

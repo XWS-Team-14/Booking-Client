@@ -1,6 +1,7 @@
 import { Location } from '@/common/types/Location';
 
 export interface SearchAccommodation {
+  id: string;
   accommodationId: string;
   name: string;
   location: Location;
@@ -12,4 +13,5 @@ export interface SearchAccommodation {
   totalPrice: number;
   basePrice: number;
   hostId?: string;
+  pricingType?: string;
 }

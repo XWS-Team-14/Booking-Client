@@ -1,6 +1,7 @@
 import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
 import {
+  selectAuthState,
   selectUser,
   setUserFirstName,
   setUserGender,
@@ -32,13 +33,17 @@ const UserProfile = () => {
   const [form] = Form.useForm();
   const user = useSelector(selectUser);
 
+  const authState = useSelector(selectAuthState);
+
   useEffect(() => {
-    if (!user.email) {
-      router.push('/');
-    } else {
+    if (authState === null) {
+      console.log('waiting...');
+    } else if (authState) {
       setLoading(false);
+    } else {
+      router.push('/');
     }
-  }, [user]);
+  }, [authState]);
 
   const handleTrySave = () => {
     setSaveModalOpen(true);
