@@ -1,7 +1,7 @@
 import Button from '@/common/components/button/Button';
 import { Availability } from '@/common/types/Availability';
 import { checkIfEmptyObjectOrFalsy } from '@/common/utils/checkIfEmptyObjectOrFalsy';
-import { isDateBeforeToday } from '@/common/utils/dateHelper';
+import { isTodayOrBefore } from '@/common/utils/dateHelper';
 import { DatePicker, Divider, Form, InputNumber, Select, Switch } from 'antd';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
@@ -41,7 +41,6 @@ const AvailabilityForm = ({
   const [mode, setMode] = useState<'create' | 'edit'>();
   const router = useRouter();
   const handleFinish = () => {
-    console.log(mode);
     const start = form
       .getFieldValue('dates')[0]
       .format('YYYY-MM-DD')
@@ -80,7 +79,6 @@ const AvailabilityForm = ({
           base_price: price,
           occupied_intervals: [],
         };
-        console.log(dto);
         createAvailability(dto)
           .then((res) => {
             console.log(res);
@@ -167,7 +165,7 @@ const AvailabilityForm = ({
         <DatePicker.RangePicker
           format="dddd, MMMM DD, YYYY"
           allowClear
-          disabledDate={isDateBeforeToday}
+          disabledDate={isTodayOrBefore}
         />
       </Form.Item>
       <Divider orientation="left" orientationMargin={0}>

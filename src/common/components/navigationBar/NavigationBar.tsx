@@ -98,7 +98,6 @@ const NavigationBar = () => {
         {user.role === 'host' && (
           <>
             <NavigationLink href="/accommodations" text="My accommodations" />
-            <NavigationLink href="/createAvailability" text="sdf" />
           </>
         )}
       </div>

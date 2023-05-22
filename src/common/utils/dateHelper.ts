@@ -8,6 +8,9 @@ export const disabledDateRangePicker: RangePickerProps['disabledDate'] = (
 export const isDateBeforeToday = (current: Dayjs) =>
   current < dayjs().endOf('day').add(-1, 'day');
 
+export const isTodayOrBefore = (current: Dayjs) =>
+  current < dayjs().endOf('day');
+
 export const isAccommodationReservable = (
   current: Dayjs,
   accommodationStart: Dayjs,

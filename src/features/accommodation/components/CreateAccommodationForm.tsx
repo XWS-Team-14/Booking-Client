@@ -69,7 +69,7 @@ const CreateAccommodationForm = () => {
   const onFinish = (values: AccommodationFormDto) => {
     let formData = new FormData();
     let feat = '';
-    for (let item of values.features) {
+    for (let item of tags) {
       feat += item + ',';
     }
     feat = feat.slice(0, feat.length - 1);
@@ -90,8 +90,7 @@ const CreateAccommodationForm = () => {
     create(formData)
       .then((res) => {
         toast.success('Success');
-        console.log(res);
-        router.push('/');
+        router.push('/accommodations');
       })
       .catch((err) => {
         toast.error(err);
@@ -107,7 +106,6 @@ const CreateAccommodationForm = () => {
 
   const handleClose = (removedTag: string) => {
     const newTags = tags.filter((tag) => tag !== removedTag);
-    console.log(newTags);
     setTags(newTags);
   };
 
