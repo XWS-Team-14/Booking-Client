@@ -12,7 +12,11 @@ import {
 } from '@/common/utils/dateHelper';
 import { getRoundedRating } from '@/common/utils/getRoundedRating';
 import AvailabilityForm from '@/features/availability/components/AvailabilityForm';
-import { getByAccommodationId } from '@/features/availability/services/availability.service';
+import {
+  getByAccommodationId,
+  getPrice,
+} from '@/features/availability/services/availability.service';
+import { PriceLookupDto } from '@/features/availability/types/PriceLookupDto';
 import UserChip from '@/features/user/components/chip/UserChip';
 import { getUserById } from '@/features/user/services/user.service';
 import { EnvironmentTwoTone, StarTwoTone } from '@ant-design/icons';
@@ -39,9 +43,21 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
   const [guestCount, setGuestCount] = useState<number>(1);
   const currentUserId = useSelector(selectId);
   const [host, setHost] = useState<UserDetails>();
+  const [price, setPrice] = useState<number>();
   const userRole = useSelector(selectRole);
-  const calculatePrice = () =>
-    availability?.base_price ? availability?.base_price * guestCount : 0;
+  const calculatePrice = async () => {
+    const dto: PriceLookupDto = {
+      interval: {
+        date_start: dayjs(checkInDate).format('YYYY-MM-DD').toString(),
+        date_end: dayjs(checkOutDate).format('YYYY-MM-DD').toString(),
+      },
+      guests: guestCount,
+      accommodation_id: accommodation?.id ? accommodation.id : '',
+    };
+    await getPrice(dto)
+      .then((response) => console.log(response))
+      .catch((error) => console.log(error));
+  };
   const [currentIsHost, setCurrentIsHost] = useState(false);
   const [editable, setEditable] = useState(false);
   const { Option } = Select;
@@ -60,6 +76,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
 
   const changeGuestCount = (value: number | null) => {
     setGuestCount(value);
+    calculatePrice();
   };
 
   useEffect(() => {
@@ -151,7 +168,10 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
           </div>
         </div>
         <div className={classNames(styles.reserveSection, 'frostedGlass')}>
-          <AccommodationPrice days={calculateDays()} price={calculatePrice()} />
+          <AccommodationPrice
+            days={calculateDays()}
+            price={price ? price : availability?.base_price}
+          />
           <DatePicker.RangePicker
             format="dddd, MMMM DD, YYYY"
             allowClear
