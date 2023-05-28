@@ -41,23 +41,33 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
   const [checkInDate, setCheckInDate] = useState<Date>();
   const [checkOutDate, setCheckOutDate] = useState<Date>();
   const [guestCount, setGuestCount] = useState<number>(1);
+  const [loadingPrice, setLoadingPrice] = useState<boolean>(false);
   const currentUserId = useSelector(selectId);
   const [host, setHost] = useState<UserDetails>();
   const [price, setPrice] = useState<number>();
   const userRole = useSelector(selectRole);
-  const calculatePrice = async () => {
-    const dto: PriceLookupDto = {
-      interval: {
-        date_start: dayjs(checkInDate).format('YYYY-MM-DD').toString(),
-        date_end: dayjs(checkOutDate).format('YYYY-MM-DD').toString(),
-      },
-      guests: guestCount,
-      accommodation_id: accommodation?.id ? accommodation.id : '',
-    };
-    await getPrice(dto)
-      .then((response) => console.log(response))
-      .catch((error) => console.log(error));
-  };
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      const dto: PriceLookupDto = {
+        interval: {
+          date_start: dayjs(checkInDate).format('YYYY-MM-DD').toString(),
+          date_end: dayjs(checkOutDate).format('YYYY-MM-DD').toString(),
+        },
+        guests: guestCount,
+        accommodation_id: accommodation?.id ? accommodation.id : '',
+      };
+      await getPrice(dto)
+        .then((response) => {
+          setPrice(response.data.price);
+          setLoadingPrice(false);
+        })
+        .catch((error) => console.log(error));
+    }, 1000);
+
+    return () => clearTimeout(getData);
+  }, [checkInDate, checkOutDate, guestCount]);
+
   const [currentIsHost, setCurrentIsHost] = useState(false);
   const [editable, setEditable] = useState(false);
   const { Option } = Select;
@@ -70,13 +80,19 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
     );
 
   const changeDate: RangePickerProps['onChange'] = (date, value) => {
-    setCheckInDate(date[0]?.toDate());
-    setCheckOutDate(date[1]?.toDate());
+    setLoadingPrice(true);
+    if (date) {
+      setCheckInDate(date[0]?.toDate());
+      setCheckOutDate(date[1]?.toDate());
+    } else {
+      setCheckInDate(undefined);
+      setCheckOutDate(undefined);
+    }
   };
 
   const changeGuestCount = (value: number | null) => {
+    setLoadingPrice(true);
     setGuestCount(value);
-    calculatePrice();
   };
 
   useEffect(() => {
@@ -169,7 +185,12 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
         </div>
         <div className={classNames(styles.reserveSection, 'frostedGlass')}>
           <AccommodationPrice
-            days={calculateDays()}
+            loading={loadingPrice}
+            days={
+              checkInDate && checkOutDate
+                ? calculateDays(dayjs(checkInDate), dayjs(checkOutDate))
+                : 1
+            }
             price={price ? price : availability?.base_price}
           />
           <DatePicker.RangePicker
