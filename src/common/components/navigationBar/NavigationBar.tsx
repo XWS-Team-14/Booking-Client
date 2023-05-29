@@ -12,13 +12,14 @@ import {
 import api from '@/common/utils/axiosInstance';
 import { logout } from '@/features/auth/services/auth.service';
 import {
+  BellOutlined,
   DownOutlined,
   IdcardOutlined,
   LockOutlined,
   LogoutOutlined,
   MailOutlined,
 } from '@ant-design/icons';
-import { Dropdown, MenuProps } from 'antd';
+import { Avatar, Badge, Divider, Dropdown, MenuProps } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -103,7 +104,21 @@ const NavigationBar = () => {
       </div>
       <div className={styles.buttons}>
         {authState ? (
-          <div className={styles.dropdown}>
+          <div className={styles.right}>
+            <Badge dot offset={[-11, 10]}>
+              <Avatar
+                style={{
+                  backgroundColor: 'rgba(113, 184, 228, 0)',
+                  color: 'black',
+                  cursor: 'pointer',
+                }}
+                icon={<BellOutlined />}
+              />
+            </Badge>
+            <Divider
+              type="vertical"
+              style={{ height: '2rem', marginLeft: '0.5rem' }}
+            />
             <Dropdown menu={{ items }} placement="bottom">
               <a onClick={(e) => e.preventDefault()}>
                 <div className={styles.dropdown}>
