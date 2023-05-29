@@ -12,19 +12,19 @@ import {
 import api from '@/common/utils/axiosInstance';
 import { logout } from '@/features/auth/services/auth.service';
 import {
-  BellOutlined,
   DownOutlined,
   IdcardOutlined,
   LockOutlined,
   LogoutOutlined,
   MailOutlined,
 } from '@ant-design/icons';
-import { Avatar, Badge, Divider, Dropdown, MenuProps } from 'antd';
+import { Divider, Dropdown, MenuProps } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 
+import Notifications from '@/features/notifications/compontents/Notifications';
 import UserChip from '@/features/user/components/chip/UserChip';
 import Logo from '../../../assets/images/logo.png';
 import Button from '../button/Button';
@@ -105,16 +105,7 @@ const NavigationBar = () => {
       <div className={styles.buttons}>
         {authState ? (
           <div className={styles.right}>
-            <Badge dot offset={[-11, 10]}>
-              <Avatar
-                style={{
-                  backgroundColor: 'rgba(113, 184, 228, 0)',
-                  color: 'black',
-                  cursor: 'pointer',
-                }}
-                icon={<BellOutlined />}
-              />
-            </Badge>
+            <Notifications />
             <Divider
               type="vertical"
               style={{ height: '2rem', marginLeft: '0.5rem' }}
