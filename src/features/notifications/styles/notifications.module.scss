@@ -2,10 +2,16 @@
   width: 500px;
   padding: 0.75rem 0.75rem 0 0.75rem;
 }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
 
 .title {
   font-size: 24px;
-  margin-top: -5px;
+  margin: 0;
   font-weight: 600;
 }
 
@@ -14,7 +20,7 @@
 }
 
 .list {
-  height: 500px;
+  height: 70vh;
   padding-right: 1rem;
   overflow: scroll;
 }
