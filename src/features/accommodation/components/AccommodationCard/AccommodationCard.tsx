@@ -18,8 +18,6 @@ interface AccommodationCardProps {
 const AccommodationCard = ({
   item,
   extended,
-  price,
-  pricingType,
   days,
 }: AccommodationCardProps) => {
   const router = useRouter();
@@ -41,11 +39,12 @@ const AccommodationCard = ({
         </div>
       }
     >
-      <Meta
-        title={<AccommodationHeader title={item.name} rating={4.3869} />}
-        description={getLocation()}
-        onClick={() => router.push(`/accommodations/${item.id}`)}
-      />
+      <div onClick={() => router.push(`/accommodations/${item.id}`)}>
+        <Meta
+          title={<AccommodationHeader title={item.name} rating={4.3869} />}
+          description={getLocation()}
+        />
+      </div>
       {item.totalPrice && (
         <div
           style={{ marginTop: '1rem' }}
@@ -53,7 +52,7 @@ const AccommodationCard = ({
         >
           <AccommodationPrice
             price={item.totalPrice}
-            days={days === 0 || isNaN(days) ? 1 : days}
+            days={(days === 0 || isNaN(days)) ? 1 : days}
           />
         </div>
       )}

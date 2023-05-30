@@ -54,7 +54,7 @@ const GuestReservations = () => {
 
         <div className={styles.reservationCard}>
           {reservations.map((reservation, index) => (
-            <div className={styles.reservationCardContent}>
+            <div key={index} className={styles.reservationCardContent}>
               <b>
                 {hosts[index].name} {hosts[index].lastname}
               </b>

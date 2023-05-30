@@ -11,7 +11,7 @@ const NotificationContent = () => {
     {
       key: 'all',
       label: `All`,
-      children: <NotificationList data={undefined} />,
+      children: <NotificationList />,
     },
     {
       key: 'unread',

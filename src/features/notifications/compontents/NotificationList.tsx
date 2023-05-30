@@ -1,52 +1,54 @@
+import { database } from '@/common/services/Firebase';
+import { selectId } from '@/common/store/slices/authSlice';
+import { snapshotToArray } from '@/common/utils/snapshotToArray';
 import { Avatar, List } from 'antd';
+import { onValue, push, ref } from 'firebase/database';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import styles from '../styles/notifications.module.scss';
 
-interface NotificationListProps {
-  data: any;
-}
+const NotificationList = () => {
+  const [allNotifications, setAllNotifications] = useState<Notification[]>([]);
+  const [unreadNotifications, setUnreadNotifications] = useState<
+    Notification[]
+  >([]);
 
-const NotificationList = ({ data }: NotificationListProps) => {
-  data = [
-    {
-      title: 'Ant Design Title 1',
-    },
-    {
-      title: 'Ant Design Title 2',
-    },
-    {
-      title: 'Ant Design Title 3',
-    },
-    {
-      title: 'Ant Design Title 4',
-    },
-    {
-      title: 'Ant Design Title 4',
-    },
-    {
-      title: 'Ant Design Title 4',
-    },
-    {
-      title: 'Ant Design Title 4',
-    },
-    {
-      title: 'Ant Design Title 4',
-    },
-  ];
+  const userId = useSelector(selectId);
+
+  useEffect(() => {
+    function writeUserData() {
+      push(ref(database, `notifications/${userId}`), {
+        type: 'reservation-created',
+        title: 'New reservation',
+        content: 'blabla',
+        status: 'unread',
+        sender: {
+          name: 'Miss Guest2',
+          id: '12345',
+          picture: '',
+        },
+        receiver: {
+          id: '234',
+        },
+      });
+    }
+    writeUserData();
+    const starCountRef = ref(database, `notifications/${userId}`);
+    onValue(starCountRef, (snapshot) => {
+      setAllNotifications(snapshotToArray(snapshot));
+    });
+  }, []);
   return (
     <List
       className={styles.list}
       itemLayout="horizontal"
-      dataSource={data}
+      dataSource={allNotifications}
       renderItem={(item, index) => (
         <List.Item>
           <List.Item.Meta
-            avatar={
-              <Avatar
-                src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`}
-              />
-            }
+            avatar={<Avatar src={item.sender.picture} />}
             title={<a href="https://ant.design">{item.title}</a>}
-            description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+            description={item.content}
           />
         </List.Item>
       )}
