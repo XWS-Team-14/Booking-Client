@@ -1,4 +1,5 @@
 interface Notification {
+  key: string;
   type:
     | 'new-reservation'
     | 'reservation-cancelled'

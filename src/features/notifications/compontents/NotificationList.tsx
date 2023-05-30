@@ -1,57 +1,33 @@
+import Button from '@/common/components/button/Button';
 import { database } from '@/common/services/Firebase';
 import { selectId } from '@/common/store/slices/authSlice';
-import { snapshotToArray } from '@/common/utils/snapshotToArray';
-import { Avatar, List } from 'antd';
+import { Avatar, Badge, List } from 'antd';
 import dayjs from 'dayjs';
-import { onValue, push, ref } from 'firebase/database';
-import { useEffect, useState } from 'react';
+import { ref, update } from 'firebase/database';
 import { useSelector } from 'react-redux';
 import styles from '../styles/notifications.module.scss';
 import Notification from '../types/Notification';
 
-const NotificationList = () => {
-  const [allNotifications, setAllNotifications] = useState<Notification[]>([]);
-  const [unreadNotifications, setUnreadNotifications] = useState<
-    Notification[]
-  >([]);
+interface NotificationListProps {
+  type: 'all' | 'unread';
+  data: Notification[];
+}
 
+const NotificationList = ({ type, data }: NotificationListProps) => {
   const userId = useSelector(selectId);
 
-  useEffect(() => {
-    function writeUserData() {
-      push(ref(database, `notifications/${userId}`), {
-        type: 'reservation-created',
-        title: 'New reservation',
-        content:
-          'Miss Guest has created a reservation request for your accommodation Prezident hotel.',
-        status: 'unread',
-        sender: {
-          name: 'Miss Guest',
-          id: '1234',
-          picture: '',
-        },
-        receiver: {
-          id: '234',
-        },
-        timestamp: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-      });
-    }
-    const starCountRef = ref(database, `notifications/${userId}`);
-    onValue(starCountRef, (snapshot) => {
-      setAllNotifications(
-        snapshotToArray(snapshot).sort(
-          (a, b) =>
-            dayjs(b.timestamp).toDate().valueOf() -
-            dayjs(a.timestamp).toDate().valueOf()
-        )
-      );
+  const markAsRead = (notificationKey: string) => {
+    update(ref(database, `notifications/${userId}/${notificationKey}`), {
+      status: 'read',
     });
-  }, []);
+  };
+
   return (
     <List
       className={styles.list}
       itemLayout="horizontal"
-      dataSource={allNotifications}
+      dataSource={data}
+      locale={{ emptyText: 'No new notifications.' }}
       renderItem={(item, index) => (
         <List.Item
           style={{
@@ -61,14 +37,26 @@ const NotificationList = () => {
           }}
         >
           <List.Item.Meta
-            style={{ width: '100%' }}
+            style={{
+              width: '100%',
+            }}
             avatar={<Avatar src={item.sender.picture} />}
-            title={item.title}
+            title={
+              <div className={styles.messageTitle}>
+                <p>{item.title}</p>{' '}
+                {item.status === 'unread' && <Badge dot offset={[2, 8]} />}
+              </div>
+            }
             description={item.content}
           />
-          <p className={styles.timestamp}>
-            {dayjs(item.timestamp).format('MMMM DD, YYYY HH:mm')}
-          </p>
+          <div className={styles.timestamp}>
+            <p>{dayjs(item.timestamp).format('MMMM DD, YYYY HH:mm')}</p>
+            <Button
+              type="transparent"
+              text="Mark as read"
+              action={() => markAsRead(item.key)}
+            />
+          </div>
         </List.Item>
       )}
     />
