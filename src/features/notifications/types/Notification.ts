@@ -11,6 +11,7 @@ interface Notification {
   sender: Sender;
   receiver: Receiver;
   status: 'read' | 'unread';
+  timestamp: string;
 }
 
 interface Sender {
