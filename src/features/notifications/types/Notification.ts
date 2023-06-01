@@ -5,11 +5,14 @@ interface Notification {
     | 'reservation-cancelled'
     | 'new-host-rating'
     | 'new-accommodation-rating'
-    | 'featured-host-update'
-    | 'host-reply';
+    | 'featured-host-lost'
+    | 'featured-host-gained'
+    | 'host-reply-approved'
+    | 'host-reply-denied';
   title: string;
   content: string;
   sender: Sender;
+  accommodation: Accommodation;
   receiver: Receiver;
   status: 'read' | 'unread';
   timestamp: string;
@@ -23,5 +26,10 @@ interface Sender {
 
 interface Receiver {
   id: string;
+}
+
+interface Accommodation {
+  id: string;
+  name: string;
 }
 export default Notification;

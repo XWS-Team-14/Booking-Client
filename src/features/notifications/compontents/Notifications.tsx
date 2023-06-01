@@ -3,7 +3,7 @@ import { selectId } from '@/common/store/slices/authSlice';
 import { snapshotToArray } from '@/common/utils/snapshotToArray';
 import { Popover } from 'antd';
 import dayjs from 'dayjs';
-import { onValue, push, ref } from 'firebase/database';
+import { onValue, ref } from 'firebase/database';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import NotificationContent from './NotificationContent';
@@ -18,26 +18,8 @@ const Notifications = () => {
   const userId = useSelector(selectId);
 
   useEffect(() => {
-    function writeUserData() {
-      push(ref(database, `notifications/${userId}`), {
-        type: 'reservation-created',
-        title: 'New reservation',
-        content:
-          'Miss Guest2 has created a reservation request for your accommodation Prezident hotel.',
-        status: 'unread',
-        sender: {
-          name: 'Miss Guest2',
-          id: '1234',
-          picture: '',
-        },
-        receiver: {
-          id: '234',
-        },
-        timestamp: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-      });
-    }
-    const starCountRef = ref(database, `notifications/${userId}`);
-    onValue(starCountRef, (snapshot) => {
+    const notificationsRef = ref(database, `notifications/${userId}`);
+    onValue(notificationsRef, (snapshot) => {
       const notifications = snapshotToArray(snapshot).sort(
         (a, b) =>
           dayjs(b.timestamp).toDate().valueOf() -
