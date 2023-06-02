@@ -18,12 +18,13 @@ import {
   LogoutOutlined,
   MailOutlined,
 } from '@ant-design/icons';
-import { Dropdown, MenuProps } from 'antd';
+import { Divider, Dropdown, MenuProps } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 
+import Notifications from '@/features/notifications/compontents/Notifications';
 import UserChip from '@/features/user/components/chip/UserChip';
 import Logo from '../../../assets/images/logo.png';
 import Button from '../button/Button';
@@ -103,7 +104,12 @@ const NavigationBar = () => {
       </div>
       <div className={styles.buttons}>
         {authState ? (
-          <div className={styles.dropdown}>
+          <div className={styles.right}>
+            <Notifications />
+            <Divider
+              type="vertical"
+              style={{ height: '2rem', marginLeft: '0.5rem' }}
+            />
             <Dropdown menu={{ items }} placement="bottom">
               <a onClick={(e) => e.preventDefault()}>
                 <div className={styles.dropdown}>
