@@ -1,4 +1,5 @@
 import api from '@/common/utils/axiosInstance';
+import { PriceLookupDto } from '../types/PriceLookupDto';
 import AvailabilityDto from '../types/availabilityDto';
 import AvailabilitySearchDto from '../types/searchDto';
 
@@ -22,3 +23,13 @@ export const getById = async (id: string) =>
 
 export const getByAccommodationId = async (accommodationId: string) =>
   await api.get(`${prefix}/accommodation/${accommodationId}`);
+
+export const getPrice = async (dto: PriceLookupDto) => {
+  const params = new URLSearchParams({
+    date_start: dto.interval.date_start ? dto.interval.date_start : '',
+    date_end: dto.interval.date_end ? dto.interval.date_end : '',
+    guests: dto.guests ? dto.guests.toString() : '1',
+    accommodation_id: dto.accommodation_id ? dto.accommodation_id : '',
+  });
+  return await api.get(`${prefix}/price/?${params}`);
+};
