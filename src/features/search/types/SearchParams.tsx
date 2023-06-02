@@ -4,5 +4,5 @@ export interface SearchParams {
   city: string | undefined;
   country: string | undefined;
   address: string | undefined;
-  guestCount: number | undefined;
+  guests: number | undefined;
 }

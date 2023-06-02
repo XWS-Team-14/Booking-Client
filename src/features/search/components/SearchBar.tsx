@@ -29,7 +29,7 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
       address: searchParams?.address,
       start_date: searchParams?.start_date,
       end_date: searchParams?.end_date,
-      guestCount: searchParams?.guestCount,
+      guests: searchParams?.guests,
     });
   }
   function changeCity(value: string) {
@@ -39,7 +39,7 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
       address: searchParams?.address,
       start_date: searchParams?.start_date,
       end_date: searchParams?.end_date,
-      guestCount: searchParams?.guestCount,
+      guests: searchParams?.guests,
     });
   }
   function changeAddress(value: string) {
@@ -49,7 +49,7 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
       address: value,
       start_date: searchParams?.start_date,
       end_date: searchParams?.end_date,
-      guestCount: searchParams?.guestCount,
+      guests: searchParams?.guests,
     });
   }
   const changeDate: RangePickerProps['onChange'] = (date, value) => {
@@ -65,7 +65,7 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
       address: searchParams?.address,
       start_date: startDate,
       end_date: endDate,
-      guestCount: searchParams?.guestCount,
+      guests: searchParams?.guests,
     });
   };
   function changeGuests(value: number | null) {
@@ -75,7 +75,7 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
       address: searchParams?.address,
       start_date: searchParams?.start_date,
       end_date: searchParams?.end_date,
-      guestCount: value ? value : 0,
+      guests: value ? value : 0,
     });
   }
 

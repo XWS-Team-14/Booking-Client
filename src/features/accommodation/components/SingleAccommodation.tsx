@@ -47,11 +47,11 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
     });
     getById(id)
       .then((response) => {
-        setAccommodation(response.data);
+        setAccommodation(response.data.item);
         console.log(response.data);
-        const hostId = response.data.user_id
-          ? response.data.user_id
-          : response.data.userId;
+        const hostId = response.data.item.host_id
+          ? response.data.item.host_id
+          : response.data.item.host_id;
         if (hostId === currentUserId) {
           setCurrentIsHost(true);
         }

@@ -24,7 +24,7 @@ const AccommodationList = ({
                 item={item}
                 extended={extended}
                 days={days}
-                price={item.basePrice}
+                price={item.base_price}
               />
             </Col>
           ))}
