@@ -16,6 +16,8 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styles from '../styles/reservation.module.scss';
+import { CreateReservationDto } from '../types/ReservationDto';
+import { createReservation } from '../services/reservation.service';
 
 interface CreateReservationFormProps {
   accommodation: Accommodation;
@@ -61,6 +63,20 @@ const CreateReservationForm = ({
       dayjs(availability?.interval.date_end)
     );
 
+  const handleFinish = async () => {
+    const dto: CreateReservationDto = {
+      accommodation_id: accommodation.id,
+      host_id: accommodation.user_id,
+      number_of_guests: guestCount,
+      beginning_date: dayjs(checkInDate).format('YYYY-MM-DD'),
+      ending_date: dayjs(checkOutDate).format('YYYY-MM-DD'),
+      total_price: price ? price : 0,
+    };
+    console.log(dto);
+    await createReservation(dto)
+      .then((response) => console.log(response))
+      .catch((err) => console.log(err));
+  };
   const changeDate: RangePickerProps['onChange'] = (date, value) => {
     setLoadingPrice(true);
     if (date) {
@@ -121,6 +137,7 @@ const CreateReservationForm = ({
           type="primary"
           text="Reserve"
           style={{ minHeight: '2.5rem', fontSize: '14px' }}
+          action={handleFinish}
         />
       )}
     </div>

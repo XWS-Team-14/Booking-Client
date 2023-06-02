@@ -1,6 +1,6 @@
 import api from '@/common/utils/axiosInstance';
 import AccommodationDto from '@/features/availability/types/accommodationDto';
-import ReservationDto from '../types/ReservationDto';
+import ReservationDto, { CreateReservationDto } from '../types/ReservationDto';
 
 export const getByHost = async (): Promise<ReservationDto[]> => {
   return await api.get(`/v1/reservation/host`);
@@ -17,7 +17,7 @@ export const acceptReservation = async (dto: ReservationDto) => {
   return await api.put('/v1/reservation/accept', dto);
 };
 export const createReservation = async (
-  dto: ReservationDto
+  dto: CreateReservationDto
 ): Promise<string> => {
   return await api.post('/v1/reservation/create', dto);
 };
