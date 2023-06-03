@@ -69,7 +69,7 @@ const AvailabilityForm = ({
       if (!!start && !!end && pricingType) {
         const dto = {
           availability_id: '',
-          accomodation_id: accommodationId,
+          accommodation_id: accommodationId,
           interval: {
             date_start: start,
             date_end: end,
@@ -91,7 +91,7 @@ const AvailabilityForm = ({
     } else {
       const dto = {
         availability_id: availability?.availability_id,
-        accomodation_id: accommodationId,
+        accommodation_id: accommodationId,
         interval: {
           date_start: start,
           date_end: end,
@@ -201,7 +201,7 @@ const AvailabilityForm = ({
         ]}
       >
         <Select placeholder="Pricing strategy" optionLabelProp="label">
-          <Option value="Per_accomodation_unit" label="Per unit">
+          <Option value="Per_accommodation_unit" label="Per unit">
             Per unit
           </Option>
           <Option value="Per_guest" label="Per guest">

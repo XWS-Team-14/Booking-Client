@@ -3,7 +3,7 @@ import SpecialPricing from './specialPricing';
 
 export default interface AvailabilityDto {
   availability_id?: string;
-  accomodation_id: string;
+  accommodation_id: string;
   interval: DateInterval;
   pricing_type: string;
   base_price: number;

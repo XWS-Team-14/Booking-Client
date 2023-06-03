@@ -67,7 +67,7 @@ const CreateReservationForm = ({
   const handleFinish = async () => {
     const dto: CreateReservationDto = {
       accommodation_id: accommodation.id,
-      host_id: accommodation.user_id,
+      host_id: accommodation.host_id,
       number_of_guests: guestCount,
       beginning_date: dayjs(checkInDate).format('YYYY-MM-DD'),
       ending_date: dayjs(checkOutDate).format('YYYY-MM-DD'),

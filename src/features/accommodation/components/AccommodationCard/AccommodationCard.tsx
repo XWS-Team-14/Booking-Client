@@ -27,32 +27,32 @@ const AccommodationCard = ({
       ? `${item.location.address}, ${item.location.city}, ${item.location.country}`
       : '';
 
-  const getImages = () => (item.imageUrls ? item.imageUrls : []);
+  const getImages = () => (item.image_urls ? item.image_urls : []);
 
   const getFeatures = () => (item.features ? item.features : []);
   return (
     <Card
       style={{ width: 400, cursor: 'pointer' }}
       cover={
-        <div onClick={() => router.push(`/accommodations/${item.id}`)}>
+        <div onClick={() => router.push(`/accommodations/${item.accommodation_id}`)}>
           <AccommodationImages images={getImages()} />
         </div>
       }
     >
-      <div onClick={() => router.push(`/accommodations/${item.id}`)}>
+      <div onClick={() => router.push(`/accommodations/${item.accommodation_id}`)}>
         <Meta
           title={<AccommodationHeader title={item.name} rating={4.3869} />}
           description={getLocation()}
         />
       </div>
-      {item.totalPrice && (
+      {item.total_price && (
         <div
           style={{ marginTop: '1rem' }}
-          onClick={() => router.push(`/accommodations/${item.id}`)}
+          onClick={() => router.push(`/accommodations/${item.accommodation_id}`)}
         >
           <AccommodationPrice
-            price={item.totalPrice}
-            days={days === 0 || isNaN(days) ? 1 : days}
+            price={item.total_price}
+            days={(days === 0 || isNaN(days)) ? 1 : days}
           />
         </div>
       )}
