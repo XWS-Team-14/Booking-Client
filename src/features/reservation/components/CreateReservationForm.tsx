@@ -13,11 +13,12 @@ import { DatePicker, InputNumber } from 'antd';
 import { RangePickerProps } from 'antd/es/date-picker';
 import classNames from 'classnames';
 import dayjs, { Dayjs } from 'dayjs';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { createReservation } from '../services/reservation.service';
 import styles from '../styles/reservation.module.scss';
 import { CreateReservationDto } from '../types/ReservationDto';
-import { createReservation } from '../services/reservation.service';
 
 interface CreateReservationFormProps {
   accommodation: Accommodation;
@@ -34,7 +35,7 @@ const CreateReservationForm = ({
   const [loadingPrice, setLoadingPrice] = useState<boolean>(false);
   const [price, setPrice] = useState<number>();
   const userRole = useSelector(selectRole);
-
+  const router = useRouter();
   useEffect(() => {
     const getData = setTimeout(async () => {
       const dto: PriceLookupDto = {
@@ -72,9 +73,8 @@ const CreateReservationForm = ({
       ending_date: dayjs(checkOutDate).format('YYYY-MM-DD'),
       total_price: price ? price : 0,
     };
-    console.log(dto);
     await createReservation(dto)
-      .then((response) => console.log(response))
+      .then((response) => router.push('/reservations/history'))
       .catch((err) => console.log(err));
   };
   const changeDate: RangePickerProps['onChange'] = (date, value) => {
@@ -132,14 +132,12 @@ const CreateReservationForm = ({
           changeGuestCount(event);
         }}
       />
-      {userRole === 'guest' && (
-        <Button
-          type="primary"
-          text="Reserve"
-          style={{ minHeight: '2.5rem', fontSize: '14px' }}
-          action={handleFinish}
-        />
-      )}
+      <Button
+        type="primary"
+        text="Reserve"
+        style={{ minHeight: '2.5rem', fontSize: '14px' }}
+        action={handleFinish}
+      />
     </div>
   );
 };

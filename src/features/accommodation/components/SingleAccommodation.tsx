@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
-import { selectId } from '@/common/store/slices/authSlice';
+import { selectId, selectRole } from '@/common/store/slices/authSlice';
 import { Accommodation } from '@/common/types/Accommodation';
 import { Availability } from '@/common/types/Availability';
 import { UserDetails } from '@/common/types/User';
@@ -30,6 +30,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
   const [availability, setAvailability] = useState<Availability>();
   const [loading, setLoading] = useState(true);
   const currentUserId = useSelector(selectId);
+  const currentUserRole = useSelector(selectRole);
   const [host, setHost] = useState<UserDetails>();
   const [currentIsHost, setCurrentIsHost] = useState(false);
   const [editable, setEditable] = useState(false);
@@ -88,7 +89,10 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
 
       <div className={styles.singleContent}>
         <div className={styles.infoWrapper}>
-          <div className={styles.accommodation__host}>
+          <div
+            className={styles.accommodation__host}
+            style={{ width: currentUserRole === 'host' ? '100%' : '90%' }}
+          >
             <Divider
               orientation="left"
               orientationMargin={0}
@@ -104,7 +108,10 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
               />
             </div>
           </div>
-          <div className={styles.accommodation__amenities}>
+          <div
+            className={styles.accommodation__amenities}
+            style={{ width: currentUserRole === 'host' ? '100%' : '90%' }}
+          >
             <Divider
               orientation="left"
               orientationMargin={0}
@@ -129,10 +136,12 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
             ))}
           </div>
         </div>
-        <CreateReservationForm
-          accommodation={accommodation}
-          availability={availability}
-        />
+        {currentUserRole === 'guest' && (
+          <CreateReservationForm
+            accommodation={accommodation}
+            availability={availability}
+          />
+        )}
       </div>
       {currentIsHost && (
         <>
