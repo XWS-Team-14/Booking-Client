@@ -26,6 +26,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import Notifications from '@/features/notifications/compontents/Notifications';
 import UserChip from '@/features/user/components/chip/UserChip';
+import { getCurrentUserData } from '@/features/user/services/user.service';
+import { useEffect } from 'react';
 import Logo from '../../../assets/images/logo.png';
 import Button from '../button/Button';
 import NavigationLink from '../navigationLink/NavigationLink';
@@ -36,6 +38,13 @@ const NavigationBar = () => {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
   const router = useRouter();
+
+  useEffect(() => {
+    const user = getCurrentUserData();
+    if (user === null) {
+      dispatch(setAuthState(false));
+    }
+  });
 
   const handleLogout = async () => {
     await logout().then(() => {

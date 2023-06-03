@@ -24,8 +24,6 @@ const SignUp = () => {
   useEffect(() => {
     if (authState) {
       router.push('/');
-    } else if (authState === null) {
-      console.log('waiting...');
     } else {
       setLoading(false);
     }

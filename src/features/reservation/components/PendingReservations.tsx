@@ -91,7 +91,7 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
         })
         .catch((error) => console.log(error));
     }
-  }, [authState, userRole, needsUpdate]);
+  }, [authState, userRole, needsUpdate, accommodationId]);
 
   const columns = [
     {
