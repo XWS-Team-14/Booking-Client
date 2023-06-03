@@ -7,8 +7,9 @@ import {
 } from '@/common/store/slices/authSlice';
 import { Accommodation } from '@/common/types/Accommodation';
 import { getById } from '@/features/accommodation/services/accommodation.service';
+import { getUserById } from '@/features/user/services/user.service';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { Button, Table, Tag } from 'antd';
+import { Button, Table, Tag, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -33,6 +34,7 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
   const [reservations, setReservations] = useState<ReservationDto[]>([]);
   const [accommodation, setAccommodation] = useState();
   const [needsUpdate, setNeedsUpdate] = useState(true);
+  const [guests, setGuests] = useState(new Map());
 
   const handleStatusUpdate = async (
     id: string,
@@ -68,15 +70,51 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
         .catch((error) => console.log(error));
       getByAccommodation(accommodationId)
         .then((response) => {
+          const items = response.data.items as ReservationDto[];
           setReservations(response.data.items);
-          setLoading(false);
-          setNeedsUpdate(false);
+          console.log(items);
+          if (items !== undefined) {
+            for (let i = 0; i < items.length; i++) {
+              const item = items[i];
+              const userId = item.guest.id;
+              getUserById(userId)
+                .then((response) => {
+                  setGuests(guests.set(item.guest.id, response.data));
+                  setNeedsUpdate(false);
+                  if (i === items.length - 1) {
+                    setLoading(false);
+                  }
+                })
+                .catch((error) => console.log(error));
+            }
+          }
         })
         .catch((error) => console.log(error));
     }
   }, [authState, userRole, needsUpdate]);
 
   const columns = [
+    {
+      title: 'Guest',
+      dataIndex: 'guest',
+      key: 'guest',
+      render: (guest) => {
+        const user = guests.get(guest.id);
+        const cancelledCount = guest.canceledReservations;
+        return cancelledCount !== 0 ? (
+          <Tooltip
+            trigger="hover"
+            title={`Canceled ${cancelledCount} reservations previously.`}
+          >
+            {user.first_name} {user.last_name}
+          </Tooltip>
+        ) : (
+          <>
+            {user.first_name} {user.last_name}
+          </>
+        );
+      },
+    },
     {
       title: 'Check-in',
       dataIndex: 'beginning_date',
