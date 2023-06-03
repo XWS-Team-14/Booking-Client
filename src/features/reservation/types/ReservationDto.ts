@@ -1,6 +1,6 @@
 export interface ReservationDto {
   id: string;
-  accommodation: any;
+  accommodation: AccommodationWithId;
   host_id: string;
   guest: any;
   number_of_guests: number;
@@ -8,6 +8,10 @@ export interface ReservationDto {
   ending_date: Date;
   total_price: number;
   status: number;
+}
+
+export interface AccommodationWithId {
+  id: string;
 }
 
 export interface CreateReservationDto {

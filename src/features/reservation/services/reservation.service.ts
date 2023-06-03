@@ -1,6 +1,6 @@
 import api from '@/common/utils/axiosInstance';
 import AccommodationDto from '@/features/availability/types/accommodationDto';
-import ReservationDto, { CreateReservationDto } from '../types/ReservationDto';
+import {ReservationDto, CreateReservationDto } from '../types/ReservationDto';
 
 export const getByHost = async (): Promise<ReservationDto[]> => {
   return await api.get(`/v1/reservation/host`);
@@ -24,7 +24,7 @@ export const createReservation = async (
 export const cancelReservation = async (id: string): Promise<string> => {
   return await api.delete(`/v1/reservation/delete/${id}`);
 };
-export const getActiveByGuest = async (): Promise<ReservationDto[]> => {
+export const getActiveByGuest = async () => {
   return await api.get(`/v1/reservation/guest/active`);
 };
 export const getUserById = async (id: string) => {

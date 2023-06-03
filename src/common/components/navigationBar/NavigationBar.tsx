@@ -101,6 +101,14 @@ const NavigationBar = () => {
             <NavigationLink href="/accommodations" text="My accommodations" />
           </>
         )}
+        {user.role === 'guest' && (
+          <>
+            <NavigationLink
+              href="/reservations/history"
+              text="My reservations"
+            />
+          </>
+        )}
       </div>
       <div className={styles.buttons}>
         {authState ? (

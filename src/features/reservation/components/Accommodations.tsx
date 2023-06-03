@@ -11,24 +11,6 @@ import styles from '../styles/accommodation.module.scss';
 import Loading from '@/common/components/loading/Loading';
 import { getAccommodations } from '../services/reservation.service';
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 20 },
-  },
-};
-
-const formItemLayoutWithOutLabel = {
-  wrapperCol: {
-    xs: { span: 24, offset: 0 },
-    sm: { span: 20, offset: 4 },
-  },
-};
-
 const Accommodations = () => {
   const router = useRouter();
   const user = useSelector(selectUser);
