@@ -4,8 +4,12 @@ import { selectAuthState, selectRole } from '@/common/store/slices/authSlice';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getActiveByGuest } from '../services/reservation.service';
+import {
+  cancelReservation,
+  getActiveByGuest,
+} from '../services/reservation.service';
 
+import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
 import { Accommodation } from '@/common/types/Accommodation';
 import { getById } from '@/features/accommodation/services/accommodation.service';
@@ -21,6 +25,7 @@ const GuestHistory = () => {
   const userRole = useSelector(selectRole);
   const [reservations, setReservations] = useState<ReservationDto[]>([]);
   const [accommodations, setAccommodations] = useState(new Map());
+  const [needsUpdate, setNeedsUpdate] = useState(false);
   useEffect(() => {
     if (authState === null) {
       console.log('waiting...');
@@ -36,6 +41,7 @@ const GuestHistory = () => {
             const accommodationId = item.accommodation.id;
             getById(accommodationId)
               .then((response) => {
+                setNeedsUpdate(false);
                 setAccommodations(
                   accommodations.set(accommodationId, response.data)
                 );
@@ -48,7 +54,13 @@ const GuestHistory = () => {
         })
         .catch((err) => console.log(err));
     }
-  }, [authState, userRole]);
+  }, [authState, userRole, needsUpdate]);
+
+  const handleCancel = async (id: string) => {
+    await cancelReservation(id)
+      .then((response) => setNeedsUpdate(true))
+      .catch((error) => console.log(error));
+  };
 
   const columns = [
     {
@@ -133,6 +145,25 @@ const GuestHistory = () => {
         );
       },
       sorter: (a, b) => a.status - b.status,
+    },
+    {
+      title: '',
+      dataIndex: '',
+      key: 'cancel',
+      render: (a, b) => {
+        const isCancellable =
+          dayjs().endOf('day') < dayjs(a.beginning_date).endOf('day');
+        return (
+          isCancellable && (
+            <Button
+              action={() => handleCancel(a.reservation_id)}
+              style={{ color: '#f04668' }}
+              type="transparent"
+              text="Cancel"
+            />
+          )
+        );
+      },
     },
   ];
 
