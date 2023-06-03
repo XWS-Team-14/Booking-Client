@@ -75,6 +75,7 @@
 .table {
   margin-top: 2rem;
   width: 100%;
+  max-width: 1240px;
   border: 1px solid transparent;
   table {
     border-radius: 1rem !important;
@@ -83,4 +84,9 @@
   td {
     background-color: rgb(255, 255, 255) !important;
   }
+}
+
+.manageButtons {
+  display: flex;
+  gap: 0.25rem;
 }

@@ -52,18 +52,18 @@ const AccommodationCard = ({
         >
           <AccommodationPrice
             price={item.totalPrice}
-            days={(days === 0 || isNaN(days)) ? 1 : days}
+            days={days === 0 || isNaN(days) ? 1 : days}
           />
         </div>
       )}
-      {extended && (
+      {extended && !item.autoAcceptenceFlag && (
         <>
           <Divider />
           <Button
             type="transparent"
             style={{ fontSize: '14px' }}
-            text="See pending reservations"
-            action={() => router.push('/')}
+            text="See reservations"
+            action={() => router.push(`/reservations/${item.id}`)}
           ></Button>
         </>
       )}

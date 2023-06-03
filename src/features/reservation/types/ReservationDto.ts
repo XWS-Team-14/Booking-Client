@@ -22,3 +22,7 @@ export interface CreateReservationDto {
   ending_date: string;
   total_price: number;
 }
+
+export interface ReservationStatusDto {
+  status: string;
+}

@@ -4,10 +4,7 @@ import { selectAuthState, selectRole } from '@/common/store/slices/authSlice';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  cancelReservation,
-  getActiveByGuest,
-} from '../services/reservation.service';
+import { cancelReservation, getByGuest } from '../services/reservation.service';
 
 import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
@@ -32,24 +29,28 @@ const GuestHistory = () => {
     } else if (!authState || userRole !== 'guest') {
       router.push('/');
     } else {
-      getActiveByGuest()
+      getByGuest()
         .then((response) => {
           const items = response.data.items as ReservationDto[];
-          setReservations(items);
-          for (let i = 0; i < items.length; i++) {
-            const item = items[i];
-            const accommodationId = item.accommodation.id;
-            getById(accommodationId)
-              .then((response) => {
-                setNeedsUpdate(false);
-                setAccommodations(
-                  accommodations.set(accommodationId, response.data)
-                );
-                if (i === items.length - 1) {
-                  setLoading(false);
-                }
-              })
-              .catch((error) => console.log(error));
+          setReservations(items !== undefined ? items : []);
+          if (items !== undefined) {
+            for (let i = 0; i < items.length; i++) {
+              const item = items[i];
+              const accommodationId = item.accommodation.id;
+              getById(accommodationId)
+                .then((response) => {
+                  setNeedsUpdate(false);
+                  setAccommodations(
+                    accommodations.set(accommodationId, response.data)
+                  );
+                  if (i === items.length - 1) {
+                    setLoading(false);
+                  }
+                })
+                .catch((error) => console.log(error));
+            }
+          } else {
+            setLoading(false);
           }
         })
         .catch((err) => console.log(err));
@@ -67,14 +68,18 @@ const GuestHistory = () => {
       title: 'Accommodation',
       dataIndex: 'accommodation',
       key: 'accommodation',
-      render: (accommodation: Accommodation) => {
-        console.log(accommodations);
-        console.log(accommodation.id);
-        const accommodation2 = accommodations.get(
-          accommodation.id
+      render: (item) => {
+        const accommodation = accommodations.get(item.id) as Accommodation;
+        return <b>{accommodation ? accommodation.name : ''}</b>;
+      },
+      sorter: (a, b) => {
+        const accommodation_a = accommodations.get(
+          a.accommodation.id
         ) as Accommodation;
-        console.log(accommodation2);
-        return <b>{accommodation2 ? accommodation2.name : ''}</b>;
+        const accommodation_b = accommodations.get(
+          b.accommodation.id
+        ) as Accommodation;
+        return accommodation_a.name.localeCompare(accommodation_b.name);
       },
     },
     {
@@ -122,7 +127,7 @@ const GuestHistory = () => {
         let color;
         switch (status) {
           case 1:
-            formatted = 'DENIED';
+            formatted = 'REJECTED';
             color = 'red';
             break;
           case 2:
@@ -152,7 +157,8 @@ const GuestHistory = () => {
       key: 'cancel',
       render: (a, b) => {
         const isCancellable =
-          dayjs().endOf('day') < dayjs(a.beginning_date).endOf('day');
+          dayjs().endOf('day') < dayjs(a.beginning_date).endOf('day') &&
+          a.status !== 1;
         return (
           isCancellable && (
             <Button
@@ -175,6 +181,7 @@ const GuestHistory = () => {
       dataSource={reservations}
       columns={columns}
       pagination={{ position: ['bottomCenter'] }}
+      locale={{ emptyText: 'No reservations yet.' }}
     ></Table>
   );
 };
