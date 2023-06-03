@@ -12,7 +12,7 @@ export const fetchData = async (
     country: checkValueString(dto?.country),
     city: checkValueString(dto?.city),
     address: checkValueString(dto?.address),
-    guests: checkValueNumber(dto?.guestCount).toString(),
+    guests: checkValueNumber(dto?.guests).toString(),
     date_start: checkValueString(dto?.start_date),
     date_end: checkValueString(dto?.end_date),
   });
