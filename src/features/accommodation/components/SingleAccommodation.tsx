@@ -49,7 +49,6 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
     getById(id)
       .then((response) => {
         setAccommodation(response.data.item);
-        console.log(response.data);
         const hostId = response.data.item.host_id
           ? response.data.item.host_id
           : response.data.item.host_id;

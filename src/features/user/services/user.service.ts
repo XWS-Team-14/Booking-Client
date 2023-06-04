@@ -20,7 +20,7 @@ export const getUserById = async (userId: string) => {
 
 export const getCurrentUserData = async () => {
   const user = await getCurrentUser();
-  if (user.status === 200) {
+  if (!!user && user.status === 200) {
     return {
       id: user.data.id,
       firstName: user.data.first_name,

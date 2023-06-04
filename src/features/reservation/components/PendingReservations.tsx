@@ -32,7 +32,7 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
   const userId = useSelector(selectId);
   const [currentIsHost, setCurrentIsHost] = useState(false);
   const [reservations, setReservations] = useState<ReservationDto[]>([]);
-  const [accommodation, setAccommodation] = useState();
+  const [accommodation, setAccommodation] = useState<Accommodation>();
   const [needsUpdate, setNeedsUpdate] = useState(true);
   const [guests, setGuests] = useState(new Map());
 
@@ -59,9 +59,10 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
     } else {
       getById(accommodationId)
         .then((response) => {
-          const item = response.data as Accommodation;
-          setAccommodation(response.data);
-          if (item.user_id === userId) {
+          const item = response.data.item as Accommodation;
+          console.log(item);
+          setAccommodation(item);
+          if (item.host_id === userId) {
             setCurrentIsHost(true);
           } else {
             router.push('/');
@@ -72,7 +73,6 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
         .then((response) => {
           const items = response.data.items as ReservationDto[];
           setReservations(response.data.items);
-          console.log(items);
           if (items !== undefined) {
             for (let i = 0; i < items.length; i++) {
               const item = items[i];
@@ -87,6 +87,9 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
                 })
                 .catch((error) => console.log(error));
             }
+          } else {
+            setReservations([]);
+            setLoading(false);
           }
         })
         .catch((error) => console.log(error));
@@ -186,7 +189,7 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
     },
   ];
 
-  if (accommodation && accommodation.auto_accept_flag === 'false') {
+  if (accommodation && accommodation.auto_accept_flag === false) {
     columns.push({
       title: 'Manage',
       dataIndex: '',

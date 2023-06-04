@@ -40,11 +40,13 @@ const NavigationBar = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const user = getCurrentUserData();
-    if (user === null) {
-      dispatch(setAuthState(false));
+    if (authState === null) {
+      const user = getCurrentUserData();
+      if (user === null) {
+        dispatch(setAuthState(false));
+      }
     }
-  });
+  }, []);
 
   const handleLogout = async () => {
     await logout().then(() => {

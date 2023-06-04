@@ -14,6 +14,7 @@ const AccommodationList = ({
   days,
   extended,
 }: AccommodationListProps) => {
+  console.log(accommodations);
   return (
     <div>
       <Space className={styles.centerContainer}>

@@ -31,7 +31,7 @@ const CreateReservationForm = ({
 }: CreateReservationFormProps) => {
   const [checkInDate, setCheckInDate] = useState<Date>();
   const [checkOutDate, setCheckOutDate] = useState<Date>();
-  const [guestCount, setGuestCount] = useState<number>(1);
+  const [guestCount, setGuestCount] = useState<number>(0);
   const [loadingPrice, setLoadingPrice] = useState<boolean>(false);
   const [price, setPrice] = useState<number>();
   const userRole = useSelector(selectRole);
@@ -48,6 +48,7 @@ const CreateReservationForm = ({
       };
       await getPrice(dto)
         .then((response) => {
+          console.log(response);
           setPrice(response.data.price);
           setLoadingPrice(false);
         })
