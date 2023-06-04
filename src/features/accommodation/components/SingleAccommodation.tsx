@@ -19,13 +19,14 @@ import Comment from '@/features/review/components/Comment';
 import UserChip from '@/features/user/components/chip/UserChip';
 import { getUserById } from '@/features/user/services/user.service';
 import { EnvironmentTwoTone, StarTwoTone } from '@ant-design/icons';
-import { Divider, Tag } from 'antd';
+import { Collapse, Divider, Tag } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getById } from '../services/accommodation.service';
 import styles from '../styles/accommodation.module.scss';
 import { AccommodationImages } from './AccommodationCard/AccommodationImages';
+import CommentForm from '@/features/review/components/CommentForm';
 interface SingleAccommodationProps {
   id: string;
 }
@@ -226,6 +227,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
         Guest reviews
       </Divider>
       <div className={styles.reviews}>
+        <CommentForm/>
         <Comment
           poster={user}
           title="Best hotel ever"

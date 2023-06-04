@@ -42,3 +42,23 @@
     }
   }
 }
+
+.form {
+  width: 60%;
+  &__title {
+    input {
+      font-weight: 600;
+    }
+  }
+  &__ratings {
+    display: flex;
+    gap: 2rem;
+
+    &__rating {
+      font-weight: 600;
+      li {
+        margin-right: 1px !important;
+      }
+    }
+  }
+}
