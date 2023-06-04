@@ -15,18 +15,18 @@ import { getRoundedRating } from '@/common/utils/getRoundedRating';
 import AvailabilityForm from '@/features/availability/components/AvailabilityForm';
 import { getByAccommodationId } from '@/features/availability/services/availability.service';
 import CreateReservationForm from '@/features/reservation/components/CreateReservationForm';
-import Comment from '@/features/review/components/Comment';
+import ReviewForm from '@/features/review/components/ReviewForm';
+import Reviews from '@/features/review/components/Reviews';
 import UserChip from '@/features/user/components/chip/UserChip';
 import { getUserById } from '@/features/user/services/user.service';
 import { EnvironmentTwoTone, StarTwoTone } from '@ant-design/icons';
-import { Collapse, Divider, Tag } from 'antd';
+import { Divider, Tag } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getById } from '../services/accommodation.service';
 import styles from '../styles/accommodation.module.scss';
 import { AccommodationImages } from './AccommodationCard/AccommodationImages';
-import CommentForm from '@/features/review/components/CommentForm';
 interface SingleAccommodationProps {
   id: string;
 }
@@ -41,6 +41,11 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
   const [currentIsHost, setCurrentIsHost] = useState(false);
   const [editable, setEditable] = useState(false);
   const user = useSelector(selectUser);
+
+  const userCanReview = () => {
+    //TO-DO: Implement this condition.
+    return true;
+  };
 
   const dates = (current: Dayjs) =>
     isAccommodationReservable(
@@ -227,23 +232,8 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
         Guest reviews
       </Divider>
       <div className={styles.reviews}>
-        <CommentForm/>
-        <Comment
-          poster={user}
-          title="Best hotel ever"
-          content="EXCEPTIONAL home! If you are looking for combination of luxury, privacy, serenity, nature, and authenticity- this is it!!! A perfect 10. This villa sits in a quiet fishing village right upon the waterfront without cars or tourism immediately around, yet proximity to Kotor is 10 minutes and many adventures are out the door. The villa is finished to a very high standard with smartly chosen, minimalist furnishings and high end appliances. Adventure abounds with a Stunning hike up the fjord behind the village to Ivan’s church or a peaceful paddle board followed by a swim in the ocean, jacuzzi soak, and wine on the patio. The communication and welcome were delightful. I hope you love this special gem as much as I do!"
-          hostRating={5}
-          accommodationRating={5}
-          date="2023-06-01"
-        />
-        <Comment
-          poster={user}
-          title="Best hotel ever"
-          content="Perfect location right at the water front with private patio. Very high standards in the house. Housekeeper was extremely friendly and helpful. Highly recommend!"
-          hostRating={5}
-          accommodationRating={5}
-          date="2023-05-21"
-        />
+        {userCanReview() && <ReviewForm />}
+        <Reviews />
       </div>
     </div>
   );

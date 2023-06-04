@@ -1,8 +1,9 @@
+import Button from '@/common/components/button/Button';
 import { Collapse, Form, Input, Rate } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import styles from '../styles/review.module.scss';
 
-const CommentForm = () => {
+const ReviewForm = () => {
   const { Panel } = Collapse;
   const [form] = Form.useForm();
   return (
@@ -33,10 +34,13 @@ const CommentForm = () => {
               placeholder="Write your review here."
             />
           </Form.Item>
+          <Form.Item>
+            <Button type="primary" text="Submit review" />
+          </Form.Item>
         </Form>
       </Panel>
     </Collapse>
   );
 };
 
-export default CommentForm;
+export default ReviewForm;

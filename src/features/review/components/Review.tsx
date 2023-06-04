@@ -2,9 +2,10 @@ import { User } from '@/common/types/User';
 import UserChip from '@/features/user/components/chip/UserChip';
 import { Divider, Rate } from 'antd';
 import classNames from 'classnames';
+import dayjs from 'dayjs';
 import styles from '../styles/review.module.scss';
 
-interface CommentProps {
+interface ReviewProps {
   poster: User;
   title: string;
   content: string;
@@ -13,28 +14,33 @@ interface CommentProps {
   date: string;
 }
 
-const Comment = ({
+const Review = ({
   poster,
   title,
   content,
   hostRating,
   accommodationRating,
   date,
-}: CommentProps) => {
+}: ReviewProps) => {
   return (
-    <div className={classNames('frostedGlass', styles.comment)}>
-      <div className={styles.comment__title}>{title}</div>
-      <div className={styles.comment__ratings}>
-        <div className={styles.comment__ratings__rating}>
+    <div className={classNames('frostedGlass', styles.review)}>
+      <div className={styles.review__header}>
+        <div className={styles.review__header__title}>{title}</div>
+        <div className={styles.review__header__date}>
+          {dayjs(date).format('DD.MM.YYYY.')}
+        </div>
+      </div>
+      <div className={styles.review__ratings}>
+        <div className={styles.review__ratings__rating}>
           Host: <Rate disabled defaultValue={hostRating} />{' '}
         </div>
-        <div className={styles.comment__ratings__rating}>
+        <div className={styles.review__ratings__rating}>
           Accommodation: <Rate disabled defaultValue={accommodationRating} />
         </div>
       </div>
-      <div className={styles.comment__content}>{content}</div>
+      <div className={styles.review__content}>{content}</div>
       <Divider />
-      <div className={styles.comment__poster}>
+      <div className={styles.review__poster}>
         <UserChip
           gender={poster.gender}
           name={`${poster.firstName} ${poster.lastName}`}
@@ -45,4 +51,4 @@ const Comment = ({
   );
 };
 
-export default Comment;
+export default Review;
