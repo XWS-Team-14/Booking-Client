@@ -1,0 +1,44 @@
+.textArea {
+  width: 100%;
+}
+
+.comment {
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  li {
+    margin-right: 0 !important;
+  }
+  div {
+    margin: 0 !important;
+  }
+  &__title {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  &__content {
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: 400;
+  }
+
+  &__ratings {
+    display: flex;
+    gap: 1rem;
+    &__rating {
+      font-size: 14px;
+      font-weight: 600;
+    }
+  }
+
+  &__poster {
+    div {
+      justify-content: flex-start;
+      font-weight: 600;
+    }
+  }
+}
