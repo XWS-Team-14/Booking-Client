@@ -6,6 +6,8 @@ import styles from '../styles/review.module.scss';
 const ReviewForm = () => {
   const { Panel } = Collapse;
   const [form] = Form.useForm();
+
+  //TO-DO: Implement review form validation and submission.
   return (
     <Collapse ghost bordered={false} defaultActiveKey={['1']}>
       <Panel header="Leave a review" key="1">
