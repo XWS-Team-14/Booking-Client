@@ -11,7 +11,7 @@ interface ReviewsProps {
 const Reviews = ({ accommodation }: ReviewsProps) => {
   //TO-DO: Implement review retrieval instead of the reviews array. Sort by date posted.
   const reviews = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
-  const user = useSelector(selectUser);
+  const user = useSelector(selectUser); //TO-DO: Remove.
   //TO-DO: Replace placeholder values with actual ones.
   return (
     <List

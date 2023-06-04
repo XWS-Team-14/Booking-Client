@@ -16,6 +16,11 @@
   div {
     margin: 0 !important;
   }
+  &__buttons {
+    align-self: flex-end;
+    display: flex;
+    gap: 0.5rem;
+  }
   &__header {
     display: flex;
     align-items: center;
@@ -47,6 +52,8 @@
   }
 
   &__poster {
+    display: flex;
+    justify-content: space-between;
     div {
       justify-content: flex-start;
       font-weight: 600;

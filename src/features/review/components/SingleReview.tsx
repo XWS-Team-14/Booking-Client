@@ -1,8 +1,12 @@
+import { selectId } from '@/common/store/slices/authSlice';
 import { User } from '@/common/types/User';
 import UserChip from '@/features/user/components/chip/UserChip';
-import { Divider, Rate } from 'antd';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { Button, Divider, Rate, Tooltip } from 'antd';
 import classNames from 'classnames';
 import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import styles from '../styles/review.module.scss';
 
 interface SingleReviewProps {
@@ -22,6 +26,13 @@ const SingleReview = ({
   accommodationRating,
   date,
 }: SingleReviewProps) => {
+  const userId = useSelector(selectId);
+  const [currentIsPoster, setCurrentIsPoster] = useState(false);
+
+  useEffect(() => {
+    setCurrentIsPoster(userId === poster.id);
+  }, [userId]);
+
   return (
     <div className={classNames('frostedGlass', styles.review)}>
       <div className={styles.review__header}>
@@ -46,6 +57,21 @@ const SingleReview = ({
           name={`${poster.firstName} ${poster.lastName}`}
           size={35}
         />
+        {!currentIsPoster && (
+          <div className={styles.review__buttons}>
+            <Tooltip title="Edit your review.">
+              <Button
+                type="primary"
+                ghost
+                shape="circle"
+                icon={<EditOutlined />}
+              ></Button>
+            </Tooltip>
+            <Tooltip title="Delete your review.">
+              <Button danger shape="circle" icon={<DeleteOutlined />}></Button>
+            </Tooltip>
+          </div>
+        )}
       </div>
     </div>
   );
