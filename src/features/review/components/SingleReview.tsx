@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import dayjs from 'dayjs';
 import styles from '../styles/review.module.scss';
 
-interface ReviewProps {
+interface SingleReviewProps {
   poster: User;
   title: string;
   content: string;
@@ -14,14 +14,14 @@ interface ReviewProps {
   date: string;
 }
 
-const Review = ({
+const SingleReview = ({
   poster,
   title,
   content,
   hostRating,
   accommodationRating,
   date,
-}: ReviewProps) => {
+}: SingleReviewProps) => {
   return (
     <div className={classNames('frostedGlass', styles.review)}>
       <div className={styles.review__header}>
@@ -51,4 +51,4 @@ const Review = ({
   );
 };
 
-export default Review;
+export default SingleReview;
