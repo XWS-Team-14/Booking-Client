@@ -41,7 +41,7 @@ const GuestHistory = () => {
                 .then((response) => {
                   setNeedsUpdate(false);
                   setAccommodations(
-                    accommodations.set(accommodationId, response.data)
+                    accommodations.set(accommodationId, response.data.item)
                   );
                   if (i === items.length - 1) {
                     setLoading(false);

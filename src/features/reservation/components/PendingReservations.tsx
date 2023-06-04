@@ -103,11 +103,15 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
       key: 'guest',
       render: (guest) => {
         const user = guests.get(guest.id);
+        console.log(guest);
         const cancelledCount = guest.canceledReservations;
+
         return cancelledCount !== 0 ? (
           <Tooltip
             trigger="hover"
-            title={`Canceled ${cancelledCount} reservations previously.`}
+            title={`Canceled ${cancelledCount} reservation${
+              cancelledCount > 1 ? 's' : ''
+            } previously.`}
           >
             {user.first_name} {user.last_name}
           </Tooltip>
@@ -188,6 +192,8 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
       sorter: (a, b) => a.status - b.status,
     },
   ];
+
+  console.log(guests);
 
   if (accommodation && accommodation.auto_accept_flag === false) {
     columns.push({
