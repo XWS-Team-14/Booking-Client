@@ -106,7 +106,7 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
         console.log(guest);
         const cancelledCount = guest.canceledReservations;
 
-        return cancelledCount !== 0 ? (
+        return cancelledCount !== 0 || cancelledCount !== undefined ? (
           <Tooltip
             trigger="hover"
             title={`Canceled ${cancelledCount} reservation${

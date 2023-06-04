@@ -59,7 +59,9 @@ const GuestHistory = () => {
 
   const handleCancel = async (id: string) => {
     await cancelReservation(id)
-      .then((response) => setNeedsUpdate(true))
+      .then((response) => {
+        setNeedsUpdate(true);
+      })
       .catch((error) => console.log(error));
   };
 
@@ -156,9 +158,8 @@ const GuestHistory = () => {
       dataIndex: '',
       key: 'cancel',
       render: (a, b) => {
-        const isCancellable =
-          dayjs().endOf('day') < dayjs(a.beginning_date).endOf('day') &&
-          a.status !== 1;
+        const difference = dayjs(a.beginning_date).diff(dayjs(), 'day');
+        const isCancellable = difference > 1 && a.status !== 1;
         return (
           isCancellable && (
             <Button
