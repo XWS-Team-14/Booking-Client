@@ -22,6 +22,8 @@ const AccommodationCard = ({
 }: AccommodationCardProps) => {
   const router = useRouter();
 
+  const id = item.id ? item.id : item.accommodation_id;
+
   const getLocation = () =>
     item.location
       ? `${item.location.address}, ${item.location.city}, ${item.location.country}`
@@ -34,12 +36,12 @@ const AccommodationCard = ({
     <Card
       style={{ width: 400, cursor: 'pointer' }}
       cover={
-        <div onClick={() => router.push(`/accommodations/${item.accommodation_id}`)}>
+        <div onClick={() => router.push(`/accommodations/${id}`)}>
           <AccommodationImages images={getImages()} />
         </div>
       }
     >
-      <div onClick={() => router.push(`/accommodations/${item.accommodation_id}`)}>
+      <div onClick={() => router.push(`/accommodations/${id}`)}>
         <Meta
           title={<AccommodationHeader title={item.name} rating={4.3869} />}
           description={getLocation()}
@@ -48,11 +50,11 @@ const AccommodationCard = ({
       {item.total_price && (
         <div
           style={{ marginTop: '1rem' }}
-          onClick={() => router.push(`/accommodations/${item.accommodation_id}`)}
+          onClick={() => router.push(`/accommodations/${id}`)}
         >
           <AccommodationPrice
             price={item.total_price}
-            days={(days === 0 || isNaN(days)) ? 1 : days}
+            days={days === 0 || isNaN(days) ? 1 : days}
           />
         </div>
       )}
@@ -62,8 +64,8 @@ const AccommodationCard = ({
           <Button
             type="transparent"
             style={{ fontSize: '14px' }}
-            text="See pending reservations"
-            action={() => router.push('/')}
+            text="See reservations"
+            action={() => router.push(`/reservations/${id}`)}
           ></Button>
         </>
       )}

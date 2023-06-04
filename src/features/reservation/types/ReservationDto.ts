@@ -1,13 +1,22 @@
 export interface ReservationDto {
   id: string;
-  accommodation: any;
+  accommodation: AccommodationWithId;
   host_id: string;
-  guest: any;
+  guest: Guest;
   number_of_guests: number;
   beginning_date: Date;
   ending_date: Date;
   total_price: number;
   status: number;
+}
+
+export interface Guest {
+  id: string;
+  canceledReservations: number;
+}
+
+export interface AccommodationWithId {
+  id: string;
 }
 
 export interface CreateReservationDto {
@@ -17,4 +26,8 @@ export interface CreateReservationDto {
   beginning_date: string;
   ending_date: string;
   total_price: number;
+}
+
+export interface ReservationStatusDto {
+  status: string;
 }

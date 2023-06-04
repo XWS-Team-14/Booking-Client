@@ -67,7 +67,8 @@ api.interceptors.response.use(
       return Promise.reject(error);
     } else if (
       Router.pathname.includes('login') ||
-      Router.pathname.includes('signup')
+      Router.pathname.includes('signup') ||
+      response?.status === 404
     ) {
       return Promise.reject(error);
     } else {
