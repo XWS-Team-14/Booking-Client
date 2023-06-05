@@ -4,3 +4,12 @@
   align-items: center;
   gap: 0.7rem;
 }
+
+.text {
+  &__featured {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.45);
+    font-style: italic;
+  }
+}

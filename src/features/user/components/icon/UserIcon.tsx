@@ -7,16 +7,22 @@ import styles from './UserIcon.module.scss';
 interface UserIconProps {
   type: 'male' | 'female';
   size: number;
+  featured?: boolean;
 }
 
-const UserIcon = ({ type, size }: UserIconProps) => (
+const UserIcon = ({ type, size, featured }: UserIconProps) => (
   <Image
     src={type === 'female' ? IconFemale : IconMale}
     alt="user"
     width={size}
     height={size}
     quality={100}
-    className={classNames(styles.icon, 'frostedGlass', 'undraggable')}
+    className={classNames(
+      styles.icon,
+      styles.featured,
+      'frostedGlass',
+      'undraggable'
+    )}
   />
 );
 
