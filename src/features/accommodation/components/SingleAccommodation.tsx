@@ -1,7 +1,11 @@
 /* eslint-disable no-nested-ternary */
 import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
-import { selectId, selectRole } from '@/common/store/slices/authSlice';
+import {
+  selectId,
+  selectRole,
+  selectUser,
+} from '@/common/store/slices/authSlice';
 import { Accommodation } from '@/common/types/Accommodation';
 import { Availability } from '@/common/types/Availability';
 import { UserDetails } from '@/common/types/User';
@@ -11,6 +15,8 @@ import { getRoundedRating } from '@/common/utils/getRoundedRating';
 import AvailabilityForm from '@/features/availability/components/AvailabilityForm';
 import { getByAccommodationId } from '@/features/availability/services/availability.service';
 import CreateReservationForm from '@/features/reservation/components/CreateReservationForm';
+import ReviewForm from '@/features/review/components/ReviewForm';
+import Reviews from '@/features/review/components/Reviews';
 import UserChip from '@/features/user/components/chip/UserChip';
 import { getUserById } from '@/features/user/services/user.service';
 import { EnvironmentTwoTone, StarTwoTone } from '@ant-design/icons';
@@ -34,6 +40,12 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
   const [host, setHost] = useState<UserDetails>();
   const [currentIsHost, setCurrentIsHost] = useState(false);
   const [editable, setEditable] = useState(false);
+  const user = useSelector(selectUser);
+
+  const userCanReview = () => {
+    //TO-DO: Implement this condition.
+    return true;
+  };
 
   const dates = (current: Dayjs) =>
     isAccommodationReservable(
@@ -104,6 +116,8 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
                 name={`${host?.first_name} ${host?.last_name}`}
                 size={50}
                 gender={host.gender}
+                featured={true} //TO-DO: Implement
+                hostRating={4.3897} //TO-DO: Implement
               />
             </div>
           </div>
@@ -212,6 +226,17 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
           )}
         </>
       )}
+      <Divider
+        orientation="left"
+        orientationMargin={0}
+        style={{ fontSize: '20px', fontWeight: '600', marginTop: '2rem' }}
+      >
+        Guest reviews
+      </Divider>
+      <div className={styles.reviews}>
+        {userCanReview() && <ReviewForm />}
+        <Reviews />
+      </div>
     </div>
   );
 };
