@@ -70,23 +70,23 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
         })
         .catch((error) => console.log(error));
       getByAccommodation(accommodationId)
-        .then((response) => {
+        .then(async (response) => {
           const items = response.data.items as ReservationDto[];
           setReservations(response.data.items);
           if (items !== undefined) {
             for (let i = 0; i < items.length; i++) {
               const item = items[i];
               const userId = item.guest.id;
-              getUserById(userId)
-                .then((response) => {
-                  setGuests(guests.set(item.guest.id, response.data));
-                  setNeedsUpdate(false);
-                  if (i === items.length - 1) {
-                    setLoading(false);
-                  }
-                })
-                .catch((error) => console.log(error));
+              if (!guests.has(userId)) {
+                await getUserById(userId)
+                  .then((response) => {
+                    setGuests(guests.set(userId, response.data));
+                    setNeedsUpdate(false);
+                  })
+                  .catch((error) => console.log(error));
+              }
             }
+            setLoading(false);
           } else {
             setReservations([]);
             setLoading(false);
@@ -177,6 +177,10 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
           case 3:
             formatted = 'ACCEPTED';
             color = 'green';
+            break;
+          case 4:
+            formatted = 'CANCELLED';
+            color = 'red';
             break;
           default:
             formatted = '';

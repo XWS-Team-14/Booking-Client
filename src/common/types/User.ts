@@ -10,6 +10,7 @@ interface User {
   date_joined: Date;
   last_login: Date;
   is_active: boolean;
+  isFeatured: boolean;
 }
 
 interface UserDetails {

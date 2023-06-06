@@ -116,7 +116,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
                 name={`${host?.first_name} ${host?.last_name}`}
                 size={50}
                 gender={host.gender}
-                featured={true} //TO-DO: Implement
+                featured={true}
                 hostRating={4.3897} //TO-DO: Implement
               />
             </div>

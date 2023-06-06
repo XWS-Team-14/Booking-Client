@@ -18,7 +18,7 @@ const Notifications = () => {
   const userId = useSelector(selectId);
 
   useEffect(() => {
-    const url = 'ws://localhost:8000/api/v1/user/status';
+    const url = `ws://localhost:8000/api/v1/user/status/${userId}`;
     const ws = new WebSocket(url);
     ws.onopen = (event) => {
       ws.send('Connect');
