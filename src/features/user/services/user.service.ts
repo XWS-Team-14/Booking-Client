@@ -27,7 +27,7 @@ export const getCurrentUserData = async () => {
       lastName: user.data.last_name,
       homeAddress: user.data.home_address,
       gender: user.data.gender,
-      isFeatured: user.data.is_featured
+      isFeatured: user.data.is_featured,
     };
   } else {
     return null;
