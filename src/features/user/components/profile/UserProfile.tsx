@@ -3,6 +3,7 @@ import Loading from '@/common/components/loading/Loading';
 import {
   selectAuthState,
   selectUser,
+  setHostFeatured,
   setUserFirstName,
   setUserGender,
   setUserHomeAddress,
@@ -44,6 +45,24 @@ const UserProfile = () => {
       router.push('/');
     }
   }, [authState]);
+
+  useEffect(() => {
+    if (user.role === 'host') {
+      const url = `ws://localhost:8000/api/v1/user/status/${user.id}`;
+      const ws = new WebSocket(url);
+      ws.onopen = (event) => {
+        ws.send('Connect');
+      };
+      ws.onmessage = (e) => {
+        if (e.data.includes('True')) {
+          dispatch(setHostFeatured(true));
+        } else if (e.data.includes('False')) {
+          dispatch(setHostFeatured(false));
+        }
+      };
+      return () => ws.close();
+    }
+  }, [user.id, user.role]);
 
   const handleTrySave = () => {
     setSaveModalOpen(true);
@@ -146,7 +165,11 @@ const UserProfile = () => {
           <h1>
             {user.firstName} {user.lastName}
           </h1>
-          <h2>{capitalizeFirstLetter(user.role)}</h2>
+          <h2>
+            {user.role === 'host' && user.isFeatured
+              ? 'Featured host'
+              : capitalizeFirstLetter(user.role)}
+          </h2>
         </div>
       </div>
       <Divider />

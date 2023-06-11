@@ -12,6 +12,7 @@ export interface AuthState {
   userRole: 'host' | 'guest' | null;
   userGender: 'male' | 'female' | null;
   userHomeAddress: string | null;
+  hostIsFeatured: boolean | null;
 }
 
 const initialState: AuthState = {
@@ -23,6 +24,7 @@ const initialState: AuthState = {
   userRole: null,
   userGender: null,
   userHomeAddress: null,
+  hostIsFeatured: null,
 };
 
 export const authSlice = createSlice({
@@ -52,6 +54,9 @@ export const authSlice = createSlice({
     },
     setUserHomeAddress(state, action) {
       state.userHomeAddress = action.payload;
+    },
+    setHostFeatured(state, action) {
+      state.hostIsFeatured = action.payload;
     },
     reset(state, action?) {
       state.authState = null;
@@ -84,6 +89,7 @@ export const {
   setUserRole,
   setUserGender,
   setUserHomeAddress,
+  setHostFeatured,
   reset,
 } = authSlice.actions;
 
@@ -100,6 +106,7 @@ export const selectUser = (state: AppState) => {
     gender: state.auth.userGender,
     role: state.auth.userRole,
     address: state.auth.userHomeAddress,
+    isFeatured: state.auth.hostIsFeatured,
   } as User;
 };
 
@@ -115,5 +122,8 @@ export const selectGender = (state: AppState) => state.auth.userGender;
 
 export const selectHomeAddress = (state: AppState) =>
   state.auth.userHomeAddress;
+
+export const selectHostIsFeatured = (state: AppState) =>
+  state.auth.hostIsFeatured;
 
 export default authSlice.reducer;

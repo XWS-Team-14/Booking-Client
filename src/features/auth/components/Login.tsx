@@ -2,6 +2,7 @@ import Button from '@/common/components/button/Button';
 import {
   selectAuthState,
   setAuthState,
+  setHostFeatured,
   setUserEmail,
   setUserFirstName,
   setUserGender,
@@ -61,6 +62,7 @@ const Login = () => {
           dispatch(setUserLastName(user.lastName));
           dispatch(setUserGender(user.gender));
           dispatch(setUserHomeAddress(user.homeAddress));
+          dispatch(setHostFeatured(user.isFeatured));
           router.push('/');
         }
       })

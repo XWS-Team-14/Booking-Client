@@ -66,6 +66,9 @@ const CreateReservationForm = ({
     );
 
   const handleFinish = async () => {
+    if (!(!!checkInDate && !!checkOutDate && !!price && !!guestCount)) {
+      return;
+    }
     const dto: CreateReservationDto = {
       accommodation_id: accommodation.id,
       host_id: accommodation.host_id,

@@ -30,25 +30,25 @@ const GuestHistory = () => {
       router.push('/');
     } else {
       getByGuest()
-        .then((response) => {
+        .then(async (response) => {
           const items = response.data.items as ReservationDto[];
           setReservations(items !== undefined ? items : []);
           if (items !== undefined) {
             for (let i = 0; i < items.length; i++) {
               const item = items[i];
               const accommodationId = item.accommodation.id;
-              getById(accommodationId)
-                .then((response) => {
-                  setNeedsUpdate(false);
-                  setAccommodations(
-                    accommodations.set(accommodationId, response.data.item)
-                  );
-                  if (i === items.length - 1) {
-                    setLoading(false);
-                  }
-                })
-                .catch((error) => console.log(error));
+              if (!accommodations.has(accommodationId)) {
+                await getById(accommodationId)
+                  .then((response) => {
+                    setNeedsUpdate(false);
+                    setAccommodations(
+                      accommodations.set(accommodationId, response.data.item)
+                    );
+                  })
+                  .catch((error) => console.log(error));
+              }
             }
+            setLoading(false);
           } else {
             setLoading(false);
           }
@@ -140,6 +140,10 @@ const GuestHistory = () => {
             formatted = 'ACCEPTED';
             color = 'green';
             break;
+          case 4:
+            formatted = 'CANCELLED';
+            color = 'red';
+            break;
           default:
             formatted = '';
             color = '';
@@ -159,7 +163,8 @@ const GuestHistory = () => {
       key: 'cancel',
       render: (a, b) => {
         const difference = dayjs(a.beginning_date).diff(dayjs(), 'day');
-        const isCancellable = difference > 1 && a.status !== 1;
+        const isCancellable =
+          difference > 1 && a.status !== 1 && a.status !== 4;
         return (
           isCancellable && (
             <Button
