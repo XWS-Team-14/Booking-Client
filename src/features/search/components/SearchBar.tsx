@@ -19,6 +19,7 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
   const [searchParams, setSearchParams] = useState<SearchParams>();
   const [loading, setLoading] = useState<boolean>(true);
   const [amenities, setAmenities] = useState([]);
+  const [filtersOpen, setFiltersOpen] = useState(0);
 
   useEffect(() => {
     getAllAmenities()
@@ -32,6 +33,7 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
 
   function sendDataToParent() {
     onDataChanged(searchParams);
+    setFiltersOpen(0);
   }
 
   function changeCountry(value: string) {
@@ -297,7 +299,13 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
           <SearchOutlined style={{ fontSize: '24px' }} />
         </Button>
       </div>
-      <Collapse accordion ghost style={{ width: '100%', maxWidth: '1240px' }}>
+      <Collapse
+        activeKey={filtersOpen}
+        accordion
+        onChange={() => setFiltersOpen(Math.abs(filtersOpen - 1))}
+        ghost
+        style={{ width: '100%', maxWidth: '1240px' }}
+      >
         <CollapsePanel key={'1'} header="Filters" style={{ width: '100%' }}>
           <div className={styles.filters}>
             <div className={styles.filters__priceRange}>
