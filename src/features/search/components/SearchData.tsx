@@ -2,10 +2,9 @@ import Loading from '@/common/components/loading/Loading';
 import { calculateDays } from '@/common/utils/dateHelper';
 import AccommodationList from '@/features/accommodation/components/AccommodationList';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { fetchData } from '../service/search.service';
 import styles from '../styles/search.module.scss';
 import { SearchParams } from '../types/SearchParams';
 import { SearchResultDto } from '../types/SearchResultDto';
@@ -15,14 +14,14 @@ interface SearchDataProps {
 
 const SearchData = ({ searchParams }: SearchDataProps) => {
   const [accommodations, setAccommodations] = useState<SearchResultDto>();
-  const [fetched, setFetched] = useState(false);
+  const [fetched, setFetched] = useState(true);
 
-  useEffect(() => {
+  /*useEffect(() => {
     fetchData(searchParams).then((data) => {
       setAccommodations(data);
       setFetched(true);
     });
-  }, [searchParams]);
+  }, [searchParams]);*/
 
   return fetched ? (
     <div className={styles.searchBarContainer}>

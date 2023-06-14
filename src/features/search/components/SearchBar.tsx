@@ -21,7 +21,7 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
 
   useEffect(() => {
     getAllAmenities()
-      .then((response) => console.log(response))
+      .then((response) => setAmenities(response.data.amenity))
       .catch((err) => console.log(err));
   }, []);
 
