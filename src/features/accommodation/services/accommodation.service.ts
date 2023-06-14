@@ -16,3 +16,5 @@ export const getById = async (id: string) => {
 export const getAccomodationsByUser = async () => {
   return await api.get(`${prefix}/allByUser`);
 };
+
+export const getAllAmenities = async () => await api.get(`${prefix}/amenities`);

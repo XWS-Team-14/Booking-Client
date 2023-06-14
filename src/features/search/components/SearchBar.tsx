@@ -4,6 +4,7 @@ import { disabledDateRangePicker } from '@/common/utils/dateHelper';
 import { SearchOutlined } from '@ant-design/icons';
 import { Checkbox, Collapse, DatePicker, Input, InputNumber } from 'antd';
 
+import { getAllAmenities } from '@/features/accommodation/services/accommodation.service';
 import CollapsePanel from 'antd/lib/collapse/CollapsePanel';
 import { RangePickerProps } from 'antd/lib/date-picker';
 import { useEffect, useState } from 'react';
@@ -16,6 +17,13 @@ interface SearchBarProps {
 const SearchBar = ({ onDataChanged }: SearchBarProps) => {
   const [searchParams, setSearchParams] = useState<SearchParams>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [amenities, setAmenities] = useState([]);
+
+  useEffect(() => {
+    getAllAmenities()
+      .then((response) => console.log(response))
+      .catch((err) => console.log(err));
+  }, []);
 
   useEffect(() => {
     setLoading(false);
@@ -201,8 +209,9 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
             <div className={styles.filters__amenities}>
               <b>Amenities</b>
               <div className={styles.filters__amenities__items}>
-                <Checkbox>Wi-Fi</Checkbox>
-                <Checkbox>Flat-screen TV</Checkbox>
+                {amenities.map((amenity) => (
+                  <Checkbox key={amenity}>{amenity}</Checkbox>
+                ))}
               </div>
             </div>
             <div>
