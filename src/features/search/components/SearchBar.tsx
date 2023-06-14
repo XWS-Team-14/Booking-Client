@@ -5,6 +5,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import { Checkbox, Collapse, DatePicker, Input, InputNumber } from 'antd';
 
 import { getAllAmenities } from '@/features/accommodation/services/accommodation.service';
+import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import CollapsePanel from 'antd/lib/collapse/CollapsePanel';
 import { RangePickerProps } from 'antd/lib/date-picker';
 import { useEffect, useState } from 'react';
@@ -41,6 +42,12 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
       start_date: searchParams?.start_date,
       end_date: searchParams?.end_date,
       guests: searchParams?.guests,
+      price_min: searchParams?.price_min ? searchParams.price_min : 0,
+      price_max: searchParams?.price_max ? searchParams.price_max : -1,
+      must_be_featured_host: searchParams?.must_be_featured_host
+        ? searchParams.must_be_featured_host
+        : false,
+      amenities: searchParams?.amenities ? searchParams?.amenities : [],
     });
   }
   function changeCity(value: string) {
@@ -51,6 +58,12 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
       start_date: searchParams?.start_date,
       end_date: searchParams?.end_date,
       guests: searchParams?.guests,
+      price_min: searchParams?.price_min ? searchParams.price_min : 0,
+      price_max: searchParams?.price_max ? searchParams.price_max : -1,
+      must_be_featured_host: searchParams?.must_be_featured_host
+        ? searchParams.must_be_featured_host
+        : false,
+      amenities: searchParams?.amenities ? searchParams?.amenities : [],
     });
   }
   function changeAddress(value: string) {
@@ -61,6 +74,12 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
       start_date: searchParams?.start_date,
       end_date: searchParams?.end_date,
       guests: searchParams?.guests,
+      price_min: searchParams?.price_min ? searchParams.price_min : 0,
+      price_max: searchParams?.price_max ? searchParams.price_max : -1,
+      must_be_featured_host: searchParams?.must_be_featured_host
+        ? searchParams.must_be_featured_host
+        : false,
+      amenities: searchParams?.amenities ? searchParams?.amenities : [],
     });
   }
   const changeDate: RangePickerProps['onChange'] = (date, value) => {
@@ -77,6 +96,12 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
       start_date: startDate,
       end_date: endDate,
       guests: searchParams?.guests,
+      price_min: searchParams?.price_min ? searchParams.price_min : 0,
+      price_max: searchParams?.price_max ? searchParams.price_max : -1,
+      must_be_featured_host: searchParams?.must_be_featured_host
+        ? searchParams.must_be_featured_host
+        : false,
+      amenities: searchParams?.amenities ? searchParams?.amenities : [],
     });
   };
   function changeGuests(value: number | null) {
@@ -87,8 +112,91 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
       start_date: searchParams?.start_date,
       end_date: searchParams?.end_date,
       guests: value ? value : 0,
+      price_min: searchParams?.price_min ? searchParams.price_min : 0,
+      price_max: searchParams?.price_max ? searchParams.price_max : -1,
+      must_be_featured_host: searchParams?.must_be_featured_host
+        ? searchParams.must_be_featured_host
+        : false,
+      amenities: searchParams?.amenities ? searchParams?.amenities : [],
     });
   }
+
+  const changeMinPrice = (value: number | null) => {
+    setSearchParams({
+      country: searchParams?.country,
+      city: searchParams?.city,
+      address: searchParams?.address,
+      start_date: searchParams?.start_date,
+      end_date: searchParams?.end_date,
+      guests: searchParams?.guests ? searchParams.guests : 0,
+      price_min: value ? value : 0,
+      price_max: searchParams?.price_max ? searchParams.price_max : -1,
+      must_be_featured_host: searchParams?.must_be_featured_host
+        ? searchParams.must_be_featured_host
+        : false,
+      amenities: searchParams?.amenities ? searchParams?.amenities : [],
+    });
+  };
+
+  const changeMaxPrice = (value: number | null) => {
+    setSearchParams({
+      country: searchParams?.country,
+      city: searchParams?.city,
+      address: searchParams?.address,
+      start_date: searchParams?.start_date,
+      end_date: searchParams?.end_date,
+      guests: searchParams?.guests ? searchParams.guests : 0,
+      price_min: searchParams?.price_min ? searchParams.price_min : 0,
+      price_max: value ? value : -1,
+      must_be_featured_host: searchParams?.must_be_featured_host
+        ? searchParams.must_be_featured_host
+        : false,
+      amenities: searchParams?.amenities ? searchParams?.amenities : [],
+    });
+  };
+
+  const changeFeatured = (value: boolean | undefined) => {
+    setSearchParams({
+      country: searchParams?.country,
+      city: searchParams?.city,
+      address: searchParams?.address,
+      start_date: searchParams?.start_date,
+      end_date: searchParams?.end_date,
+      guests: searchParams?.guests ? searchParams.guests : 0,
+      price_min: searchParams?.price_min ? searchParams.price_min : 0,
+      price_max: searchParams?.price_max ? searchParams.price_max : -1,
+      must_be_featured_host: value !== undefined ? value : false,
+      amenities: searchParams?.amenities ? searchParams?.amenities : [],
+    });
+  };
+
+  const addToAmenities = (e: CheckboxChangeEvent, amenity: string) => {
+    const newAmenities =
+      searchParams?.amenities === undefined ? [] : searchParams.amenities;
+    if (e.target.checked) {
+      newAmenities.push(amenity);
+    } else {
+      const index = newAmenities.indexOf(amenity);
+      if (index > -1) {
+        newAmenities.splice(index, 1);
+      }
+    }
+    setSearchParams({
+      country: searchParams?.country,
+      city: searchParams?.city,
+      address: searchParams?.address,
+      start_date: searchParams?.start_date,
+      end_date: searchParams?.end_date,
+      guests: searchParams?.guests ? searchParams.guests : 0,
+      price_min: searchParams?.price_min ? searchParams.price_min : 0,
+      price_max: searchParams?.price_max ? searchParams.price_max : -1,
+      must_be_featured_host: searchParams?.must_be_featured_host
+        ? searchParams.must_be_featured_host
+        : false,
+      amenities: newAmenities,
+    });
+    console.log(searchParams);
+  };
 
   return loading ? (
     <Loading />
@@ -198,19 +306,31 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
         <CollapsePanel key={'1'} header="Filters" style={{ width: '100%' }}>
           <div className={styles.filters}>
             <div className={styles.filters__priceRange}>
-              <Checkbox>
-                <b>Price range</b>
-              </Checkbox>
+              <b>Price range</b>
               <div className={styles.filters__priceRange__inputs}>
-                <InputNumber prefix="€" placeholder="Min"></InputNumber>–
-                <InputNumber prefix="€" placeholder="Max"></InputNumber>
+                <InputNumber
+                  prefix="€"
+                  placeholder="Min"
+                  onChange={(e) => changeMinPrice(e)}
+                ></InputNumber>
+                –
+                <InputNumber
+                  prefix="€"
+                  placeholder="Max"
+                  onChange={(e) => changeMaxPrice(e)}
+                ></InputNumber>
               </div>
             </div>
             <div className={styles.filters__amenities}>
               <b>Amenities</b>
               <div className={styles.filters__amenities__items}>
-                {amenities.map((amenity) => (
-                  <Checkbox key={amenity}>{amenity}</Checkbox>
+                {amenities.map((amenity: string) => (
+                  <Checkbox
+                    onChange={(e) => addToAmenities(e, amenity)}
+                    key={amenity}
+                  >
+                    {amenity}
+                  </Checkbox>
                 ))}
               </div>
             </div>
