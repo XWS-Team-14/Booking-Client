@@ -297,12 +297,7 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
           <SearchOutlined style={{ fontSize: '24px' }} />
         </Button>
       </div>
-      <Collapse
-        defaultActiveKey={['1']}
-        ghost
-        bordered={false}
-        style={{ width: '100%', maxWidth: '1240px' }}
-      >
+      <Collapse accordion ghost style={{ width: '100%', maxWidth: '1240px' }}>
         <CollapsePanel key={'1'} header="Filters" style={{ width: '100%' }}>
           <div className={styles.filters}>
             <div className={styles.filters__priceRange}>
