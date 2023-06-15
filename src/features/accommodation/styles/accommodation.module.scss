@@ -21,6 +21,12 @@
   width: 1240px;
 }
 
+.leftAligned {
+  display: flex;
+  flex-direction: column;
+  width: 1240px;
+}
+
 .loginForm {
   width: 30vw;
 }
