@@ -15,7 +15,14 @@ export const fetchData = async (
     guests: checkValueNumber(dto?.guests).toString(),
     date_start: checkValueString(dto?.start_date),
     date_end: checkValueString(dto?.end_date),
+    price_min: checkValueNumber(dto?.price_min).toString(),
+    price_max: (dto?.price_max ? dto.price_max : -1).toString(),
+    must_be_featured_host: (dto?.must_be_featured_host !== undefined
+      ? dto?.must_be_featured_host
+      : false
+    ).toString(),
   });
+  dto?.amenities?.forEach((amenity) => params.append('amenities', amenity));
   return api
     .get(`${prefix}/?${params}`)
     .then((res) => {

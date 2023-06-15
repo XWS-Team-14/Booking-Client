@@ -22,3 +22,28 @@
   flex-direction: column;
   width: 1240px;
 }
+
+.filters {
+  display: flex;
+  width: 100%;
+  max-width: 1240px;
+  flex-direction: column;
+  gap: 2rem;
+  flex-wrap: wrap;
+  label {
+    margin-left: 0 !important;
+  }
+  &__amenities {
+    &__items {
+      margin-top: 1rem;
+    }
+  }
+  &__priceRange {
+    &__inputs {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+  }
+}
