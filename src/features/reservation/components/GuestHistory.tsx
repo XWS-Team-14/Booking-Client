@@ -174,6 +174,7 @@ const GuestHistory = () => {
           end: a.ending_date,
           city: accommodation.location.city,
           country: accommodation.location.country,
+          count: a.number_of_guests,
         };
         return (
           isPendingOrAccepted && (
