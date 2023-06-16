@@ -10,7 +10,7 @@ import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
 import { Accommodation } from '@/common/types/Accommodation';
 import { getById } from '@/features/accommodation/services/accommodation.service';
-import { Table, Tag } from 'antd';
+import { Divider, Table, Tag } from 'antd';
 import dayjs from 'dayjs';
 import styles from '../styles/reservation.module.scss';
 import { ReservationDto } from '../types/ReservationDto';
@@ -162,17 +162,47 @@ const GuestHistory = () => {
       dataIndex: '',
       key: 'cancel',
       render: (a, b) => {
-        const difference = dayjs(a.beginning_date).diff(dayjs(), 'day');
-        const isCancellable =
-          difference > 1 && a.status !== 1 && a.status !== 4;
+        const difference = dayjs(a.beginning_date)
+          .endOf('day')
+          .diff(dayjs().endOf('day'), 'day');
+        const isPendingOrAccepted = a.status !== 1 && a.status !== 4;
+        const accommodation = accommodations.get(
+          a.accommodation.id
+        ) as Accommodation;
+        const flightParameters = {
+          start: a.beginning_date,
+          end: a.ending_date,
+          city: accommodation.location.city,
+          country: accommodation.location.country,
+        };
         return (
-          isCancellable && (
-            <Button
-              action={() => handleCancel(a.reservation_id)}
-              style={{ color: '#f04668' }}
-              type="transparent"
-              text="Cancel"
-            />
+          isPendingOrAccepted && (
+            <>
+              {difference >= 0 && (
+                <>
+                  <Button
+                    action={() =>
+                      router.push({
+                        pathname: '/flights',
+                        query: flightParameters,
+                      })
+                    }
+                    style={{ color: '#4d97ff' }}
+                    type="transparent"
+                    text="Suggest flights"
+                  />
+                  <Divider type="vertical" />
+                </>
+              )}
+              {difference >= 1 && (
+                <Button
+                  action={() => handleCancel(a.reservation_id)}
+                  style={{ color: '#f04668' }}
+                  type="transparent"
+                  text="Cancel"
+                />
+              )}
+            </>
           )
         );
       },
