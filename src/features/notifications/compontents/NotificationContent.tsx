@@ -4,6 +4,7 @@ import { selectId } from '@/common/store/slices/authSlice';
 import { SettingOutlined } from '@ant-design/icons';
 import { Button, Tabs, TabsProps, Tooltip } from 'antd';
 import { ref, update } from 'firebase/database';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import styles from '../styles/notifications.module.scss';
@@ -20,6 +21,7 @@ const NotificationContent = ({
 }: NotificationContentProps) => {
   const [type, setType] = useState<'all' | 'unread'>('all');
   const userId = useSelector(selectId);
+  const router = useRouter();
 
   const items: TabsProps['items'] = [
     {
@@ -60,7 +62,11 @@ const NotificationContent = ({
             placement="bottom"
             color="rgba(56, 82, 117, 0.5)"
           >
-            <Button shape="circle" icon={<SettingOutlined />} />
+            <Button
+              shape="circle"
+              icon={<SettingOutlined />}
+              onClick={() => router.push('/notifications/manage')}
+            />
           </Tooltip>
         </div>
       </div>
