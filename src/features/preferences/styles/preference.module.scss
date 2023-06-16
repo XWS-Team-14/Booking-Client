@@ -1,0 +1,16 @@
+@import '../../../common/styles/variables.scss';
+
+.wrapper {
+  width: 1240px;
+}
+
+.list {
+  margin-top: 1rem;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  width: 100%;
+}
+
+.disable:hover {
+  color: $danger-color;
+}
