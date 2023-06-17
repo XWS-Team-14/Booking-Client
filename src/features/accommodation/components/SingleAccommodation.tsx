@@ -154,6 +154,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
             accommodation={accommodation}
             availability={availability}
           />
+          
         )}
       </div>
       {currentIsHost && (

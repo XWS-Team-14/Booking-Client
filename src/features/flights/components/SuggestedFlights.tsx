@@ -4,19 +4,44 @@ import { Alert, Descriptions, Divider, Form, Input, Space } from 'antd';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { getSuggestedFlights } from '../services/flights.service';
 import styles from '../styles/flights.module.scss';
+import { FlightOutput } from '../types/FlightOutput';
 import { FlightParameters } from '../types/FlightParameters';
 
 const SuggestedFlights = () => {
   const router = useRouter();
   const [form] = Form.useForm();
   const parameters = router.query as unknown as FlightParameters;
-  const [loadedFlights, setLoadedFlights] = useState(false);
+  const [suggestedOutbound, setSuggestedOutbound] = useState<FlightOutput[]>(
+    []
+  );
+  const [suggestedInbound, setSuggestedInbound] = useState<FlightOutput[]>([]);
 
   const handleFinish = () => {
-    console.log(form.getFieldsValue());
-    setLoadedFlights(true);
+    const params = {
+      start_date: parameters.start,
+      end_date: parameters.end,
+      start_country: form.getFieldValue('country'),
+      end_country: parameters.country,
+      start_city: form.getFieldValue('city'),
+      end_city: parameters.city,
+      count: parameters.count,
+    };
+    getSuggestedFlights(params)
+      .then((response) => {
+        setSuggestedOutbound(response.data.outbound);
+        setSuggestedInbound(response.data.inbound);
+      })
+      .catch((err) => console.log(err));
   };
+
+  console.log(suggestedOutbound);
+  const flightsVisible = () =>
+    !!suggestedOutbound &&
+    !!suggestedInbound &&
+    suggestedInbound.length > 0 &&
+    suggestedOutbound.length > 0;
 
   return (
     <Space direction="vertical" size="middle" className={styles.wrapper}>
@@ -29,7 +54,7 @@ const SuggestedFlights = () => {
         }
         type="info"
         description="To purchase tickets, you must have a valid API Key. If you
-        don't have one yet, you can create it through your XWS Airlines account.."
+        don't have one yet, you can create it through your XWS Airlines account."
         showIcon
       ></Alert>
       <p>Location of origin</p>
@@ -70,53 +95,77 @@ const SuggestedFlights = () => {
           style={{ height: 'fit-content' }}
         />
       </Form>
-      {loadedFlights && (
+      {flightsVisible() && (
         <>
           <Divider>
             <CloudTwoTone />
           </Divider>
-          <Descriptions
-            title={
-              <>
-                <SendOutlined /> <Divider type="vertical" /> Outbound flight
-              </>
-            }
-            bordered
-          >
-            <Descriptions.Item label="Date of departure" span={3}>
-              {dayjs(parameters.end).format('DD.MM.YYYY.')}
-            </Descriptions.Item>
-            <Descriptions.Item label="Location" span={3}>
-              {parameters.city}, {parameters.country}
-            </Descriptions.Item>
-            <Descriptions.Item label="Ticket count" span={3}>
-              {parameters.count}
-            </Descriptions.Item>
-          </Descriptions>
-          <Button type="primary" text="Purchase"></Button>
+          {suggestedOutbound.map((flight, i) => (
+            <>
+              <Descriptions
+                key={flight.id}
+                title={
+                  <>
+                    <SendOutlined /> <Divider type="vertical" /> Outbound flight{' '}
+                    {i + 1}
+                  </>
+                }
+                bordered
+              >
+                <Descriptions.Item label="Date of departure" span={3}>
+                  {dayjs(flight.date_of_departure).format('DD.MM.YYYY. HH:mm')}
+                </Descriptions.Item>
+                <Descriptions.Item label="Location" span={3}>
+                  {' '}
+                  {flight.route.end_point.airport_name} Airport,{' '}
+                  {flight.route.end_point.airport_city},{' '}
+                  {flight.route.end_point.country}
+                </Descriptions.Item>
+                <Descriptions.Item label="Ticket count" span={3}>
+                  {parameters.count}
+                </Descriptions.Item>
+                <Descriptions.Item label="Total price" span={3}>
+                  {flight.collective_price}
+                </Descriptions.Item>
+              </Descriptions>
+              <Button type="primary" text="Purchase"></Button>
+            </>
+          ))}
           <Divider />
-          <Descriptions
-            title={
-              <>
-                <SendOutlined
-                  style={{ transform: 'scale(-1, -1)', marginRight: '8px' }}
-                />
-                <Divider type="vertical" /> Inbound flight
-              </>
-            }
-            bordered
-          >
-            <Descriptions.Item label="Date of departure" span={3}>
-              {dayjs(parameters.start).format('DD.MM.YYYY.')}
-            </Descriptions.Item>
-            <Descriptions.Item label="Location" span={3}>
-              {parameters.city}, {parameters.country}
-            </Descriptions.Item>
-            <Descriptions.Item label="Ticket count" span={3}>
-              {parameters.count}
-            </Descriptions.Item>
-          </Descriptions>
-          <Button type="primary" text="Purchase"></Button>
+          {suggestedInbound.map((flight, i) => (
+            <>
+              <Descriptions
+                title={
+                  <>
+                    <SendOutlined
+                      style={{
+                        transform: 'scale(-1, -1)',
+                        marginRight: '8px',
+                      }}
+                    />
+                    <Divider type="vertical" /> Inbound flight {i + 1}
+                  </>
+                }
+                bordered
+              >
+                <Descriptions.Item label="Date of departure" span={3}>
+                  {dayjs(flight.date_of_departure).format('DD.MM.YYYY. HH:mm')}
+                </Descriptions.Item>
+                <Descriptions.Item label="Location" span={3}>
+                  {flight.route.end_point.airport_name} Airport,{' '}
+                  {flight.route.end_point.airport_city},{' '}
+                  {flight.route.end_point.country}
+                </Descriptions.Item>
+                <Descriptions.Item label="Ticket count" span={3}>
+                  {parameters.count}
+                </Descriptions.Item>
+                <Descriptions.Item label="Total price" span={3}>
+                  {flight.collective_price}
+                </Descriptions.Item>
+              </Descriptions>
+              <Button type="primary" text="Purchase"></Button>
+            </>
+          ))}
         </>
       )}
     </Space>

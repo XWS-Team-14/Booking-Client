@@ -23,6 +23,7 @@ const GuestHistory = () => {
   const [reservations, setReservations] = useState<ReservationDto[]>([]);
   const [accommodations, setAccommodations] = useState(new Map());
   const [needsUpdate, setNeedsUpdate] = useState(false);
+  
   useEffect(() => {
     if (authState === null) {
       console.log('waiting...');

@@ -1,5 +1,4 @@
 import Button from '@/common/components/button/Button';
-import { selectRole } from '@/common/store/slices/authSlice';
 import { Accommodation } from '@/common/types/Accommodation';
 import { Availability } from '@/common/types/Availability';
 import {
@@ -13,9 +12,9 @@ import { DatePicker, InputNumber } from 'antd';
 import { RangePickerProps } from 'antd/es/date-picker';
 import classNames from 'classnames';
 import dayjs, { Dayjs } from 'dayjs';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { createReservation } from '../services/reservation.service';
 import styles from '../styles/reservation.module.scss';
 import { CreateReservationDto } from '../types/ReservationDto';
@@ -34,7 +33,6 @@ const CreateReservationForm = ({
   const [guestCount, setGuestCount] = useState<number>(0);
   const [loadingPrice, setLoadingPrice] = useState<boolean>(false);
   const [price, setPrice] = useState<number>();
-  const userRole = useSelector(selectRole);
   const router = useRouter();
   useEffect(() => {
     const getData = setTimeout(async () => {
@@ -97,6 +95,23 @@ const CreateReservationForm = ({
     setGuestCount(value);
   };
 
+  const getFlightsPath = () => {
+    const flightParameters = new URLSearchParams({
+      start: dayjs(checkInDate).format('YYYY-MM-DD').toString(),
+      end: dayjs(checkOutDate).format('YYYY-MM-DD').toString(),
+      city: accommodation.location.city,
+      country: accommodation.location.country,
+      count: guestCount.toString(),
+    });
+    return `/flights?${flightParameters}`;
+  };
+
+  const canSeeFlights = () =>
+    checkInDate !== undefined &&
+    checkOutDate !== undefined &&
+    guestCount !== undefined &&
+    guestCount !== 0;
+
   return (
     <div className={classNames(styles.reserveSection, 'frostedGlass')}>
       <AccommodationPrice
@@ -142,6 +157,16 @@ const CreateReservationForm = ({
         style={{ minHeight: '2.5rem', fontSize: '14px' }}
         action={handleFinish}
       />
+      {canSeeFlights() && (
+        <Link
+          href={getFlightsPath()}
+          rel="noopener noreferrer"
+          target="_blank"
+          className={styles.link}
+        >
+          See flights for selected dates
+        </Link>
+      )}
     </div>
   );
 };
