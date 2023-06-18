@@ -1,41 +1,40 @@
 import Button from '@/common/components/button/Button';
-import { Collapse, Form, Input, Rate } from 'antd';
-import TextArea from 'antd/lib/input/TextArea';
+import { Collapse, Form, Rate } from 'antd';
 import styles from '../styles/review.module.scss';
 
 const ReviewForm = () => {
   const { Panel } = Collapse;
   const [form] = Form.useForm();
 
+  const handleFinish = () => {
+    console.log(form.getFieldsValue());
+  };
   //TO-DO: Implement review form validation and submission.
   return (
     <Collapse ghost bordered={false} defaultActiveKey={0}>
       <Panel header="Leave a review" key="1">
-        <Form form={form} className={styles.form}>
+        <Form
+          form={form}
+          className={styles.form}
+          onFinish={handleFinish}
+          layout="horizontal"
+        >
           <div className={styles.form__ratings}>
-            <Form.Item name="rateHost" className={styles.form__ratings__rating}>
-              Host rating
-              <br />
+            <Form.Item
+              name="rateHost"
+              className={styles.form__ratings__rating}
+              label="Host"
+            >
               <Rate />
             </Form.Item>
             <Form.Item
               name="rateAccommodation"
               className={styles.form__ratings__rating}
+              label="Accommodation"
             >
-              Accommodation rating
-              <br />
               <Rate />
             </Form.Item>
           </div>
-          <Form.Item className={styles.form__title}>
-            <Input placeholder="Title" />
-          </Form.Item>
-          <Form.Item>
-            <TextArea
-              autoSize={{ minRows: 5, maxRows: 12 }}
-              placeholder="Write your review here."
-            />
-          </Form.Item>
           <Form.Item>
             <Button type="primary" text="Submit review" />
           </Form.Item>

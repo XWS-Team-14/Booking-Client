@@ -36,7 +36,6 @@ const SingleReview = ({
   return (
     <div className={classNames('frostedGlass', styles.review)}>
       <div className={styles.review__header}>
-        <div className={styles.review__header__title}>{title}</div>
         <div className={styles.review__header__date}>
           {dayjs(date).format('DD.MM.YYYY.')}
         </div>
@@ -49,7 +48,6 @@ const SingleReview = ({
           Accommodation: <Rate disabled defaultValue={accommodationRating} />
         </div>
       </div>
-      <div className={styles.review__content}>{content}</div>
       <Divider />
       <div className={styles.review__poster}>
         <UserChip
