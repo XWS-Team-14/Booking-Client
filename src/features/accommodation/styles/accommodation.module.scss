@@ -13,10 +13,19 @@
   margin-top: 2rem;
 }
 
+.centerText {
+  text-align: center;
+}
 .centerContainer {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  width: 1240px;
+}
+
+.leftAligned {
+  display: flex;
   flex-direction: column;
   width: 1240px;
 }

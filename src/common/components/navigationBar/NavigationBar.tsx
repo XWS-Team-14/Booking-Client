@@ -114,10 +114,8 @@ const NavigationBar = () => {
         )}
         {user.role === 'guest' && (
           <>
-            <NavigationLink
-              href="/reservations/history"
-              text="My reservations"
-            />
+            <NavigationLink href="/reservations/history" text="Reservations" />
+            <NavigationLink href="/recommended" text="Recommended" />
           </>
         )}
       </div>
