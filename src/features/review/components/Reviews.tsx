@@ -45,12 +45,7 @@ const Reviews = ({ accommodation, setAverage }: ReviewsProps ) => {
     <List
       itemLayout="horizontal"
       dataSource={reviews}
-      pagination={{
-        showSizeChanger: true,
-        pageSizeOptions: ['5', '10', '50', '100', '1000'],
-        position: 'bottom',
-        align: 'start',
-      }}
+      grid={{ gutter: 16, column: 2 }}
       className={styles.reviews}
       renderItem={(item, index) => (
         <SingleReview

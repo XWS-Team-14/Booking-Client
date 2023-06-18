@@ -1,6 +1,5 @@
 import Button from '@/common/components/button/Button';
-import { Collapse, Form, Input, Rate } from 'antd';
-import TextArea from 'antd/lib/input/TextArea';
+import { Collapse, Form, Rate } from 'antd';
 import styles from '../styles/review.module.scss';
 import { createReview } from '../services/review.service';
 import { toast } from 'react-toastify';
@@ -46,21 +45,21 @@ const ReviewForm = ({ accommodation_id, host_id }: ReviewFormProps ) => {
           <div className={styles.form__ratings}>
           <Form.Item
               name="rateHost"
-              className={styles.formratingsrating}
+              className={styles.form__ratings__rating}
               label="Host"
             >
               <Rate />
             </Form.Item>
             <Form.Item
               name="rateAccommodation"
-              className={styles.formratingsrating}
+              className={styles.form__ratings__rating}
               label="Accommodation"
             >
               <Rate />
             </Form.Item>
           </div>
           <Form.Item>
-            <Button type="primary"   text="Submit review" />
+            <Button type="primary" text="Submit review" />
           </Form.Item>
         </Form>
       </Panel>
