@@ -40,6 +40,8 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
   const [host, setHost] = useState<UserDetails>();
   const [currentIsHost, setCurrentIsHost] = useState(false);
   const [editable, setEditable] = useState(false);
+  const [hostAverageGrade, setHostAverageGrade] = useState<number>(0);
+  const[accommodationAverageGrade, setAccommodationAverageGrade] = useState<number>(0);
   const user = useSelector(selectUser);
 
   const userCanReview = () => {
@@ -53,7 +55,11 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
       dayjs(availability?.interval.date_start),
       dayjs(availability?.interval.date_end)
     );
-
+  const setAverage = (hostGrade: number, accommodationGrade : number)=>{
+  setHostAverageGrade(hostGrade);
+  setAccommodationAverageGrade(accommodationGrade)
+  }
+  
   useEffect(() => {
     getByAccommodationId(id).then((response) => {
       setAvailability(response.data);
@@ -87,8 +93,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
         </div>
         •
         <div className={styles.accommodation__rating}>
-          <StarTwoTone twoToneColor="#FFB900" /> {getRoundedRating(4.389)} (8
-          reviews)
+          <StarTwoTone twoToneColor="#FFB900" /> {getRoundedRating(accommodationAverageGrade)} (average rating)
         </div>
       </div>
       <div className={styles.accommodation__carousel}>
@@ -117,7 +122,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
                 size={50}
                 gender={host.gender}
                 featured={true}
-                hostRating={4.3897} //TO-DO: Implement
+                hostRating= {hostAverageGrade} //TO-DO: Implement
               />
             </div>
           </div>
@@ -234,8 +239,8 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
         Guest reviews
       </Divider>
       <div className={styles.reviews}>
-        {userCanReview() && <ReviewForm />}
-        <Reviews />
+        {userCanReview() && <ReviewForm host_id={accommodation?.host_id} accommodation_id={accommodation?.id} />}
+        <Reviews accommodation={accommodation?.id??''} setAverage = {setAverage} />
       </div>
     </div>
   );
