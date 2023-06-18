@@ -327,7 +327,7 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
             <div className={styles.filters__amenities}>
               <b>Amenities</b>
               <div className={styles.filters__amenities__items}>
-                {amenities.map((amenity: string) => (
+                {amenities?.map((amenity: string) => (
                   <Checkbox
                     onChange={(e) => addToAmenities(e, amenity)}
                     key={amenity}
