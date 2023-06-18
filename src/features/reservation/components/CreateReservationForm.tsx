@@ -1,4 +1,5 @@
 import Button from '@/common/components/button/Button';
+import { selectUser } from '@/common/store/slices/authSlice';
 import { Accommodation } from '@/common/types/Accommodation';
 import { Availability } from '@/common/types/Availability';
 import {
@@ -8,6 +9,8 @@ import {
 import AccommodationPrice from '@/features/accommodation/components/AccommodationPrice';
 import { getPrice } from '@/features/availability/services/availability.service';
 import { PriceLookupDto } from '@/features/availability/types/PriceLookupDto';
+import { notify } from '@/features/notifications/services/notification.service';
+import Notification from '@/features/notifications/types/Notification';
 import { DatePicker, InputNumber } from 'antd';
 import { RangePickerProps } from 'antd/es/date-picker';
 import classNames from 'classnames';
@@ -15,6 +18,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { createReservation } from '../services/reservation.service';
 import styles from '../styles/reservation.module.scss';
 import { CreateReservationDto } from '../types/ReservationDto';
@@ -34,6 +38,7 @@ const CreateReservationForm = ({
   const [loadingPrice, setLoadingPrice] = useState<boolean>(false);
   const [price, setPrice] = useState<number>();
   const router = useRouter();
+  const user = useSelector(selectUser);
   useEffect(() => {
     const getData = setTimeout(async () => {
       const dto: PriceLookupDto = {
@@ -76,7 +81,25 @@ const CreateReservationForm = ({
       total_price: price ? price : 0,
     };
     await createReservation(dto)
-      .then((response) => router.push('/reservations/history'))
+      .then(async (response) => {
+        const notification: Notification = {
+          type: 'host-new-reservation',
+          sender: {
+            name: `${user.firstName} ${user.lastName}`,
+            id: user.id,
+          },
+          accommodation: accommodation,
+          receiver: {
+            id: accommodation.host_id,
+          },
+          status: 'unread',
+          timestamp: dayjs().format('YYYY-MM-DD HH:mm').toString(),
+        };
+        await notify(notification)
+          .then((response) => console.log(response))
+          .catch((err) => console.log(err));
+        router.push('/reservations/history');
+      })
       .catch((err) => console.log(err));
   };
   const changeDate: RangePickerProps['onChange'] = (date, value) => {
@@ -101,7 +124,7 @@ const CreateReservationForm = ({
       end: dayjs(checkOutDate).format('YYYY-MM-DD').toString(),
       city: accommodation.location.city,
       country: accommodation.location.country,
-      count: guestCount.toString(),
+      count: guestCount !== null ? guestCount.toString() : '0',
     });
     return `/flights?${flightParameters}`;
   };

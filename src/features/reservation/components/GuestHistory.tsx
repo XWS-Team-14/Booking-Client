@@ -1,6 +1,10 @@
 /* eslint-disable camelcase */
 /* eslint-disable indent */
-import { selectAuthState, selectRole } from '@/common/store/slices/authSlice';
+import {
+  selectAuthState,
+  selectRole,
+  selectUser,
+} from '@/common/store/slices/authSlice';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -10,6 +14,8 @@ import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
 import { Accommodation } from '@/common/types/Accommodation';
 import { getById } from '@/features/accommodation/services/accommodation.service';
+import { notify } from '@/features/notifications/services/notification.service';
+import Notification from '@/features/notifications/types/Notification';
 import { Divider, Table, Tag } from 'antd';
 import dayjs from 'dayjs';
 import styles from '../styles/reservation.module.scss';
@@ -20,10 +26,11 @@ const GuestHistory = () => {
   const [loading, setLoading] = useState(true);
   const authState = useSelector(selectAuthState);
   const userRole = useSelector(selectRole);
+  const user = useSelector(selectUser);
   const [reservations, setReservations] = useState<ReservationDto[]>([]);
   const [accommodations, setAccommodations] = useState(new Map());
   const [needsUpdate, setNeedsUpdate] = useState(false);
-  
+
   useEffect(() => {
     if (authState === null) {
       console.log('waiting...');
@@ -58,10 +65,26 @@ const GuestHistory = () => {
     }
   }, [authState, userRole, needsUpdate]);
 
-  const handleCancel = async (id: string) => {
+  const handleCancel = async (id: string, accommodation: Accommodation) => {
     await cancelReservation(id)
-      .then((response) => {
+      .then(async (response) => {
         setNeedsUpdate(true);
+        const notification: Notification = {
+          type: 'host-reservation-cancelled',
+          sender: {
+            name: `${user.firstName} ${user.lastName}`,
+            id: user.id,
+          },
+          accommodation: accommodation,
+          receiver: {
+            id: accommodation.host_id,
+          },
+          status: 'unread',
+          timestamp: dayjs().format('YYYY-MM-DD HH:mm').toString(),
+        };
+        await notify(notification)
+          .then((response) => console.log(response))
+          .catch((err) => console.log(err));
       })
       .catch((error) => console.log(error));
   };
@@ -198,7 +221,7 @@ const GuestHistory = () => {
               )}
               {difference >= 1 && (
                 <Button
-                  action={() => handleCancel(a.reservation_id)}
+                  action={() => handleCancel(a.reservation_id, accommodation)}
                   style={{ color: '#f04668' }}
                   type="transparent"
                   text="Cancel"

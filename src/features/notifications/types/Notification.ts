@@ -1,16 +1,16 @@
 interface Notification {
-  key: string;
+  key?: string;
   type:
-    | 'new-reservation'
-    | 'reservation-cancelled'
-    | 'new-host-rating'
-    | 'new-accommodation-rating'
+    | 'host-new-reservation'
+    | 'host-reservation-cancelled'
+    | 'host-new-review'
+    | 'host-accommodation-new-review'
     | 'featured-host-lost'
     | 'featured-host-gained'
     | 'host-reply-approved'
     | 'host-reply-denied';
-  title: string;
-  content: string;
+  title?: string;
+  content?: string;
   sender: Sender;
   accommodation: Accommodation;
   receiver: Receiver;
@@ -21,7 +21,6 @@ interface Notification {
 interface Sender {
   name: string;
   id: string;
-  picture: string;
 }
 
 interface Receiver {

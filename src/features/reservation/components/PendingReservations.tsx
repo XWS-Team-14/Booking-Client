@@ -4,9 +4,12 @@ import {
   selectAuthState,
   selectId,
   selectRole,
+  selectUser,
 } from '@/common/store/slices/authSlice';
 import { Accommodation } from '@/common/types/Accommodation';
 import { getById } from '@/features/accommodation/services/accommodation.service';
+import { notify } from '@/features/notifications/services/notification.service';
+import Notification from '@/features/notifications/types/Notification';
 import { getUserById } from '@/features/user/services/user.service';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { Button, Table, Tag, Tooltip } from 'antd';
@@ -30,6 +33,7 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
   const authState = useSelector(selectAuthState);
   const userRole = useSelector(selectRole);
   const userId = useSelector(selectId);
+  const user = useSelector(selectUser);
   const [currentIsHost, setCurrentIsHost] = useState(false);
   const [reservations, setReservations] = useState<ReservationDto[]>([]);
   const [accommodation, setAccommodation] = useState<Accommodation>();
@@ -38,15 +42,32 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
 
   const handleStatusUpdate = async (
     id: string,
-    status: 'accepted' | 'rejected'
+    status: 'accepted' | 'rejected',
+    guest: string
   ) => {
     const dto = {
       status: status,
     } as ReservationStatusDto;
     acceptReservation(id, dto)
-      .then((response) => {
-        console.log(response);
+      .then(async (response) => {
         setNeedsUpdate(true);
+        const notification: Notification = {
+          type:
+            status === 'accepted' ? 'host-reply-approved' : 'host-reply-denied',
+          sender: {
+            name: `${user.firstName} ${user.lastName}`,
+            id: user.id,
+          },
+          accommodation: accommodation,
+          receiver: {
+            id: guest,
+          },
+          status: 'unread',
+          timestamp: dayjs().format('YYYY-MM-DD HH:mm').toString(),
+        };
+        await notify(notification)
+          .then((response) => console.log(response))
+          .catch((err) => console.log(err));
       })
       .catch((error) => console.log(error));
   };
@@ -208,6 +229,7 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
         const isManageable =
           dayjs().endOf('day') < dayjs(a.beginning_date).endOf('day') &&
           a.status === 2;
+        const guest = guests.get(a.guest.id);
         return (
           isManageable && (
             <div className={styles.manageButtons}>
@@ -216,7 +238,9 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
                 shape="circle"
                 size="small"
                 style={{ backgroundColor: '#7dd957' }}
-                onClick={() => handleStatusUpdate(a.reservation_id, 'accepted')}
+                onClick={() =>
+                  handleStatusUpdate(a.reservation_id, 'accepted', a.guest.id)
+                }
                 icon={<CheckOutlined style={{ fontSize: '12px' }} />}
               />
               <Button
@@ -224,7 +248,9 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
                 shape="circle"
                 size="small"
                 style={{ backgroundColor: '#ed6681' }}
-                onClick={() => handleStatusUpdate(a.reservation_id, 'rejected')}
+                onClick={() =>
+                  handleStatusUpdate(a.reservation_id, 'rejected', guest)
+                }
                 icon={<CloseOutlined style={{ fontSize: '12px' }} />}
               />
             </div>
