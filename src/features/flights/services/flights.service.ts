@@ -9,6 +9,19 @@ export const getSuggestedFlights = async (
   const urlParameters = new URLSearchParams(
     parameters as unknown as Record<string, string>
   ).toString();
-  console.log(urlParameters);
   return await api.get(`${prefix}/?${urlParameters}`);
 };
+
+export const purchase = async (id: string, count: number, apiKey: string) =>
+  await api.post(
+    `${prefix}/purchase`,
+    {
+      flight_id: id,
+      num_of_tickets: count,
+    },
+    {
+      headers: {
+        HTTP_API_KEY: apiKey,
+      },
+    }
+  );

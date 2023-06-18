@@ -3,8 +3,10 @@ import { CloudTwoTone, SendOutlined } from '@ant-design/icons';
 import { Alert, Descriptions, Divider, Form, Input, Space } from 'antd';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { getSuggestedFlights } from '../services/flights.service';
+import { BaseSyntheticEvent, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { getSuggestedFlights, purchase } from '../services/flights.service';
 import styles from '../styles/flights.module.scss';
 import { FlightOutput } from '../types/FlightOutput';
 import { FlightParameters } from '../types/FlightParameters';
@@ -36,7 +38,24 @@ const SuggestedFlights = () => {
       .catch((err) => console.log(err));
   };
 
-  console.log(suggestedOutbound);
+  const handlePurchase = async (
+    e: BaseSyntheticEvent,
+    flight: FlightOutput
+  ) => {
+    const response = await purchase(
+      flight.id,
+      parseInt(parameters.count),
+      form.getFieldValue('apiKey')
+    );
+
+    if (response.status === 200) {
+      toast.success('Successfully purchased ticket.');
+      e.target.disabled = true;
+    } else {
+      toast.error(response.data.result.Error);
+    }
+  };
+
   const flightsVisible = () =>
     !!suggestedOutbound &&
     !!suggestedInbound &&
@@ -45,6 +64,7 @@ const SuggestedFlights = () => {
 
   return (
     <Space direction="vertical" size="middle" className={styles.wrapper}>
+      <ToastContainer />
       <Alert
         closable
         message={
@@ -128,7 +148,11 @@ const SuggestedFlights = () => {
                   {flight.collective_price}
                 </Descriptions.Item>
               </Descriptions>
-              <Button type="primary" text="Purchase"></Button>
+              <Button
+                type="primary"
+                text="Purchase"
+                action={(e) => handlePurchase(e, flight)}
+              ></Button>
             </>
           ))}
           <Divider />
@@ -163,7 +187,11 @@ const SuggestedFlights = () => {
                   {flight.collective_price}
                 </Descriptions.Item>
               </Descriptions>
-              <Button type="primary" text="Purchase"></Button>
+              <Button
+                type="primary"
+                text="Purchase"
+                action={(e) => handlePurchase(e, flight)}
+              ></Button>
             </>
           ))}
         </>

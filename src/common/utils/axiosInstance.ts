@@ -30,7 +30,9 @@ api.interceptors.response.use(
     const { config, response } = error;
     const originalRequest = config;
     let retValue;
-    if (
+    if (response.status === 401 && response?.data?.result?.Error) {
+      return response;
+    } else if (
       response?.status === 401 &&
       (originalRequest.url.includes('logout') ||
         !originalRequest.url?.includes('auth'))
