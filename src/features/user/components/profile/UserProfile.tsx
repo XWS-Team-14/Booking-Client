@@ -48,7 +48,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     if (user.role === 'host') {
-      const url = `ws://localhost:8000/api/v1/user/status/${user.id}`;
+      const url = `ws://localhost:8888/api/v1/user/status/${user.id}`;
       const ws = new WebSocket(url);
       ws.onopen = (event) => {
         ws.send('Connect');

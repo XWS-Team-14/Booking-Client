@@ -9,7 +9,7 @@ const ReviewForm = () => {
 
   //TO-DO: Implement review form validation and submission.
   return (
-    <Collapse ghost bordered={false} defaultActiveKey={['1']}>
+    <Collapse ghost bordered={false} defaultActiveKey={0}>
       <Panel header="Leave a review" key="1">
         <Form form={form} className={styles.form}>
           <div className={styles.form__ratings}>

@@ -13,7 +13,7 @@ import {
 import { store } from '../store/store';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: 'http://localhost:8888/api',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -30,7 +30,9 @@ api.interceptors.response.use(
     const { config, response } = error;
     const originalRequest = config;
     let retValue;
-    if (
+    if (response.status === 401 && response?.data?.result?.Error) {
+      return response;
+    } else if (
       response?.status === 401 &&
       (originalRequest.url.includes('logout') ||
         !originalRequest.url?.includes('auth'))

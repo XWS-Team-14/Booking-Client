@@ -21,7 +21,7 @@ export const AccommodationImages = ({
               src={
                 image.includes('localhost')
                   ? image
-                  : `http://localhost:8000/api/static/images/${image}`
+                  : `http://localhost:8888/api/static/images/${image}`
               }
             />
           </div>

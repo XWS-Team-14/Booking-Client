@@ -1,0 +1,16 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 1240px;
+  margin-top: 2rem;
+  p {
+    margin: 0;
+    margin-top: 1rem;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  th {
+    width: 30% !important;
+  }
+}
