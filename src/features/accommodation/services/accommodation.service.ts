@@ -20,3 +20,5 @@ export const getAccomodationsByUser = async () => {
 export const getAllAmenities = async () => await api.get(`${prefix}/amenities`);
 
 export const getAll = async () => await api.get(`${prefix}/all`);
+
+export const getRecomended = async (user_id : string) =>  await api.get('/v1/accommodation_recomender/get/'+user_id)
