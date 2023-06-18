@@ -39,7 +39,7 @@ const ReviewForm = ({ accommodation_id, host_id }: ReviewFormProps ) => {
   }
   //TO-DO: Implement review form validation and submission.
   return (
-    <Collapse ghost bordered={false} defaultActiveKey={['1']}>
+    <Collapse ghost bordered={false} defaultActiveKey={0}>
       <Panel header="Leave a review" key="1">
         <Form form={form}  onFinish={onFinish}
           className={styles.form}>
