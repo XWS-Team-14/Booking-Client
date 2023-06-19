@@ -83,7 +83,6 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
           .then((response) => {
             setNeedsUpdate(false);
             const item = response.data.item as Accommodation;
-            console.log(item);
             setAccommodation(item);
             if (item.host_id === userId) {
               setCurrentIsHost(true);
@@ -126,7 +125,6 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
       key: 'guest',
       render: (guest) => {
         const user = guests.get(guest.id);
-        console.log(guest);
         const cancelledCount = guest.canceledReservations;
 
         return cancelledCount !== 0 || cancelledCount !== undefined ? (

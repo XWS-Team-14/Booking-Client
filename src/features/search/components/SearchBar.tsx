@@ -338,7 +338,7 @@ const SearchBar = ({ onDataChanged }: SearchBarProps) => {
               </div>
             </div>
             <div>
-              <Checkbox>
+              <Checkbox onChange={(e) => changeFeatured(e.target.checked)}>
                 <b>Featured host</b>
               </Checkbox>
             </div>

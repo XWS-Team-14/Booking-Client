@@ -3,7 +3,6 @@ import Loading from '@/common/components/loading/Loading';
 import {
   selectAuthState,
   selectUser,
-  setHostFeatured,
   setUserFirstName,
   setUserGender,
   setUserHomeAddress,
@@ -11,10 +10,7 @@ import {
 } from '@/common/store/slices/authSlice';
 import { UserDetails } from '@/common/types/User';
 import { capitalizeFirstLetter } from '@/common/utils/textFormatter';
-import { notify } from '@/features/notifications/services/notification.service';
-import Notification from '@/features/notifications/types/Notification';
 import { Divider, Form, Input, Modal, Select } from 'antd';
-import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -48,45 +44,6 @@ const UserProfile = () => {
       router.push('/');
     }
   }, [authState]);
-
-  useEffect(() => {
-    if (user.role === 'host') {
-      const url = `ws://localhost:8888/api/v1/user/status/${user.id}`;
-      const ws = new WebSocket(url);
-      ws.onopen = (event) => {
-        ws.send('Connect');
-      };
-      ws.onmessage = async (e) => {
-        const featured =
-          e.data.includes('True') || e.data.includes('true') ? true : false;
-        if (featured) {
-          dispatch(setHostFeatured(true));
-        } else if (e.data.includes('False') || e.data.includes('false')) {
-          dispatch(setHostFeatured(false));
-        }
-        const notification: Notification = {
-          type: featured ? 'featured-host-gained' : 'featured-host-lost',
-          sender: {
-            name: `${user.firstName} ${user.lastName}`,
-            id: user.id,
-          },
-          accommodation: {
-            id: '',
-            name: '',
-          },
-          receiver: {
-            id: user.id,
-          },
-          status: 'unread',
-          timestamp: dayjs().format('YYYY-MM-DD HH:mm').toString(),
-        };
-        await notify(notification)
-          .then((response) => console.log(response))
-          .catch((err) => console.log(err));
-      };
-      return () => ws.close();
-    }
-  }, [user.id, user.role]);
 
   const handleTrySave = () => {
     setSaveModalOpen(true);
