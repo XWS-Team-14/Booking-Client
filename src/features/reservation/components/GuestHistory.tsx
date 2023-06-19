@@ -7,15 +7,12 @@ import {
 } from '@/common/store/slices/authSlice';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { cancelReservation, getByGuest } from '../services/reservation.service';
 
 import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
-import {
-  selectReservationHistoryUpdateState,
-  setReservationHistoryUpdate,
-} from '@/common/store/slices/updateSlice';
+import { setReservationHistoryUpdate } from '@/common/store/slices/updateSlice';
 import { Accommodation } from '@/common/types/Accommodation';
 import { getById } from '@/features/accommodation/services/accommodation.service';
 import { notify } from '@/features/notifications/services/notification.service';
@@ -33,19 +30,17 @@ const GuestHistory = () => {
   const user = useSelector(selectUser);
   const [reservations, setReservations] = useState<ReservationDto[]>([]);
   const [accommodations, setAccommodations] = useState(new Map());
-  const [needsUpdate, setNeedsUpdate] = useState(false);
-  const update = useSelector(selectReservationHistoryUpdateState);
-  const dispatch = useDispatch();
+  const [needsUpdate, setNeedsUpdate] = useState(true);
   useEffect(() => {
     if (authState === null) {
       console.log('waiting...');
     } else if (!authState || userRole !== 'guest') {
       router.push('/');
     } else {
-      console.log('updating');
-      if (update) {
+      if (needsUpdate) {
         getByGuest()
           .then(async (response) => {
+            console.log('sdfkjs');
             setNeedsUpdate(false);
             setReservationHistoryUpdate(false);
             const items = response.data.items as ReservationDto[];
@@ -72,13 +67,12 @@ const GuestHistory = () => {
           .catch((err) => console.log(err));
       }
     }
-  }, [authState, userRole, needsUpdate, update]);
+  }, [authState, userRole, needsUpdate]);
 
   const handleCancel = async (id: string, accommodation: Accommodation) => {
     await cancelReservation(id)
       .then(async (response) => {
         setNeedsUpdate(true);
-        dispatch(setReservationHistoryUpdate(true));
         const notification: Notification = {
           type: 'host-reservation-cancelled',
           sender: {

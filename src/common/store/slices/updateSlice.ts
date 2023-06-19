@@ -20,7 +20,7 @@ export const updateSlice = createSlice({
       state.reviewUpdate = action.payload;
     },
     setReservationHistoryUpdate(state, action) {
-      console.log(action.payload);
+      console.log('dsjfk', action.payload);
       state.reservationHistoryUpdate = action.payload;
     },
   },

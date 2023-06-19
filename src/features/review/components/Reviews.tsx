@@ -5,11 +5,10 @@ import SingleReview from './SingleReview';
 
 interface ReviewsProps {
   accommodation: string;
-  setAverage: any;
   reviews: Review[];
 }
 
-const Reviews = ({ accommodation, setAverage, reviews }: ReviewsProps) => {
+const Reviews = ({ accommodation, reviews }: ReviewsProps) => {
   return (
     <List
       style={{ width: '100%' }}

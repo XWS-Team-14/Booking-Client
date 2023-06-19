@@ -43,8 +43,7 @@ const NavigationBar = () => {
   useEffect(() => {
     if (authState === null) {
       const user = getCurrentUserData().then((response) => {
-        console.log(response?.isFeatured);
-        dispatch(setHostFeatured(response.isFeatured));
+        dispatch(setHostFeatured(response?.isFeatured));
       });
       if (user === null) {
         dispatch(setAuthState(false));

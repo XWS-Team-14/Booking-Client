@@ -51,22 +51,10 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
   const [hostAverageGrade, setHostAverageGrade] = useState<number>(0);
   const [accommodationAverageGrade, setAccommodationAverageGrade] =
     useState<number>(0);
-  const user = useSelector(selectUser);
   const [canReview, setCanReview] = useState(false);
   const [reviews, setReviews] = useState([]);
   const reviewUpdate = useSelector(selectReviewUpdateState);
   const dispatch = useDispatch();
-
-  const dates = (current: Dayjs) =>
-    isAccommodationReservable(
-      current,
-      dayjs(availability?.interval.date_start),
-      dayjs(availability?.interval.date_end)
-    );
-  const setAverage = (hostGrade: number, accommodationGrade: number) => {
-    setHostAverageGrade(hostGrade);
-    setAccommodationAverageGrade(accommodationGrade);
-  };
 
   useEffect(() => {
     canUserReview()
@@ -281,7 +269,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
         Guest reviews
       </Divider>
       <div className={styles.reviews}>
-        {true && (
+        {canReview && (
           <ReviewForm
             hostId={accommodation?.host_id}
             accommodationId={accommodation?.id}
@@ -290,7 +278,6 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
         )}
         <Reviews
           accommodation={accommodation?.id ?? ''}
-          setAverage={setAverage}
           reviews={reviews}
         />
       </div>
