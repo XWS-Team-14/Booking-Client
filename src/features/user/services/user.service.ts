@@ -14,6 +14,9 @@ export const deleteAccount = async () => {
   return v1.delete(`${prefix}/`);
 };
 
+export const deleteAccountSaga = async () =>
+  v1.delete(`/v1/orchestrator/delete`);
+
 export const getUserById = async (userId: string) => {
   return v1.get(`${prefix}/${userId}`);
 };

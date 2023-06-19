@@ -11,12 +11,14 @@ import {
   setUserRole,
 } from '@/common/store/slices/authSlice';
 import api from '@/common/utils/axiosInstance';
-import { deleteAccount } from '@/features/user/services/user.service';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Warning from '../../../assets/images/warning.png';
+import { deleteAccountSaga } from '../services/user.service';
 import styles from './Delete.module.scss';
 
 const Delete = () => {
@@ -37,10 +39,17 @@ const Delete = () => {
     }
   }, [authState]);
 
-  const confirm = async () => {
-    await deleteAccount()
-      .then((res) => {
-        router.push('/');
+  const confirm = () => {
+    const url = `ws://localhost:8888/api/v1/orchestrator/status`;
+    const ws = new WebSocket(url);
+    ws.onopen = async (event) => {
+      ws.send('Connect');
+      await deleteAccountSaga()
+        .then((response) => console.log(response))
+        .catch((err) => console.log(err));
+    };
+    ws.onmessage = (e) => {
+      if (e.data.includes('success')) {
         api.defaults.headers.common.Authorization = '';
         dispatch(setAuthState(false));
         dispatch(setUserEmail(null));
@@ -48,14 +57,21 @@ const Delete = () => {
         dispatch(setUserLastName(null));
         dispatch(setUserRole(null));
         dispatch(setUserGender(null));
-      })
-      .catch((err) => console.log(err));
+        router.push('/');
+        toast.success('Successfully deleted your account.');
+      } else {
+        toast.error('There was an error deleting your account.');
+        router.push('/');
+      }
+    };
+    return () => ws.close();
   };
 
   return loading ? (
     <Loading />
   ) : (
     <div className={styles.wrapper}>
+      <ToastContainer />
       <Image
         src={Warning}
         quality={100}

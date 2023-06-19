@@ -25,13 +25,20 @@ const RecommendedAccommodations = () => {
         .then((response) => {
           if (response.data === 'Error: None found'){
             console.log('Error: None found');
+            setLoading(false);
           }
           else{
             setRecommended(response.data);
             setLoading(false);
           }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          if (err.response.data === 'Error: None found'){
+            console.log('Error: None found');
+            setLoading(false);
+          }
+        });
     } else {
       router.push('/');
     }
