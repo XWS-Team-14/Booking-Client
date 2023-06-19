@@ -40,7 +40,6 @@ const GuestHistory = () => {
       if (needsUpdate) {
         getByGuest()
           .then(async (response) => {
-            console.log('sdfkjs');
             setNeedsUpdate(false);
             setReservationHistoryUpdate(false);
             const items = response.data.items as ReservationDto[];

@@ -78,42 +78,44 @@ const PendingReservations = ({ accommodationId }: PendingReservationsProps) => {
     } else if (!authState || userRole !== 'host') {
       router.push('/');
     } else {
-      getById(accommodationId)
-        .then((response) => {
-          const item = response.data.item as Accommodation;
-          console.log(item);
-          setAccommodation(item);
-          if (item.host_id === userId) {
-            setCurrentIsHost(true);
-          } else {
-            router.push('/');
-          }
-        })
-        .catch((error) => console.log(error));
-      getByAccommodation(accommodationId)
-        .then(async (response) => {
-          const items = response.data.items as ReservationDto[];
-          setReservations(response.data.items);
-          if (items !== undefined) {
-            for (let i = 0; i < items.length; i++) {
-              const item = items[i];
-              const userId = item.guest.id;
-              if (!guests.has(userId)) {
-                await getUserById(userId)
-                  .then((response) => {
-                    setGuests(guests.set(userId, response.data));
-                    setNeedsUpdate(false);
-                  })
-                  .catch((error) => console.log(error));
-              }
+      if (needsUpdate) {
+        getById(accommodationId)
+          .then((response) => {
+            setNeedsUpdate(false);
+            const item = response.data.item as Accommodation;
+            console.log(item);
+            setAccommodation(item);
+            if (item.host_id === userId) {
+              setCurrentIsHost(true);
+            } else {
+              router.push('/');
             }
-            setLoading(false);
-          } else {
-            setReservations([]);
-            setLoading(false);
-          }
-        })
-        .catch((error) => console.log(error));
+          })
+          .catch((error) => console.log(error));
+        getByAccommodation(accommodationId)
+          .then(async (response) => {
+            const items = response.data.items as ReservationDto[];
+            setReservations(response.data.items);
+            if (items !== undefined) {
+              for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                const userId = item.guest.id;
+                if (!guests.has(userId)) {
+                  await getUserById(userId)
+                    .then((response) => {
+                      setGuests(guests.set(userId, response.data));
+                    })
+                    .catch((error) => console.log(error));
+                }
+              }
+              setLoading(false);
+            } else {
+              setReservations([]);
+              setLoading(false);
+            }
+          })
+          .catch((error) => console.log(error));
+      }
     }
   }, [authState, userRole, needsUpdate, accommodationId]);
 
