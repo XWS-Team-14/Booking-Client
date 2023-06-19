@@ -6,6 +6,10 @@ import {
   selectRole,
   selectUser,
 } from '@/common/store/slices/authSlice';
+import {
+  selectReviewUpdateState,
+  setReviewUpdate,
+} from '@/common/store/slices/updateSlice';
 import { Accommodation } from '@/common/types/Accommodation';
 import { Availability } from '@/common/types/Availability';
 import { UserDetails } from '@/common/types/User';
@@ -17,13 +21,17 @@ import { getByAccommodationId } from '@/features/availability/services/availabil
 import CreateReservationForm from '@/features/reservation/components/CreateReservationForm';
 import ReviewForm from '@/features/review/components/ReviewForm';
 import Reviews from '@/features/review/components/Reviews';
+import {
+  canUserReview,
+  getByAccommodation,
+} from '@/features/review/services/review.service';
 import UserChip from '@/features/user/components/chip/UserChip';
 import { getUserById } from '@/features/user/services/user.service';
 import { EnvironmentTwoTone, StarTwoTone } from '@ant-design/icons';
 import { Divider, Tag } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getById } from '../services/accommodation.service';
 import styles from '../styles/accommodation.module.scss';
 import { AccommodationImages } from './AccommodationCard/AccommodationImages';
@@ -40,12 +48,14 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
   const [host, setHost] = useState<UserDetails>();
   const [currentIsHost, setCurrentIsHost] = useState(false);
   const [editable, setEditable] = useState(false);
+  const [hostAverageGrade, setHostAverageGrade] = useState<number>(0);
+  const [accommodationAverageGrade, setAccommodationAverageGrade] =
+    useState<number>(0);
   const user = useSelector(selectUser);
-
-  const userCanReview = () => {
-    //TO-DO: Implement this condition.
-    return true;
-  };
+  const [canReview, setCanReview] = useState(false);
+  const [reviews, setReviews] = useState([]);
+  const reviewUpdate = useSelector(selectReviewUpdateState);
+  const dispatch = useDispatch();
 
   const dates = (current: Dayjs) =>
     isAccommodationReservable(
@@ -53,6 +63,36 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
       dayjs(availability?.interval.date_start),
       dayjs(availability?.interval.date_end)
     );
+  const setAverage = (hostGrade: number, accommodationGrade: number) => {
+    setHostAverageGrade(hostGrade);
+    setAccommodationAverageGrade(accommodationGrade);
+  };
+
+  useEffect(() => {
+    canUserReview()
+      .then((response) => setCanReview(response.data === 'True' ? true : false))
+      .catch((error) => console.log(error));
+  }, []);
+
+  useEffect(() => {
+    if (accommodation !== undefined && reviewUpdate) {
+      getByAccommodation(accommodation?.id)
+        .then((response) => {
+          setHostAverageGrade(response.data.host_average ?? 0);
+          setAccommodationAverageGrade(
+            response.data.accommodation_average ?? 0
+          );
+          if (response.data.items) {
+            setReviews(response.data.items);
+            console.log(response.data.items);
+          } else {
+            setReviews([]);
+          }
+          dispatch(setReviewUpdate(false));
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [accommodation, reviewUpdate]);
 
   useEffect(() => {
     getByAccommodationId(id).then((response) => {
@@ -87,8 +127,15 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
         </div>
         •
         <div className={styles.accommodation__rating}>
-          <StarTwoTone twoToneColor="#FFB900" /> {getRoundedRating(4.389)} (8
-          reviews)
+          <StarTwoTone twoToneColor="#FFB900" />{' '}
+          {reviews.length > 0 ? (
+            <>
+              {getRoundedRating(accommodationAverageGrade)} ({reviews.length}{' '}
+              review{reviews.length === 1 ? <></> : <>s</>})
+            </>
+          ) : (
+            <>Not yet rated</>
+          )}
         </div>
       </div>
       <div className={styles.accommodation__carousel}>
@@ -117,7 +164,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
                 size={50}
                 gender={host.gender}
                 featured={true}
-                hostRating={4.3897} //TO-DO: Implement
+                hostRating={hostAverageGrade} //TO-DO: Implement
               />
             </div>
           </div>
@@ -154,7 +201,6 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
             accommodation={accommodation}
             availability={availability}
           />
-          
         )}
       </div>
       {currentIsHost && (
@@ -235,8 +281,18 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
         Guest reviews
       </Divider>
       <div className={styles.reviews}>
-        {userCanReview() && <ReviewForm />}
-        <Reviews />
+        {true && (
+          <ReviewForm
+            hostId={accommodation?.host_id}
+            accommodationId={accommodation?.id}
+            accommodationName={accommodation?.name}
+          />
+        )}
+        <Reviews
+          accommodation={accommodation?.id ?? ''}
+          setAverage={setAverage}
+          reviews={reviews}
+        />
       </div>
     </div>
   );

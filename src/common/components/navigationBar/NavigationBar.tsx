@@ -2,6 +2,7 @@ import {
   selectAuthState,
   selectUser,
   setAuthState,
+  setHostFeatured,
   setUserEmail,
   setUserFirstName,
   setUserGender,
@@ -41,7 +42,10 @@ const NavigationBar = () => {
 
   useEffect(() => {
     if (authState === null) {
-      const user = getCurrentUserData();
+      const user = getCurrentUserData().then((response) => {
+        console.log(response?.isFeatured);
+        dispatch(setHostFeatured(response.isFeatured));
+      });
       if (user === null) {
         dispatch(setAuthState(false));
       }

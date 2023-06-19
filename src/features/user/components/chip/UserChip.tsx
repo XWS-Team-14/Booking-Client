@@ -28,13 +28,16 @@ const UserChip = ({
         <div className={styles.text__name}>
           {' '}
           {name}{' '}
-          {hostRating && (
+          {hostRating !== undefined && (
             <Tag color="#71B8E4" icon={<StarFilled />}>
-              {getRoundedRating(hostRating)}
+              {hostRating === 0 ? (
+                <>No rating</>
+              ) : (
+                <>{getRoundedRating(hostRating)}</>
+              )}
             </Tag>
           )}
         </div>
-        {featured && <div className={styles.text__featured}>Featured host</div>}
       </div>
     </div>
   );

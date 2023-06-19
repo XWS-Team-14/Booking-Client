@@ -1,5 +1,6 @@
 import Button from '@/common/components/button/Button';
 import { selectUser } from '@/common/store/slices/authSlice';
+import { setReservationHistoryUpdate } from '@/common/store/slices/updateSlice';
 import { Accommodation } from '@/common/types/Accommodation';
 import { Availability } from '@/common/types/Availability';
 import {
@@ -18,7 +19,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createReservation } from '../services/reservation.service';
 import styles from '../styles/reservation.module.scss';
 import { CreateReservationDto } from '../types/ReservationDto';
@@ -39,6 +40,8 @@ const CreateReservationForm = ({
   const [price, setPrice] = useState<number>();
   const router = useRouter();
   const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const getData = setTimeout(async () => {
       const dto: PriceLookupDto = {
@@ -51,7 +54,6 @@ const CreateReservationForm = ({
       };
       await getPrice(dto)
         .then((response) => {
-          console.log(response);
           setPrice(response.data.price);
           setLoadingPrice(false);
         })
@@ -98,6 +100,7 @@ const CreateReservationForm = ({
         await notify(notification)
           .then((response) => console.log(response))
           .catch((err) => console.log(err));
+        dispatch(setReservationHistoryUpdate(true));
         router.push('/reservations/history');
       })
       .catch((err) => console.log(err));
