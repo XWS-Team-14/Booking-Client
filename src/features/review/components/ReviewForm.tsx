@@ -1,49 +1,44 @@
 import Button from '@/common/components/button/Button';
+import { setReviewUpdate } from '@/common/store/slices/updateSlice';
 import { Collapse, Form, Rate } from 'antd';
-import styles from '../styles/review.module.scss';
-import { createReview } from '../services/review.service';
+import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import router from 'next/router';
+import { createReview } from '../services/review.service';
+import styles from '../styles/review.module.scss';
 import { CreateReviewDto } from '../types/ReviewDto';
 
 interface ReviewFormProps {
-  accommodation_id: string;
-  host_id : string;
+  accommodationId?: string;
+  hostId?: string;
 }
-const ReviewForm = ({ accommodation_id, host_id }: ReviewFormProps ) => {
+
+const ReviewForm = ({ accommodationId, hostId }: ReviewFormProps) => {
   const { Panel } = Collapse;
   const [form] = Form.useForm();
+  const dispatch = useDispatch();
   const onFinish = async (values: any) => {
-    let formData = new FormData();
-    formData.append('host_id', host_id);
-    formData.append('accommodation_id', accommodation_id);
-    formData.append('host_rating', values.rateHost);
-    formData.append('accommodation_rating', values.rateAccommodation);
     const dto: CreateReviewDto = {
-      accommodation_id: accommodation_id,
-      host_id: host_id,
-      host_rating:  values.rateHost,
-      accommodation_rating: values.rateAccommodation
-
+      accommodation_id: accommodationId ?? '',
+      host_id: hostId ?? '',
+      host_rating: values.rateHost,
+      accommodation_rating: values.rateAccommodation,
     };
-   await createReview(dto)
+    await createReview(dto)
       .then((res) => {
-        toast.success('Success');
-        //router.push('/accommodations');
+        toast.success('Successfully created your review.');
+        dispatch(setReviewUpdate(true));
       })
       .catch((err) => {
         toast.error(err);
       });
-      
-  }
+  };
   //TO-DO: Implement review form validation and submission.
   return (
     <Collapse ghost bordered={false} defaultActiveKey={0}>
       <Panel header="Leave a review" key="1">
-        <Form form={form}  onFinish={onFinish}
-          className={styles.form}>
+        <Form form={form} onFinish={onFinish} className={styles.form}>
           <div className={styles.form__ratings}>
-          <Form.Item
+            <Form.Item
               name="rateHost"
               className={styles.form__ratings__rating}
               label="Host"

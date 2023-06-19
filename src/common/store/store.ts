@@ -18,9 +18,11 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import { updateSlice } from './slices/updateSlice';
 
 const rootReducer = combineReducers({
   [authSlice.name]: authSlice.reducer,
+  [updateSlice.name]: updateSlice.reducer
 });
 
 const makeConfiguredStore = () =>

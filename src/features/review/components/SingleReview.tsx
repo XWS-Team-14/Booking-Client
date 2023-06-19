@@ -1,15 +1,16 @@
 import { selectId } from '@/common/store/slices/authSlice';
-import { User } from '@/common/types/User';
+import { setReviewUpdate } from '@/common/store/slices/updateSlice';
 import UserChip from '@/features/user/components/chip/UserChip';
-import { DeleteOutlined, EditOutlined, CheckOutlined } from '@ant-design/icons';
+import { getUserById } from '@/features/user/services/user.service';
+import { CheckOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Button, Divider, Modal, Rate, Tooltip } from 'antd';
 import classNames from 'classnames';
 import dayjs from 'dayjs';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import styles from '../styles/review.module.scss';
-import { getUserById } from '@/features/user/services/user.service';
+import { useDispatch, useSelector } from 'react-redux';
 import { deleteReview, updateReview } from '../services/review.service';
+import styles from '../styles/review.module.scss';
 
 interface SingleReviewProps {
   id: string;
@@ -29,8 +30,10 @@ const SingleReview = ({
   const [currentIsPoster, setCurrentIsPoster] = useState(false);
   const [posterDetails, setPosterDetails] = useState<any>();
   const [open, setOpen] = useState(false);
-  const[editEnabled,setEditEnabled] = useState(false);
-  
+  const [editEnabled, setEditEnabled] = useState(false);
+  const dispatch = useDispatch();
+  const router = useRouter();
+
   useEffect(() => {
     getUserById(poster)
       .then((response) => {
@@ -39,9 +42,11 @@ const SingleReview = ({
       .catch((error) => console.log(error));
     setCurrentIsPoster(userId === poster);
   }, [userId]);
+
   const editReview = () => {
     setEditEnabled(true);
   };
+
   const submitEdit = async () => {
     await updateReview({
       id: id,
@@ -49,26 +54,33 @@ const SingleReview = ({
       accommodation_rating: accommodationRating,
     }).then(() => {
       setEditEnabled(false);
+      dispatch(setReviewUpdate(true));
     });
   };
+
   const showModal = () => {
     setOpen(true);
   };
 
-  const handleOk = () => {
+  const handleOk = async () => {
     setOpen(false);
-    deleteReview(id);
+    await deleteReview(id)
+      .then((response) => {
+        router.reload();
+      })
+      .catch((error) => console.log(error));
   };
 
   const handleCancel = () => {
     setOpen(false);
   };
-  const changeHostRating = (value : number) => {
+  const changeHostRating = (value: number) => {
+    console.log('i changed');
     hostRating = value;
-  }
-  const changeAccommodationRating = (value : number) => {
+  };
+  const changeAccommodationRating = (value: number) => {
     accommodationRating = value;
-  }
+  };
   return (
     <div className={classNames('frostedGlass', styles.review)}>
       <div className={styles.review__header}>
@@ -78,11 +90,20 @@ const SingleReview = ({
       </div>
       <div className={styles.review__ratings}>
         <div className={styles.review__ratings__rating}>
-          Host: <Rate disabled={!editEnabled} defaultValue={hostRating} onChange={changeHostRating} />{' '}
+          Host:{' '}
+          <Rate
+            disabled={!editEnabled}
+            defaultValue={hostRating}
+            onChange={changeHostRating}
+          />{' '}
         </div>
         <div className={styles.review__ratings__rating}>
           Accommodation:{' '}
-          <Rate disabled={!editEnabled} defaultValue={accommodationRating} onChange={changeAccommodationRating}/>
+          <Rate
+            disabled={!editEnabled}
+            defaultValue={accommodationRating}
+            onChange={changeAccommodationRating}
+          />
         </div>
       </div>
       <Divider />
@@ -128,8 +149,11 @@ const SingleReview = ({
               title="Delete Review"
               open={open}
               onOk={handleOk}
+              centered
               onCancel={handleCancel}
-            >Are you sure you want to delete review?</Modal>
+            >
+              Are you sure you want to delete this review?
+            </Modal>
           </div>
         )}
       </div>

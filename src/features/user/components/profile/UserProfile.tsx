@@ -165,11 +165,6 @@ const UserProfile = () => {
           <h1>
             {user.firstName} {user.lastName}
           </h1>
-          <h2>
-            {user.role === 'host' && user.isFeatured
-              ? 'Featured host'
-              : capitalizeFirstLetter(user.role)}
-          </h2>
         </div>
       </div>
       <Divider />
