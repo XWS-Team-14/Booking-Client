@@ -281,10 +281,11 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
         Guest reviews
       </Divider>
       <div className={styles.reviews}>
-        {canReview && (
+        {true && (
           <ReviewForm
             hostId={accommodation?.host_id}
             accommodationId={accommodation?.id}
+            accommodationName={accommodation?.name}
           />
         )}
         <Reviews
