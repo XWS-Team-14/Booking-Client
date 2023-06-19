@@ -18,16 +18,6 @@ const Notifications = () => {
   const userId = useSelector(selectId);
 
   useEffect(() => {
-    const url = `ws://localhost:8888/api/v1/user/status/${userId}`;
-    const ws = new WebSocket(url);
-    ws.onopen = (event) => {
-      ws.send('Connect');
-    };
-    // recieve message every start page
-    ws.onmessage = (e) => {
-      console.log(e);
-    };
-
     const notificationsRef = ref(database, `notifications/${userId}`);
     onValue(notificationsRef, (snapshot) => {
       const notifications = snapshotToArray(snapshot).sort(
@@ -40,7 +30,6 @@ const Notifications = () => {
         notifications.filter((notification) => notification.status === 'unread')
       );
     });
-    return () => ws.close();
   }, []);
   return (
     <Popover

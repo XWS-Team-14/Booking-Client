@@ -1,5 +1,3 @@
-import { getRoundedRating } from '@/common/utils/getRoundedRating';
-import { StarTwoTone } from '@ant-design/icons';
 import styles from './AccommodationCard.module.scss';
 interface AccommodationHeaderProps {
   title: string;
@@ -12,10 +10,6 @@ export const AccommodationHeader = ({
   return (
     <div className={styles.header}>
       <h1>{title}</h1>
-      <div className={styles.header__rating}>
-        <StarTwoTone style={{ color: 'yellow' }} />
-        {getRoundedRating(rating)}
-      </div>
     </div>
   );
 };
