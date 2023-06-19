@@ -26,8 +26,11 @@ import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Notifications from '@/features/notifications/compontents/Notifications';
+import { notify } from '@/features/notifications/services/notification.service';
+import Notification from '@/features/notifications/types/Notification';
 import UserChip from '@/features/user/components/chip/UserChip';
 import { getCurrentUserData } from '@/features/user/services/user.service';
+import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import Logo from '../../../assets/images/logo.png';
 import Button from '../button/Button';
@@ -50,6 +53,45 @@ const NavigationBar = () => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (authState !== null && user.role === 'host') {
+      const url = `ws://localhost:8888/api/v1/user/status/${user.id}`;
+      const ws = new WebSocket(url);
+      ws.onopen = (event) => {
+        ws.send('Connect');
+      };
+      ws.onmessage = async (e) => {
+        const featured =
+          e.data.includes('True') || e.data.includes('true') ? true : false;
+        if (featured) {
+          dispatch(setHostFeatured(true));
+        } else if (e.data.includes('False') || e.data.includes('false')) {
+          dispatch(setHostFeatured(false));
+        }
+        const notification: Notification = {
+          type: featured ? 'featured-host-gained' : 'featured-host-lost',
+          sender: {
+            name: `${user.firstName} ${user.lastName}`,
+            id: user.id,
+          },
+          accommodation: {
+            id: '',
+            name: '',
+          },
+          receiver: {
+            id: user.id,
+          },
+          status: 'unread',
+          timestamp: dayjs().format('YYYY-MM-DD HH:mm').toString(),
+        };
+        await notify(notification)
+          .then((response) => console.log(response))
+          .catch((err) => console.log(err));
+      };
+      return () => ws.close();
+    }
+  }, [authState, user.id, user.role]);
 
   const handleLogout = async () => {
     await logout().then(() => {

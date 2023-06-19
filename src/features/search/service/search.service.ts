@@ -8,6 +8,7 @@ const prefix = '/v1/search';
 export const fetchData = async (
   dto: SearchParams | undefined
 ): Promise<SearchResultDto> => {
+  console.log(dto);
   const params = new URLSearchParams({
     country: checkValueString(dto?.country),
     city: checkValueString(dto?.city),
