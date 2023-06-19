@@ -11,7 +11,10 @@ import {
 } from '@/common/store/slices/authSlice';
 import { UserDetails } from '@/common/types/User';
 import { capitalizeFirstLetter } from '@/common/utils/textFormatter';
+import { notify } from '@/features/notifications/services/notification.service';
+import Notification from '@/features/notifications/types/Notification';
 import { Divider, Form, Input, Modal, Select } from 'antd';
+import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -53,12 +56,33 @@ const UserProfile = () => {
       ws.onopen = (event) => {
         ws.send('Connect');
       };
-      ws.onmessage = (e) => {
-        if (e.data.includes('True')) {
+      ws.onmessage = async (e) => {
+        const featured =
+          e.data.includes('True') || e.data.includes('true') ? true : false;
+        if (featured) {
           dispatch(setHostFeatured(true));
-        } else if (e.data.includes('False')) {
+        } else if (e.data.includes('False') || e.data.includes('false')) {
           dispatch(setHostFeatured(false));
         }
+        const notification: Notification = {
+          type: featured ? 'featured-host-gained' : 'featured-host-lost',
+          sender: {
+            name: `${user.firstName} ${user.lastName}`,
+            id: user.id,
+          },
+          accommodation: {
+            id: '',
+            name: '',
+          },
+          receiver: {
+            id: user.id,
+          },
+          status: 'unread',
+          timestamp: dayjs().format('YYYY-MM-DD HH:mm').toString(),
+        };
+        await notify(notification)
+          .then((response) => console.log(response))
+          .catch((err) => console.log(err));
       };
       return () => ws.close();
     }
@@ -165,6 +189,11 @@ const UserProfile = () => {
           <h1>
             {user.firstName} {user.lastName}
           </h1>
+          <h2>
+            {user.role === 'host' && user.isFeatured
+              ? 'Featured host'
+              : capitalizeFirstLetter(user.role)}
+          </h2>
         </div>
       </div>
       <Divider />
