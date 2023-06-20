@@ -1,11 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import Button from '@/common/components/button/Button';
 import Loading from '@/common/components/loading/Loading';
-import {
-  selectId,
-  selectRole,
-  selectUser,
-} from '@/common/store/slices/authSlice';
+import { selectId, selectRole } from '@/common/store/slices/authSlice';
 import {
   selectReviewUpdateState,
   setReviewUpdate,
@@ -14,7 +10,6 @@ import { Accommodation } from '@/common/types/Accommodation';
 import { Availability } from '@/common/types/Availability';
 import { UserDetails } from '@/common/types/User';
 import { checkIfEmptyObjectOrFalsy } from '@/common/utils/checkIfEmptyObjectOrFalsy';
-import { isAccommodationReservable } from '@/common/utils/dateHelper';
 import { getRoundedRating } from '@/common/utils/getRoundedRating';
 import AvailabilityForm from '@/features/availability/components/AvailabilityForm';
 import { getByAccommodationId } from '@/features/availability/services/availability.service';
@@ -29,7 +24,7 @@ import UserChip from '@/features/user/components/chip/UserChip';
 import { getUserById } from '@/features/user/services/user.service';
 import { EnvironmentTwoTone, StarTwoTone } from '@ant-design/icons';
 import { Divider, Tag } from 'antd';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getById } from '../services/accommodation.service';
@@ -57,13 +52,14 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(setReviewUpdate(true));
     canUserReview()
       .then((response) => setCanReview(response.data === 'True' ? true : false))
       .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {
-    if (accommodation !== undefined && reviewUpdate) {
+    if (accommodation !== undefined) {
       getByAccommodation(accommodation?.id)
         .then((response) => {
           setHostAverageGrade(response.data.host_average ?? 0);
@@ -276,10 +272,7 @@ const SingleAccommodation = ({ id }: SingleAccommodationProps) => {
             accommodationName={accommodation?.name}
           />
         )}
-        <Reviews
-          accommodation={accommodation?.id ?? ''}
-          reviews={reviews}
-        />
+        <Reviews accommodation={accommodation?.id ?? ''} reviews={reviews} />
       </div>
     </div>
   );
